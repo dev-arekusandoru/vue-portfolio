@@ -1,0 +1,74 @@
+name: portfolio
+entities:
+  Project:
+    properties:
+      - name
+      - { name: 'code_url', type: link }
+      - { name: 'demo_url', type: link }
+      - { name: start_date, type: date }
+      - { name: end_date, type: date }
+      - { name: current, type: boolean }
+      - { name: stack, type: text }
+      - { name: highlights, type: text }
+    policies:
+      create:
+        - access: admin
+      read:
+        - access: public
+      update:
+        - access: admin
+      delete:
+        - access: admin
+
+  ExperienceGroup:
+    properties:
+      - name
+      - { name: description, type: text }
+    policies:
+      create:
+        - access: admin
+      read:
+        - access: public
+      update:
+        - access: admin
+      delete:
+        - access: admin
+
+  Experience:
+    properties:
+      - company
+      - title
+      - { name: start_date, type: date }
+      - { name: end_date, type: date }
+      - { name: current, type: boolean }
+      - { name: description, type: text }
+      - { name: skills, type: text }
+    belongsTo:
+      - { name: 'group', entity: 'ExperienceGroup', eager: true }
+    policies:
+      create:
+        - access: admin
+      read:
+        - access: public
+      update:
+        - access: admin
+      delete:
+        - access: admin
+
+  HomePage:
+    single: true
+    slug: home
+    properties:
+      - { name: 'languages', type: text }
+      - { name: 'frameworks', type: text }
+      - { name: 'databases', type: text }
+      - { name: 'devops', type: text }
+    policies:
+      create:
+        - access: admin
+      read:
+        - access: public
+      update:
+        - access: admin
+      delete:
+        - access: admin
