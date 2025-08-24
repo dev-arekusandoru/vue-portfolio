@@ -1,39 +1,42 @@
-# vue-portfolio
+# Vue Portfolio Resume
 
-This template should help get you started developing with Vue 3 in Vite.
+This is a portfolio resume project built with **Vue.js** and **Manifest.build** to showcase my skills and experience while learning these technologies.
 
-## Recommended IDE Setup
+## Purpose
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- **Learn Vue.js**: Practice building a modern, reactive web application
+- **Explore Manifest.build**: Experiment with the Manifest approach to setting up a backend with one file
+- **Portfolio Showcase**: Display my professional experience, projects, and skills in an interactive format
 
-## Type Support for `.vue` Imports in TS
+## Technologies Used
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+- **Vue 3** - Frontend framework with Composition API
+- **TypeScript** - Type-safe JavaScript development
+- **Vite** - Fast build tool and development server
+- **Manifest.build** - One file backend
 
-## Customize configuration
+## Features
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- Responsive design for all devices
+- Interactive project showcase
+- Professional experience timeline
+- Skills and technology display
+- Modern, clean UI/UX
 
-## Project Setup
+## Getting Started
 
-```sh
+```bash
+# Install dependencies
 npm install
-```
 
-### Compile and Hot-Reload for Development
-
-```sh
+# Run development server
 npm run dev
-```
 
-### Type-Check, Compile and Minify for Production
-
-```sh
+# Build for production
 npm run build
+
+# Access Manifest backend
+npm run manifest
 ```
 
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+This project serves as both a learning experience and a professional portfolio, demonstrating my ability to work with modern web technologies while showcasing my work.
