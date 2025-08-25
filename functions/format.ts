@@ -9,3 +9,11 @@ export const formatDate = (date: string | null) => {
 
   return formatted
 }
+
+export const formatLinks = (text: string) => {
+  return text.replace(
+    /\[([^\]]+)\]\(([^)]+)\)/g,
+    (match, linkText, url) =>
+      `<a href="${url}" class="markdown-link" target="_blank" rel="noopener noreferrer">${linkText}</a>`,
+  )
+}

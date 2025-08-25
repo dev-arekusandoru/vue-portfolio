@@ -6,6 +6,7 @@ import Maven from '@/assets/Maven.svg'
 import jQuery from '@/assets/jQuery.svg'
 import Kamal from '@/assets/kamal.png'
 import { computed } from 'vue'
+import { dev } from '@/App.vue'
 
 const props = defineProps<{
   icon: string
@@ -25,14 +26,15 @@ const iconMap = {
   'react native': 'logos:react',
   'aws s3': 'logos:aws',
   expo: 'logos:expo-icon',
-  'github actions': 'logos:github-icon',
-  github: 'logos:github-icon',
+  'github actions': 'logos:github-actions',
+  github: 'mdi:github',
   gitlab: 'logos:gitlab-icon',
   'app store connect': 'logos:apple-app-store',
   linux: 'logos:linux-tux',
   windows: 'logos:microsoft-windows-icon',
   spring: 'logos:spring-icon',
   nextjs: 'logos:nextjs-icon',
+  macos: 'mdi:apple',
 }
 const customIconMap = {
   rspec: RSpec,
@@ -53,7 +55,7 @@ const currentIcon = computed(
 </script>
 
 <template>
-  <div class="group flex flex-row justify-center items-center p-1 rounded-md cursor-pointer">
+  <div class="group flex flex-row justify-center items-center p-1 rounded-md cursor-help">
     <img
       v-if="currentCustomIcon"
       :src="currentCustomIcon"
@@ -61,9 +63,9 @@ const currentIcon = computed(
     />
     <Icon v-else :icon="currentIcon" width="26" height="26" class="rounded-sm" />
     <div
-      class="absolute bg-gray text-green text-xs rounded-md p-1 translate-y-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+      :class="`absolute bg-gray text-xs rounded-md p-1 translate-y-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none ${dev ? 'text-green' : 'text-white'}`"
     >
-      <p>{{ props.icon }}</p>
+      <p class="text-center">{{ props.icon }}</p>
     </div>
   </div>
 </template>

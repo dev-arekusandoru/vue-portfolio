@@ -1936,6 +1936,34 @@ components:
           format: uuid
           example: 123e4567-e89b-12d3-a456-426614174000
           nullable: true
+        overview:
+          type: string
+          description: The overview property of the entity (text)
+          example: >-
+            This is a longer text example that might span multiple lines and
+            contain more detailed information.
+          nullable: true
+        now:
+          type: string
+          description: The now property of the entity (text)
+          example: >-
+            This is a longer text example that might span multiple lines and
+            contain more detailed information.
+          nullable: true
+        interests:
+          type: string
+          description: The interests property of the entity (text)
+          example: >-
+            This is a longer text example that might span multiple lines and
+            contain more detailed information.
+          nullable: true
+        futureGoals:
+          type: string
+          description: The futureGoals property of the entity (text)
+          example: >-
+            This is a longer text example that might span multiple lines and
+            contain more detailed information.
+          nullable: true
         languages:
           type: string
           description: The languages property of the entity (text)
@@ -2086,6 +2114,34 @@ components:
       type: object
       description: CreateUpdateHomePageDto entity schema
       properties:
+        overview:
+          type: string
+          description: The overview property of the entity (text)
+          example: >-
+            This is a longer text example that might span multiple lines and
+            contain more detailed information.
+          nullable: true
+        now:
+          type: string
+          description: The now property of the entity (text)
+          example: >-
+            This is a longer text example that might span multiple lines and
+            contain more detailed information.
+          nullable: true
+        interests:
+          type: string
+          description: The interests property of the entity (text)
+          example: >-
+            This is a longer text example that might span multiple lines and
+            contain more detailed information.
+          nullable: true
+        futureGoals:
+          type: string
+          description: The futureGoals property of the entity (text)
+          example: >-
+            This is a longer text example that might span multiple lines and
+            contain more detailed information.
+          nullable: true
         languages:
           type: string
           description: The languages property of the entity (text)

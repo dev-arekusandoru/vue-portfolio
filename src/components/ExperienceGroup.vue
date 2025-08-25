@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { formatDate } from '../../functions/format'
 import type { ExperienceCardProps } from './ExperienceCard.vue'
 import ExperienceCard from './ExperienceCard.vue'
+import { dev } from '@/App.vue'
 
 defineProps<{
   experiences: ExperienceCardProps[]
@@ -11,17 +13,28 @@ defineProps<{
 
 <template>
   <div class="flex flex-col">
-    <h3>
+    <h3 v-if="dev">
       <span class="text-purple">module </span>
       <span class="text-blue font-bold">{{ title.replace(' ', '_') }}</span>
     </h3>
-    <div class="indented">
-      <p>
+    <div v-else>
+      <h3 class="text-lg">{{ title }}</h3>
+      <p class="text-md text-gray-500">
+        {{ formatDate(experiences[experiences.length - 1].start_date) }} -
+        {{ experiences[0].current ? 'Present' : formatDate(experiences[0].end_date) }}
+      </p>
+    </div>
+    <div :class="dev ? 'indented' : 'indented flex flex-col gap-4'">
+      <p v-if="dev">
         <span class="text-red">description</span>
         <span class="text-white"> = </span>
         "{{ description }}"
       </p>
-      <br />
+      <p v-else class="p-2 mt-2 rounded-lg text-gray-300" style="background-color: #222">
+        {{ description }}
+      </p>
+
+      <br v-if="dev" />
       <ExperienceCard
         v-for="experience in experiences"
         :key="experience.company"
@@ -35,7 +48,7 @@ defineProps<{
         :description="JSON.parse(experience.description as string)"
       />
     </div>
-    <span class="text-purple">end</span>
+    <span v-if="dev" class="text-purple">end</span>
   </div>
 </template>
 

@@ -59,6 +59,10 @@ entities:
     single: true
     slug: home
     properties:
+      - { name: 'overview', type: text }
+      - { name: 'now', type: text }
+      - { name: 'interests', type: text }
+      - { name: 'futureGoals', type: text }
       - { name: 'languages', type: text }
       - { name: 'frameworks', type: text }
       - { name: 'databases', type: text }

@@ -1,6 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
 @import 'tailwindcss';
 
 @theme {
+  --color-blackground: #1a1a1a;
   --color-background: #292c33;
   --color-green: #a1c281;
   --color-orange: #c99c6e;
@@ -14,28 +16,41 @@
 }
 
 body {
+  background-color: var(--color-blackground);
+  color: var(--color-white);
+  /* font-family: monospace, monospace; */
+  font-family: 'Nunito Sans', sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+}
+
+header,
+main {
+  max-width: 640px;
+}
+
+main {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: start;
   justify-content: center;
-  max-width: 800px;
   margin: 0 auto;
-  flex: 1;
-  background-color: var(--color-background);
+}
+
+.home.dev {
   color: var(--color-green);
-  font-family: monospace, monospace;
 }
 
 /* Mobile menu animation */
 .expand-enter-from,
 .expand-leave-to {
   max-height: 0;
-  opacity: 0.5;
+  /* opacity: 0.5; */
 }
 .expand-enter-to,
 .expand-leave-from {
   max-height: 200px; /* Adjust based on your content */
-  opacity: 1;
+  /* opacity: 1; */
 }
 
 .expand-enter-active,

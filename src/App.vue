@@ -11,33 +11,37 @@ const toggleMenu = () => {
 }
 </script>
 
+<script lang="ts">
+export const dev = false
+</script>
+
 <template>
-  <header class="flex justify-between items-center h-20 px-4 md:px-0">
+  <header class="flex justify-between items-center h-20 px-4 md:px-0 w-full mx-auto">
     <RouterLink to="/">
-      <h1 class="text-lg font-bold text-red">AlexandruMuresan.java</h1>
+      <h1 class="text-lg">Alexandru Muresan</h1>
     </RouterLink>
 
     <!-- Mobile menu button -->
     <button
       @click="toggleMenu"
-      class="md:hidden p-2 rounded-md hover:bg-gray-100"
+      class="md:hidden p-2 rounded-md cursor-pointer"
       :aria-expanded="isMenuOpen"
     >
       <Menu class="w-6 h-6" />
     </button>
 
     <!-- Desktop navigation -->
-    <ul class="nav-list hidden md:flex">
+    <ul :class="`nav-list hidden md:flex ${dev ? 'dev' : ''}`">
       <li class="nav-item">
         <RouterLink to="/experience" class="nav-link" active-class="active">
-          <Briefcase />
-          <span>experience.rb</span>
+          <Briefcase :size="20" />
+          <span>experience{{ dev ? '.rb' : '' }}</span>
         </RouterLink>
       </li>
       <li class="nav-item">
         <RouterLink to="/projects" class="nav-link" active-class="active">
-          <FolderGit />
-          <span>projects.ts</span>
+          <FolderGit :size="20" />
+          <span>projects{{ dev ? '.ts' : '' }}</span>
         </RouterLink>
       </li>
       <li class="nav-item">
@@ -47,8 +51,8 @@ const toggleMenu = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <File />
-          <span>resume.pdf</span>
+          <File :size="20" />
+          <span>resume{{ dev ? '.pdf' : '' }}</span>
         </a>
       </li>
     </ul>
@@ -57,44 +61,45 @@ const toggleMenu = () => {
     <transition name="expand">
       <div
         v-show="isMenuOpen"
-        class="overflow-hidden md:hidden absolute top-20 left-0 right-0 bg-white shadow-lg"
+        :class="`overflow-hidden md:hidden absolute top-20 left-0 right-0 shadow-lg z-20 ${dev ? 'bg-background' : 'bg-blackground'}`"
       >
         <ul>
-          <li class="border-t border-gray-200">
+          <li class="border-t border-gray">
             <router-link
               to="/experience"
-              class="block px-6 py-3 hover:bg-gray-50 nav-link"
+              class="block px-6 py-3 hover:bg-gray nav-link"
               @click="isMenuOpen = false"
             >
-              <div class="flex items-center gap-3 text-red">
+              <div class="flex items-center gap-3">
                 <Briefcase class="w-5 h-5" />
                 <span>Experience</span>
               </div>
             </router-link>
           </li>
-          <li class="border-t border-gray-200">
+          <li class="border-t border-gray">
             <router-link
               to="/projects"
-              class="block px-6 py-3 hover:bg-gray-50"
+              class="block px-6 py-3 hover:bg-gray"
               @click="isMenuOpen = false"
             >
               <div class="flex items-center gap-3">
                 <FolderGit class="w-5 h-5" />
-                <span class="text-red">Projects</span>
+                <span>Projects</span>
               </div>
             </router-link>
           </li>
-          <li class="border-t border-gray-200">
-            <router-link
-              to="/resume"
-              class="block px-6 py-3 hover:bg-gray-50"
-              @click="isMenuOpen = false"
+          <li class="border-t border-gray">
+            <a
+              href="../public/Muresan_Alexandru_Resume_2025.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="block px-6 py-3 hover:bg-gray"
             >
               <div class="flex items-center gap-3">
                 <File class="w-5 h-5" />
                 <span>Resume</span>
               </div>
-            </router-link>
+            </a>
           </li>
         </ul>
       </div>
@@ -111,7 +116,7 @@ const toggleMenu = () => {
       </template>
     </Suspense>
   </main>
-  <footer class="text-center text-sm text-gray-500 pb-3">
+  <footer class="mt-auto text-center text-sm text-gray-500 pb-3">
     <p>
       <span class="text-white">© 2025 Alexandru Muresan</span>
     </p>
@@ -119,6 +124,12 @@ const toggleMenu = () => {
 </template>
 
 <style scoped>
+.header {
+  background-color: blue;
+  width: 100%;
+  max-width: 800px;
+}
+
 .nav-list {
   gap: 2px;
 }
@@ -133,20 +144,27 @@ const toggleMenu = () => {
   overflow: hidden;
   text-decoration: none;
   color: inherit;
-  padding: 8px 12px;
+  padding: 4px 6px;
   color: var(--color-white);
+  transition: all 0.3s ease-in-out;
+}
+
+.dev .nav-item .nav-link {
+  background-color: var(--color-gray);
 }
 
 .nav-item .nav-link:hover {
-  background-color: var(--color-gray);
   gap: 6px;
 }
 
 .nav-item .nav-link.active {
-  background-color: var(--color-gray);
-  color: var(--color-green);
   gap: 6px;
 }
+.dev .nav-item .nav-link.active {
+  background-color: var(--color-gray);
+  color: var(--color-green);
+}
+
 .nav-item .nav-link span {
   display: inline-block;
   max-width: 0;

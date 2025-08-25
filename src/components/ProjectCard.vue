@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import SkillIcon from '@/components/SkillIcon.vue'
 import { formatDate } from '../../functions/format'
+import { dev } from '@/App.vue'
+import { ExternalLink } from 'lucide-vue-next'
+import { Icon } from '@iconify/vue'
+import { motion } from 'motion-v'
 
 defineProps<ProjectProps>()
 </script>
 
 <template>
-  <div class="project-card">
+  <div v-if="dev" :class="dev ? 'text-green' : ''">
     <span>
       <span class="text-white">{{ '<' }}</span>
       <span class="text-yellow">Project</span>
@@ -79,7 +83,94 @@ defineProps<ProjectProps>()
       <span class="text-white">/></span>
     </span>
   </div>
+  <motion.div
+    :initial="{ opacity: 0 }"
+    :animate="{ opacity: 1 }"
+    :transition="{ duration: 0.5, ease: 'easeInOut' }"
+    :key="index"
+    v-else
+    class="project-container flex gap-4"
+    :id="name.toLowerCase().replace(/ /g, '-')"
+  >
+    <div class="timeline-display">
+      <div class="timeline-line"></div>
+      <div class="timeline-marker"></div>
+    </div>
+    <div class="project-card">
+      <div class="flex flex-row justify-between items-center">
+        <h2 class="text-lg">{{ name }}</h2>
+        <div class="flex flex-row gap-2">
+          <a v-if="demo_url" :href="demo_url" target="_blank">
+            <ExternalLink class="w-4 h-4" />
+          </a>
+          <a v-if="code_url" :href="code_url" target="_blank">
+            <Icon icon="mdi:github" class="w-4 h-4" />
+          </a>
+        </div>
+      </div>
+      <p class="text-sm text-gray-500">
+        {{ formatDate(start_date) }} - {{ current ? 'Present' : formatDate(end_date) }}
+      </p>
+      <div class="flex flex-col gap-2 rounded-lg p-2 mt-2" style="background-color: #222">
+        <div class="flex flex-row gap-2">
+          <SkillIcon v-for="skill in stack" :key="skill" :icon="skill" />
+        </div>
+        <ul class="ml-4 highlight-list">
+          <li v-for="highlight in highlights" class="leading-6" :key="highlight">
+            {{ highlight }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </motion.div>
 </template>
+
+<style scoped>
+.project-card {
+  border-radius: 8px;
+  padding: 0 0 8px 10px;
+  margin-bottom: 16px;
+}
+
+.highlight-list {
+  list-style-type: '-  ';
+}
+
+.timeline-display {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.timeline-line {
+  width: 2px;
+  top: 5px;
+  bottom: -8px;
+  background-color: var(--color-gray);
+  position: absolute;
+  border-radius: 100px;
+  transition: background-color 0.3s ease;
+}
+.timeline-marker {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 2px solid var(--color-gray);
+  background-color: var(--color-blackground);
+  position: absolute;
+  top: 5px;
+  transition: border-color 0.3s ease;
+}
+.project-container:hover {
+  .timeline-line {
+    background-color: var(--color-white);
+  }
+  .timeline-marker {
+    border-color: var(--color-white);
+  }
+}
+</style>
 
 <script lang="ts">
 export type ProjectProps = {
@@ -92,5 +183,6 @@ export type ProjectProps = {
   highlights: string[] | string
   code_url?: string
   demo_url?: string
+  index: number
 }
 </script>

@@ -31,6 +31,10 @@ export interface Experience {
 
 export interface HomePage {
   id: string;
+  overview: string;
+  now: string;
+  interests: string;
+  futureGoals: string;
   languages: string;
   frameworks: string;
   databases: string;
@@ -65,6 +69,10 @@ export interface CreateUpdateExperienceDto {
 }
 
 export interface CreateUpdateHomePageDto {
+  overview: string;
+  now: string;
+  interests: string;
+  futureGoals: string;
   languages: string;
   frameworks: string;
   databases: string;

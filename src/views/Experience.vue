@@ -3,6 +3,8 @@ import ExperienceCard, { type ExperienceCardProps } from '@/components/Experienc
 import ExperienceGroup, { type ExperienceGroupProps } from '@/components/ExperienceGroup.vue'
 import Manifest from '@mnfst/sdk'
 import { ref } from 'vue'
+import { dev } from '@/App.vue'
+import { motion } from 'motion-v'
 
 const manifest = new Manifest()
 
@@ -24,19 +26,23 @@ defineOptions({
 </script>
 
 <template>
-  <div>
-    <h2>
+  <motion.div
+    :initial="{ opacity: 0 }"
+    :animate="{ opacity: 1 }"
+    :transition="{ duration: 0.5, ease: 'easeInOut' }"
+  >
+    <h2 v-if="dev">
       <span class="text-purple">class </span>
       <span class="text-blue font-bold">ProfessionalExperience</span>
     </h2>
-    <div class="indented">
-      <br />
-      <p>
+    <div :class="dev ? 'indented' : 'flex flex-col gap-6'">
+      <br v-if="dev" />
+      <p v-if="dev">
         <span class="text-red">@years_experience</span>
         <span class="text-white"> = </span>
         <span class="text-orange">1.6</span>
       </p>
-      <br />
+      <br v-if="dev" />
       <div v-for="group in experienceGroups" :key="group.id">
         <ExperienceGroup
           :title="group.name"
@@ -51,7 +57,6 @@ defineOptions({
           "
         />
       </div>
-      <br />
       <div v-for="experience in experiences" :key="experience.id">
         <ExperienceCard
           :id="experience.id"
@@ -65,6 +70,6 @@ defineOptions({
         />
       </div>
     </div>
-    <span class="font-bold mb-6 text-purple">end</span>
-  </div>
+    <span v-if="dev" class="font-bold mb-6 text-purple">end</span>
+  </motion.div>
 </template>

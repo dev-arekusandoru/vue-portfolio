@@ -2,6 +2,7 @@
 import ProjectCard, { type ProjectProps } from '@/components/ProjectCard.vue'
 import Manifest from '@mnfst/sdk'
 import { ref } from 'vue'
+import { dev } from '@/App.vue'
 
 defineOptions({
   name: 'ProjectsView',
@@ -18,21 +19,21 @@ projects.value.sort((a, b) => {
 </script>
 
 <template>
-  <p>
+  <p v-if="dev">
     <span class="text-purple">export default function</span>
     <span class="text-blue"> ProjectsPage</span>
     <span class="text-orange">() {</span>
   </p>
-  <div class="indented">
-    <p class="text-purple">return (</p>
-    <div class="indented">
-      <p class="text-white">
+  <div :class="dev ? 'indented' : ''">
+    <p v-if="dev" class="text-purple">return (</p>
+    <div :class="dev ? 'indented' : 'timeline-container'">
+      <p v-if="dev" class="text-white">
         <span>{{ '<' }}</span>
         <span class="text-red">div</span>
         <span>{{ '>' }}</span>
       </p>
-      <div class="indented">
-        <div v-for="project in projects" :key="project.id">
+      <div :class="dev ? 'indented' : ''">
+        <div v-for="(project, index) in projects" :key="project.id">
           <ProjectCard
             :id="project.id"
             :name="project.name"
@@ -43,18 +44,17 @@ projects.value.sort((a, b) => {
             :highlights="(project.highlights as string)?.split('\n')"
             :code_url="project.code_url"
             :demo_url="project.demo_url"
+            :index="index"
           />
         </div>
       </div>
-      <p class="text-white">
+      <p v-if="dev" class="text-white">
         <span>&lt;/</span>
         <span class="text-red">div</span>
         <span>&gt;</span>
       </p>
     </div>
-    <p class="text-purple">)</p>
+    <p v-if="dev" class="text-purple">)</p>
   </div>
-  <p class="text-orange">}</p>
+  <p v-if="dev" class="text-orange">}</p>
 </template>
-
-<style scoped></style>

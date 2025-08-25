@@ -23,6 +23,7 @@
     "@tailwindcss/vite": "^4.1.12",
     "lucide-vue-next": "^0.540.0",
     "manifest": "^4.17.6",
+    "motion-v": "^1.7.0",
     "tailwindcss": "^4.1.12",
     "vue": "^3.5.18",
     "vue-router": "^4.5.1",

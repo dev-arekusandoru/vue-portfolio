@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import SkillIcon from './SkillIcon.vue'
 import { formatDate } from '../../functions/format'
+import { dev } from '@/App.vue'
 
 defineProps<ExperienceCardProps>()
 
@@ -10,8 +11,8 @@ defineOptions({
 </script>
 
 <template>
-  <div class="bg-background rounded-lg">
-    <h3 class="text-md">
+  <div class="rounded-lg">
+    <h3 v-if="dev" class="text-md">
       <span class="text-purple">def </span>
       <span class="text-blue font-semibold">{{ company.replace(/\s+/g, '_') }}</span>
       <span class="text-orange"> (</span>
@@ -31,22 +32,33 @@ defineOptions({
       <span class="text-orange"><br />)</span>
       <span class="text-purple"> do</span>
     </h3>
-    <div class="indented">
+    <div v-else>
+      <h3 class="text-lg font-semibold">{{ company }}</h3>
+      <p class="text-md text-gray-300">{{ title }}</p>
+      <p class="text-sm text-gray-500">
+        {{ formatDate(start_date) }} - {{ current ? 'Present' : formatDate(end_date) }}
+      </p>
+    </div>
+
+    <div
+      :class="dev ? 'indented' : 'flex flex-col gap-2 rounded-lg p-2 mt-2'"
+      style="background-color: #222"
+    >
       <div class="flex flex-row justify-start gap-2 items-center">
-        <span class="text-red">tech_stack</span>
-        <span class="text-white"> = </span>
-        <span class="text-orange">[</span>
+        <span v-if="dev" class="text-red">tech_stack</span>
+        <span v-if="dev" class="text-white"> = </span>
+        <span v-if="dev" class="text-orange">[</span>
         <div
           v-for="skill in skills"
           :key="skill"
           class="text-green flex flex-row justify-end items-end"
         >
           <SkillIcon :icon="skill" />
-          <span v-if="skill !== skills[skills.length - 1]" class="text-white">, </span>
+          <span v-if="dev && skill !== skills[skills.length - 1]" class="text-white">, </span>
         </div>
-        <span class="text-orange">]</span>
+        <span v-if="dev" class="text-orange">]</span>
       </div>
-      <ul class="text-green">
+      <ul v-if="dev" class="text-green">
         <span class="text-white">
           <span class="text-red">job_description</span>
           <span class="text-white"> = </span>
@@ -60,9 +72,12 @@ defineOptions({
         </div>
         <span class="text-orange">]</span>
       </ul>
+      <ul v-else>
+        <li v-for="item in description" :key="item">{{ item }}</li>
+      </ul>
     </div>
-    <p class="text-purple">end</p>
-    <br />
+    <p v-if="dev" class="text-purple">end</p>
+    <br v-if="dev" />
   </div>
 </template>
 
