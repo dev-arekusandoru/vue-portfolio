@@ -13,6 +13,7 @@
   --color-yellow: #dbbe82;
   --color-white: #eee;
   --color-gray: #3c4047;
+  --color-border: #333;
 }
 
 body {
@@ -65,5 +66,5 @@ main {
   margin-left: 2px;
   padding-left: 12px;
   border-left-width: 2px;
-  border-color: var(--color-gray);
+  border-color: var(--color-border);
 }

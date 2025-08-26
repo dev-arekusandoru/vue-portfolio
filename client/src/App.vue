@@ -106,7 +106,7 @@ export const dev = false
     </transition>
   </header>
 
-  <main class="px-4 pb-4 md:px-0 flex flex-col">
+  <main class="px-4 pb-4 md:px-0 flex flex-col min-h-[90dvh]" style="justify-content: flex-start">
     <Suspense>
       <RouterView />
       <template #fallback>

@@ -30,7 +30,11 @@ defineProps<{
         <span class="text-white"> = </span>
         "{{ description }}"
       </p>
-      <p v-else class="p-2 mt-2 rounded-lg text-gray-300" style="background-color: #222">
+      <p
+        v-else
+        class="p-3 mt-2 rounded-2xl text-gray-300 border-2 border-border"
+        style="background-color: #222"
+      >
         {{ description }}
       </p>
 

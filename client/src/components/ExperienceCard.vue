@@ -41,7 +41,7 @@ defineOptions({
     </div>
 
     <div
-      :class="dev ? 'indented' : 'flex flex-col gap-2 rounded-lg p-2 mt-2'"
+      :class="dev ? 'indented' : 'flex flex-col gap-2 rounded-2xl p-2 mt-2 border-2 border-border'"
       style="background-color: #222"
     >
       <div class="flex flex-row justify-start gap-2 items-center">
@@ -72,7 +72,7 @@ defineOptions({
         </div>
         <span class="text-orange">]</span>
       </ul>
-      <ul v-else>
+      <ul v-else class="ml-4" style="list-style-type: '-  '">
         <li v-for="item in description" :key="item">{{ item }}</li>
       </ul>
     </div>

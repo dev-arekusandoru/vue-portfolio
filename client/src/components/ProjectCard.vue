@@ -111,7 +111,10 @@ defineProps<ProjectProps>()
       <p class="text-sm text-gray-500">
         {{ formatDate(start_date) }} - {{ current ? 'Present' : formatDate(end_date) }}
       </p>
-      <div class="flex flex-col gap-2 rounded-lg p-2 mt-2" style="background-color: #222">
+      <div
+        class="flex flex-col gap-2 rounded-2xl p-2 pr-4 mt-2 border-2 border-border"
+        style="background-color: #222"
+      >
         <div class="flex flex-row gap-2">
           <SkillIcon v-for="skill in stack" :key="skill" :icon="skill" />
         </div>
