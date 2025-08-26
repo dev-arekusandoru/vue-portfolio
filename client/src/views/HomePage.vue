@@ -249,25 +249,25 @@ const devops = homePage.devops?.split('\n')
         <div class="border-t border-gray">
           <p class="pt-3 pb-2 font-bold leading-relaxed">Skills</p>
           <div class="grid grid-cols-2 gap-4 mb-4">
-            <div class="px-2 py-1 rounded-lg" style="background-color: #222">
+            <div class="px-2 py-1 rounded-xl border-2 border-border" style="background-color: #222">
               <p class="font-[500]">Languages</p>
               <div class="flex flex-row flex-wrap justify-start items-center">
                 <SkillIcon v-for="skill in languages" :key="skill" :icon="skill" />
               </div>
             </div>
-            <div class="px-2 py-1 rounded-lg" style="background-color: #222">
+            <div class="px-2 py-1 rounded-xl border-2 border-border" style="background-color: #222">
               <p class="font-[500]">Databases</p>
               <div class="flex flex-row flex-wrap justify-start items-center">
                 <SkillIcon v-for="skill in databases" :key="skill" :icon="skill" />
               </div>
             </div>
-            <div class="px-2 py-1 rounded-lg" style="background-color: #222">
+            <div class="px-2 py-1 rounded-xl border-2 border-border" style="background-color: #222">
               <p class="font-[500]">Frameworks and Libraries</p>
               <div class="flex flex-row flex-wrap justify-start items-center">
                 <SkillIcon v-for="skill in frameworks" :key="skill" :icon="skill" />
               </div>
             </div>
-            <div class="px-2 py-1 rounded-lg" style="background-color: #222">
+            <div class="px-2 py-1 rounded-xl border-2 border-border" style="background-color: #222">
               <p class="font-[500]">DevOps</p>
               <div class="flex flex-row flex-wrap justify-start items-center">
                 <SkillIcon v-for="skill in devops" :key="skill" :icon="skill" />
