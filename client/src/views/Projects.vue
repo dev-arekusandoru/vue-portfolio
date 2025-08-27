@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import ProjectCard, { type ProjectProps } from '@/components/ProjectCard.vue'
-import Manifest from '@mnfst/sdk'
 import { ref } from 'vue'
 import { dev } from '@/App.vue'
+import manifest from '../config/manifest'
 
 defineOptions({
   name: 'ProjectsView',
 })
-
-const manifest = new Manifest()
 
 const projects = ref<ProjectProps[]>([])
 const paginator = await manifest.from('projects').find()

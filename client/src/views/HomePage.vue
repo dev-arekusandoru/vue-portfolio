@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { defineComponent, h } from 'vue'
 import SkillIcon from '@/components/SkillIcon.vue'
-import Manifest from '@mnfst/sdk'
 import { dev } from '@/App.vue'
 import { formatLinks } from '../../functions/format'
 import Collapsible from '@/components/Collapsible.vue'
 import { motion } from 'motion-v'
-
-const manifest = new Manifest()
+import manifest from '../config/manifest'
 
 type HomePage = {
   overview: string

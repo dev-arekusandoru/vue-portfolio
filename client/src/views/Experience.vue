@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import ExperienceCard, { type ExperienceCardProps } from '@/components/ExperienceCard.vue'
 import ExperienceGroup, { type ExperienceGroupProps } from '@/components/ExperienceGroup.vue'
-import Manifest from '@mnfst/sdk'
 import { ref } from 'vue'
 import { dev } from '@/App.vue'
 import { motion } from 'motion-v'
-
-const manifest = new Manifest()
+import manifest from '../config/manifest'
 
 const experienceGroups = ref<ExperienceGroupProps[]>([])
 const experienceGroupPaginator = await manifest

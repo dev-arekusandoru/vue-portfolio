@@ -47,7 +47,7 @@ export const dev = false
       <li class="nav-item">
         <a
           class="nav-link"
-          href="../public/Muresan_Alexandru_Resume_2025.pdf"
+          href="/Muresan_Alexandru_Resume_2025.pdf"
           target="_blank"
           rel="noopener noreferrer"
         >
