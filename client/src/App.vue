@@ -90,7 +90,7 @@ export const dev = false
           </li>
           <li class="border-t border-gray">
             <a
-              href="../public/Muresan_Alexandru_Resume_2025.pdf"
+              href="/Muresan_Alexandru_Resume_2025.pdf"
               target="_blank"
               rel="noopener noreferrer"
               class="block px-6 py-3 hover:bg-gray"
