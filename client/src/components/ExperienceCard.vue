@@ -44,7 +44,7 @@ defineOptions({
       :class="dev ? 'indented' : 'flex flex-col gap-2 rounded-2xl p-2 mt-2 border-2 border-border'"
       style="background-color: #222"
     >
-      <div class="flex flex-row justify-start gap-2 items-center">
+      <div class="flex flex-row flex-wrap justify-start gap-2 items-center">
         <span v-if="dev" class="text-red">tech_stack</span>
         <span v-if="dev" class="text-white"> = </span>
         <span v-if="dev" class="text-orange">[</span>

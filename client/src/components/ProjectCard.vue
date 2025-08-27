@@ -115,7 +115,7 @@ defineProps<ProjectProps>()
         class="flex flex-col gap-2 rounded-2xl p-2 pr-4 mt-2 border-2 border-border"
         style="background-color: #222"
       >
-        <div class="flex flex-row gap-2">
+        <div class="flex flex-row flex-wrap gap-2">
           <SkillIcon v-for="skill in stack" :key="skill" :icon="skill" />
         </div>
         <ul class="ml-4 highlight-list">

@@ -28,6 +28,7 @@ defineOptions({
     :initial="{ opacity: 0 }"
     :animate="{ opacity: 1 }"
     :transition="{ duration: 0.5, ease: 'easeInOut' }"
+    class="w-full"
   >
     <h2 v-if="dev">
       <span class="text-purple">class </span>
