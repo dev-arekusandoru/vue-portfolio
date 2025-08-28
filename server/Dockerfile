@@ -8,7 +8,7 @@ WORKDIR /app/server
 RUN npm ci --production
 
 # Copy server code
-COPY server/ ./
+COPY / ./
 
 # Expose backend port
 EXPOSE 80
