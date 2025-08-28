@@ -11,7 +11,7 @@ RUN npm ci --production
 COPY . ./
 
 # Expose backend port
-EXPOSE 1111
+EXPOSE 80
 
 # Start backend
 CMD ["npm", "run", "start:prod"]
