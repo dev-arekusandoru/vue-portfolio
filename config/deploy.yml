@@ -1,0 +1,51 @@
+# Name of your application. Used to uniquely configure containers.
+service: vue-portfolio
+
+# Name of the container image.
+image: arekusandoru/vue-portfolio
+
+# Deploy to these servers.
+servers:
+    web:
+        - 165.227.200.55
+
+# Enable SSL auto certification via Let's Encrypt.
+proxy:
+    ssl: true
+    host: alexmuresan.dev
+    # Frontend is served from container port 80, default, so no app_port needed.
+
+# Credentials for Docker Hub.
+registry:
+    username: arekusandoru
+    password:
+        - KAMAL_REGISTRY_PASSWORD
+
+# Configure builder setup.
+builder:
+    arch: amd64
+    # If you build Vue in container, you could pass build args here
+    # args:
+    #   NODE_ENV: production
+
+# Inject ENV variables into container (optional)
+# env:
+#   clear:
+#     BACKEND_PORT: 1111
+#   secret:
+#     - SOME_SECRET_KEY
+env:
+    clear:
+        BASE_URL: https://alexmuresan.dev
+        NODE_ENV: production
+    secret:
+        - BACKEND_SECRET_KEY
+        - DB_PASSWORD
+        - TOKEN_SECRET_KEY
+# Optional: specify SSH user if not root
+# ssh:
+#   user: app
+
+# Optional: persistent storage
+# volumes:
+#   - "app_storage:/app/storage"
