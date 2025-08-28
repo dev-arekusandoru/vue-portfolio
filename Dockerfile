@@ -16,8 +16,8 @@ COPY server/ ./server
 COPY client/dist/ /app/client-dist
 
 # Expose ports
-EXPOSE 8080  # Vue frontend
-EXPOSE 1111  # Backend API
+EXPOSE 8080
+EXPOSE 1111
 
 # Start both frontend and backend
 # Using a simple Node script to run both
