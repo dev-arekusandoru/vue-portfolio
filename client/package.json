@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "VITE_BASE_URL=https://alexmuresan.dev run-p type-check \"build-only {@}\" --",
+    "build": "VITE_BASE_URL=https://api.alexmuresan.dev run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",

@@ -13,6 +13,8 @@ servers:
 proxy:
     ssl: true
     host: alexmuresan.dev
+    healthcheck:
+        path: /
     # Frontend is served from container port 80, default, so no app_port needed.
 
 # Credentials for Docker Hub.
