@@ -9,11 +9,11 @@ COPY server/package*.json ./server/
 WORKDIR /app/server
 RUN npm ci --production
 
-# Copy backend code
-COPY server/ ./server
+# Copy backend code (fix: copy to current directory, not nested)
+COPY server/ ./
 
-# Copy pre-built Vue frontend
-COPY client/dist/ /app/client-dist
+# Copy pre-built Vue frontend (fix: copy to current app directory)
+COPY client/dist/ ./client-dist
 
 # Expose ports
 EXPOSE 8080

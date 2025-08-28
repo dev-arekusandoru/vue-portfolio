@@ -39,8 +39,6 @@ env:
         BASE_URL: https://alexmuresan.dev
         NODE_ENV: production
     secret:
-        - BACKEND_SECRET_KEY
-        - DB_PASSWORD
         - TOKEN_SECRET_KEY
 # Optional: specify SSH user if not root
 ssh:
