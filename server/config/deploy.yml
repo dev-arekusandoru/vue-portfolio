@@ -1,0 +1,30 @@
+service: vue-portfolio-backend
+image: arekusandoru/vue-portfolio-backend
+
+servers:
+    web:
+        - 165.227.200.55
+
+proxy:
+    ssl: true
+    host: api.alexmuresan.dev
+
+registry:
+    username: arekusandoru
+    password:
+        - KAMAL_REGISTRY_PASSWORD
+
+builder:
+    arch: amd64
+
+env:
+    clear:
+        NODE_ENV: production
+        BASE_URL: https://api.alexmuresan.dev
+    secret:
+        - TOKEN_SECRET_KEY
+
+ssh:
+    user: root
+    keys:
+        - ~/.ssh/digitalocean
