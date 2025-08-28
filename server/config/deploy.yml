@@ -8,6 +8,7 @@ servers:
 proxy:
     ssl: true
     host: api.alexmuresan.dev
+    app_port: 1111
     healthcheck:
         path: /
 
@@ -23,7 +24,6 @@ env:
     clear:
         NODE_ENV: production
         BASE_URL: https://api.alexmuresan.dev
-        PORT: 80
     secret:
         - TOKEN_SECRET_KEY
 
