@@ -8,6 +8,8 @@ servers:
 proxy:
     ssl: true
     host: api.alexmuresan.dev
+    healthcheck:
+        path: /
 
 registry:
     username: arekusandoru
