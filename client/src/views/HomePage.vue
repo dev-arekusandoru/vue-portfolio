@@ -19,7 +19,6 @@ type HomePage = {
 }
 
 const homePage = (await manifest.single('home').get()) as HomePage
-console.log(homePage)
 
 const varDef = (name: string, type: string, value: string) =>
   defineComponent({

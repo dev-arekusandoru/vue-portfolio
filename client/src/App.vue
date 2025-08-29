@@ -5,9 +5,8 @@ import { ref } from 'vue'
 
 const isMenuOpen = ref(false)
 
-const toggleMenu = () => {
-  isMenuOpen.value = !isMenuOpen.value
-  console.log('toggleMenu', isMenuOpen.value)
+const toggleMenu = (value: boolean) => {
+  isMenuOpen.value = value
 }
 </script>
 
@@ -17,13 +16,20 @@ export const dev = false
 
 <template>
   <header class="flex justify-between items-center h-20 px-4 md:px-0 w-full mx-auto">
-    <RouterLink to="/">
+    <RouterLink
+      to="/"
+      @click="
+        () => {
+          if (isMenuOpen) toggleMenu(false)
+        }
+      "
+    >
       <h1 class="text-lg">Alexandru Muresan</h1>
     </RouterLink>
 
     <!-- Mobile menu button -->
     <button
-      @click="toggleMenu"
+      @click="() => toggleMenu(!isMenuOpen)"
       class="md:hidden p-2 rounded-md cursor-pointer"
       :aria-expanded="isMenuOpen"
     >

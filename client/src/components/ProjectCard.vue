@@ -109,7 +109,11 @@ defineProps<ProjectProps>()
         </div>
       </div>
       <p class="text-sm text-gray-500">
-        {{ formatDate(start_date) }} - {{ current ? 'Present' : formatDate(end_date) }}
+        {{ formatDate(start_date) }}
+        <span v-if="current"> - Present</span>
+        <span v-else-if="formatDate(start_date) !== formatDate(end_date)">{{
+          '- ' + formatDate(end_date)
+        }}</span>
       </p>
       <div
         class="flex flex-col gap-2 rounded-2xl p-2 pr-4 mt-2 border-2 border-border"
