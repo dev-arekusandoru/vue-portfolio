@@ -26,7 +26,7 @@ env:
         PORT: 80
         DB_CONNECTION: postgres
         DB_HOST: vue-portfolio-backend-postgres
-        DB_PORT: 1112
+        DB_PORT: 5432
     secret:
         - TOKEN_SECRET_KEY
         - DB_PASSWORD
