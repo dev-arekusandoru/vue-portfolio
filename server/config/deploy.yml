@@ -30,6 +30,7 @@ env:
     secret:
         - TOKEN_SECRET_KEY
         - DB_PASSWORD
+        - POSTGRES_PASSWORD
 
 ssh:
     user: root
@@ -47,7 +48,7 @@ accessories:
                 POSTGRES_USER: postgres
                 POSTGRES_DB: manifest
             secret:
-                - DB_PASSWORD
+                - POSTGRES_PASSWORD
         # files:
         # - config/mysql/production.cnf:/etc/mysql/my.cnf
         # - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
