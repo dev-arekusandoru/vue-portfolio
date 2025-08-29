@@ -24,10 +24,32 @@ env:
         NODE_ENV: production
         BASE_URL: https://api.alexmuresan.dev
         PORT: 80
+        DB_CONNECTION: postgres
+        DB_HOST: vue-portfolio-backend-postgres
+        DB_PORT: 1112
     secret:
         - TOKEN_SECRET_KEY
+        - DB_PASSWORD
 
 ssh:
     user: root
     keys:
         - ~/.ssh/digitalocean
+
+accessories:
+    postgres:
+        image: postgres:17-alpine
+        host: 165.227.200.55
+        # Change to 3306 to expose port to the world instead of just local network.
+        port: '127.0.0.1:1112:5432'
+        env:
+            clear:
+                POSTGRES_USER: postgres
+                POSTGRES_DB: manifest
+            secret:
+                - DB_PASSWORD
+        # files:
+        # - config/mysql/production.cnf:/etc/mysql/my.cnf
+        # - db/production.sql:/docker-entrypoint-initdb.d/setup.sql
+        directories:
+            - data:/var/lib/postgresql/data
