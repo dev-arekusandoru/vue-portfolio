@@ -55,7 +55,7 @@ const currentIcon = computed(
 </script>
 
 <template>
-  <div class="group flex flex-row justify-center items-center p-1 rounded-md cursor-help">
+  <div class="group flex flex-row justify-center items-center p-1 rounded-md cursor-pointer">
     <img
       v-if="currentCustomIcon"
       :src="currentCustomIcon"

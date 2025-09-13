@@ -1,96 +1,40 @@
 <script setup lang="ts">
 import SkillIcon from '@/components/SkillIcon.vue'
 import { formatDate } from '../../functions/format'
-import { dev } from '@/App.vue'
-import { ExternalLink } from 'lucide-vue-next'
+import { ChevronDown, ExternalLink } from 'lucide-vue-next'
 import { Icon } from '@iconify/vue'
 import { motion } from 'motion-v'
+import { ref, onMounted, nextTick, computed } from 'vue'
 
-defineProps<ProjectProps>()
+const props = defineProps<ProjectProps>()
+
+const open = ref(false)
+const firstBulletHeight = ref('')
+
+const id = props.name.toLowerCase().replace(/[^a-z0-9]/g, '')
+
+onMounted(() => {
+  nextTick(() => {
+    const firstBullet = document.querySelector(`#${id} .highlight-list li`)
+    if (firstBullet) {
+      firstBulletHeight.value = `${firstBullet.clientHeight}px`
+    }
+  })
+})
+
+const photosLength = computed(() => {
+  return props.photos?.filter((photo) => photo !== null).length
+})
 </script>
 
 <template>
-  <div v-if="dev" :class="dev ? 'text-green' : ''">
-    <span>
-      <span class="text-white">{{ '<' }}</span>
-      <span class="text-yellow">Project</span>
-      <div class="indented">
-        <p>
-          <span class="text-orange">name</span>
-          <span class="text-cyan">=</span>
-          <span>"{{ name }}"</span>
-        </p>
-        <p>
-          <span class="text-orange">date</span>
-          <span class="text-cyan">=</span>
-          <span
-            >"{{ formatDate(start_date) }} - {{ current ? 'Present' : formatDate(end_date) }}"</span
-          >
-        </p>
-        <p v-if="code_url">
-          <span class="text-orange">code_url</span>
-          <span class="text-cyan">=</span>
-          <span
-            >"<a class="text-blue" :href="code_url" target="_blank">{{ code_url }}</a
-            >"</span
-          >
-        </p>
-        <p v-if="demo_url">
-          <span class="text-orange">demo_url</span>
-          <span class="text-cyan">=</span>
-          <span
-            >"<a class="text-blue" :href="demo_url" target="_blank">{{ demo_url }}</a
-            >"</span
-          >
-        </p>
-        <div class="flex flex-row justify-start items-center">
-          <p>
-            <span class="text-orange">stack</span>
-            <span class="text-cyan">={</span>
-            <span class="text-orange">[</span>
-          </p>
-          <div
-            v-for="skill in stack"
-            :key="skill"
-            class="flex flex-row flex-wrap justify-end items-end"
-          >
-            <SkillIcon :icon="skill" />
-            <span v-if="skill !== stack[stack.length - 1]" class="text-white">, </span>
-          </div>
-          <p>
-            <span class="text-orange">]</span>
-            <span class="text-cyan">}</span>
-          </p>
-        </div>
-        <p>
-          <span class="text-orange">description</span>
-          <span class="text-cyan">={</span>
-          <span class="text-orange">[</span>
-        </p>
-        <div class="indented">
-          <p v-for="(highlight, index) in highlights" :key="highlight">
-            <span>"{{ index + 1 }}. {{ highlight }}"</span>
-            <span v-if="highlight !== highlights[highlights.length - 1]" class="text-white"
-              >,
-            </span>
-          </p>
-        </div>
-        <p>
-          <span class="text-orange">]</span>
-          <span class="text-cyan">}</span>
-        </p>
-      </div>
-      <span class="text-white">/></span>
-    </span>
-  </div>
   <motion.div
     :initial="{ opacity: 0 }"
     :animate="{ opacity: 1 }"
     :transition="{ duration: 0.5, ease: 'easeInOut' }"
     :key="index"
-    v-else
     class="project-container flex gap-4"
-    :id="name.toLowerCase().replace(/ /g, '-')"
+    :id="id"
   >
     <div class="timeline-display">
       <div class="timeline-line"></div>
@@ -115,24 +59,54 @@ defineProps<ProjectProps>()
           '- ' + formatDate(end_date)
         }}</span>
       </p>
+      <div class="my-2 flex flex-row relative" v-if="photosLength === 1">
+        <img
+          :src="photos?.[0]?.large"
+          class="w-full object-cover rounded-2xl border-2 border-border hover:w-full hover:z-10 transition-all"
+        />
+      </div>
+      <div class="w-full my-2 flex flex-row gap-1" v-if="photosLength && photosLength > 1">
+        <div v-for="photo in photos" :key="photo.large" class="flex-1">
+          <img :src="photo.large" class="rounded-3xl border-2 border-border" />
+        </div>
+      </div>
       <div
-        class="flex flex-col gap-2 rounded-2xl p-2 pr-4 mt-2 border-2 border-border"
+        class="flex flex-col rounded-2xl p-2 pr-4 mt-2 border-2 border-border cursor-pointer"
         style="background-color: #222"
+        @click="open = !open"
       >
-        <div class="flex flex-row flex-wrap gap-2">
+        <div class="flex flex-row flex-wrap gap-2 mb-2">
           <SkillIcon v-for="skill in stack" :key="skill" :icon="skill" />
         </div>
-        <ul class="ml-4 highlight-list">
-          <li v-for="highlight in highlights" class="leading-6" :key="highlight">
-            {{ highlight }}
-          </li>
-        </ul>
+        <motion.div
+          class="overflow-hidden"
+          :initial="{ height: firstBulletHeight }"
+          :animate="{ height: open ? 'auto' : firstBulletHeight }"
+          :transition="{ duration: 0.3, ease: 'easeInOut' }"
+        >
+          <motion.ul class="ml-4 highlight-list">
+            <li v-for="highlight in highlights" class="leading-6" :key="highlight">
+              {{ highlight }}
+            </li>
+          </motion.ul></motion.div
+        >
+        <button
+          v-if="highlights.length > 1"
+          class="text-gray-500 text-sm transition-colors rounded-lg cursor-pointer justify-center flex"
+        >
+          <ChevronDown
+            :style="{
+              transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 0.3s ease-in-out',
+            }"
+          />
+        </button>
       </div>
     </div>
   </motion.div>
 </template>
 
-<style scoped>
+<style>
 .project-card {
   border-radius: 8px;
   padding: 0 0 8px 10px;
@@ -191,5 +165,6 @@ export type ProjectProps = {
   code_url?: string
   demo_url?: string
   index: number
+  photos: { large: string }[] | null
 }
 </script>

@@ -3,6 +3,8 @@ import ProjectCard, { type ProjectProps } from '@/components/ProjectCard.vue'
 import { ref } from 'vue'
 import { dev } from '@/App.vue'
 import manifest from '../config/manifest'
+import { motion } from 'motion-v'
+import SkillIcon from '@/components/SkillIcon.vue'
 
 defineOptions({
   name: 'ProjectsView',
@@ -14,10 +16,46 @@ projects.value = paginator.data as ProjectProps[]
 projects.value.sort((a, b) => {
   return new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
 })
+
+const allSkills = ref<string[]>([])
+projects.value.forEach((project) => {
+  // If stack is a string, split by newlines; if already array, use as is
+  const stackArr: string[] = Array.isArray(project.stack)
+    ? project.stack
+    : typeof project.stack === 'string'
+      ? project.stack.split('\n')
+      : []
+  allSkills.value.push(...stackArr)
+})
+allSkills.value = [...new Set(allSkills.value.filter(Boolean))]
+
+const disabledSkills = ref<string[]>([])
+
+const toggleSkill = (skill: string) => {
+  if (disabledSkills.value.includes(skill)) {
+    disabledSkills.value = disabledSkills.value.filter((s) => s !== skill)
+  } else {
+    disabledSkills.value.push(skill)
+  }
+}
+
+// const filteredProjects = computed(() => {
+//   return projects.value.filter((project) => {
+//     return project.stack.some((skill) => !disabledSkills.value.includes(skill))
+//   })
+// })
 </script>
 
 <template>
   <div class="w-full">
+    <motion.div
+      style="display: none"
+      class="flex flex-row flex-wrap justify-start items-center gap-2 mb-2 bg-dark-gray border-2 border-border rounded-xl p-2"
+    >
+      <div v-for="skill in allSkills" :key="skill" v-on:click="toggleSkill(skill)">
+        <SkillIcon :icon="skill" :style="{ opacity: disabledSkills.includes(skill) ? 0.3 : 1 }" />
+      </div>
+    </motion.div>
     <p v-if="dev">
       <span class="text-purple">export default function</span>
       <span class="text-blue"> ProjectsPage</span>
@@ -44,6 +82,7 @@ projects.value.sort((a, b) => {
               :code_url="project.code_url"
               :demo_url="project.demo_url"
               :index="index"
+              :photos="[project?.photo, project?.photo2, project?.photo3]"
             />
           </div>
         </div>
