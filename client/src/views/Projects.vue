@@ -1,10 +1,26 @@
 <script setup lang="ts">
-import ProjectCard, { type ProjectProps } from '@/components/ProjectCard.vue'
+import ProjectCard from '@/components/ProjectCard.vue'
 import { ref } from 'vue'
 import { dev } from '@/App.vue'
 import manifest from '../config/manifest'
 import { motion } from 'motion-v'
 import SkillIcon from '@/components/SkillIcon.vue'
+
+type ProjectProps = {
+  id: string
+  name: string
+  start_date: string
+  end_date: string | null
+  current: boolean
+  stack: string[] | string
+  highlights: string[] | string
+  code_url?: string
+  demo_url?: string
+  index: number
+  photo: { large: string }
+  photo2: { large: string }
+  photo3: { large: string }
+}
 
 defineOptions({
   name: 'ProjectsView',
