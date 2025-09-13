@@ -4,12 +4,12 @@ FROM node:20-alpine
 WORKDIR /app
 
 # Copy Vue project and install dependencies
-# COPY package*.json ./
-# RUN npm ci
+COPY package*.json ./
+RUN npm ci
 
 # Copy rest of client code and build
-# COPY . ./
-# RUN npm run build
+COPY . ./
+RUN npm run build
 
 # Serve the built app using serve
 # FROM node:20-alpine
@@ -20,10 +20,10 @@ WORKDIR /app
 RUN npm install -g serve
 
 # Copy pre-built Vue frontend
-COPY dist/ ./client-dist
+# COPY dist/ ./client-dist
 
 # Expose port 80
 EXPOSE 80
 
 # Start frontend
-CMD ["serve", "-s", "client-dist", "-l", "80"]
+CMD ["serve", "-s", "dist", "-l", "80"]
