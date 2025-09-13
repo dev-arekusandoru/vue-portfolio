@@ -67,7 +67,7 @@ const photosLength = computed(() => {
       </div>
       <div class="w-full my-2 flex flex-row gap-1" v-if="photosLength && photosLength > 1">
         <div v-for="photo in photos" :key="photo.large" class="flex-1">
-          <img :src="photo.large" class="rounded-3xl border-2 border-border" />
+          <img :src="photo.large" class="rounded-2xl lg:rounded-3xl border-2 border-border" />
         </div>
       </div>
       <div
