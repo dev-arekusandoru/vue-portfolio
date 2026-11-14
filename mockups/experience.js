@@ -1,6 +1,6 @@
 // Monolith: one contract per frame, an establishing shot each. A sticky light rail follows the scroll.
-import { esc, reduce, range, dur, grpMeta, techName } from '../lib/data.js'
-import { icon } from '../lib/icons.js'
+import { esc, reduce, range, dur, grpMeta, techName } from './lib/data.js'
+import { icon } from './lib/icons.js'
 
 let uid = 0
 
@@ -107,7 +107,13 @@ export const css = `
 .xv-monolith .mo-live .mo-pts li::before{background:var(--blue)}
 .xv-monolith .mo-panel.mo-open::after{content:"";position:absolute;left:0;right:0;top:0;height:100%;pointer-events:none;background:linear-gradient(transparent calc(100% - 40px),rgb(255 140 43/.14) calc(100% - 1px),var(--accent) calc(100% - 1px));animation:mo-sweep 1s var(--ease) both}
 @keyframes mo-sweep{0%{transform:translateY(-100%);opacity:0}15%,80%{opacity:1}100%{transform:translateY(0);opacity:0}}
-.xv-monolith .mo-panel.mo-still::after{animation:none}
+
+/* wide screens: bullets are always shown, so the toggle is hidden */
+@media (min-width:900px){
+  .xv-monolith .mo-more{display:none}
+  .xv-monolith .mo-panel{grid-template-rows:1fr;visibility:visible;transition:none}
+  .xv-monolith .mo-pts{opacity:1;transform:none;transition:none}
+}
 
 /* ---------- entrance: blur to sharp, light blooms in; the live frame is scanned ---------- */
 .xv-monolith .mo-x{--tx:calc(var(--d,0) * var(--dm,1) * 1ms);transition:opacity .9s var(--ease) var(--tx),transform .9s var(--ease) var(--tx)}
@@ -258,39 +264,22 @@ export function mount(el, { employers, compact }) {
       }, { rootMargin: '0px 0px -16% 0px', threshold: 0.1 })
       frames.forEach((f) => io.observe(f))
     }
-    const arm = () => {
-      io?.disconnect()
-      frames.forEach((f) => f.classList.remove('mo-in'))
-      removeEventListener('boot-done', observe)
-      if (root.dataset.boot === 'running') addEventListener('boot-done', observe, { once: true })
-      else observe()
-    }
-    addEventListener('boot-start', arm)
-    cleanups.push(() => { io?.disconnect(); removeEventListener('boot-start', arm); removeEventListener('boot-done', observe) })
-    arm()
+    if (root.dataset.boot === 'running') addEventListener('boot-done', observe, { once: true })
+    else observe()
+    cleanups.push(() => { io?.disconnect(); removeEventListener('boot-done', observe) })
   }
 
-  /* details: open by default on wide screens, collapsed on narrow ones until the reader opens them */
-  const wide = matchMedia('(min-width: 900px)')
-  const setOpen = (btn, open, still) => {
-    const panel = el.querySelector(`#${btn.getAttribute('aria-controls')}`)
-    btn.setAttribute('aria-expanded', String(open))
-    btn.querySelector('.mo-more-t').firstChild.textContent = open ? 'Hide details' : 'Show details'
-    panel.classList.toggle('mo-open', open)
-    panel.classList.toggle('mo-still', !!still && open)
-  }
-  const toggles = [...el.querySelectorAll('.mo-more')]
-  toggles.forEach((b) => setOpen(b, wide.matches, true))
-  const onWide = () => toggles.forEach((b) => { if (!b.dataset.touched) setOpen(b, wide.matches, true) })
-  wide.addEventListener('change', onWide)
+  /* details: collapsed on narrow screens until opened (wide screens show them always, see CSS) */
   const onClick = (ev) => {
     const more = ev.target.closest('.mo-more')
     if (!more || !el.contains(more)) return
-    more.dataset.touched = '1'
-    setOpen(more, more.getAttribute('aria-expanded') !== 'true')
+    const open = more.getAttribute('aria-expanded') !== 'true'
+    more.setAttribute('aria-expanded', String(open))
+    more.querySelector('.mo-more-t').firstChild.textContent = open ? 'Hide details' : 'Show details'
+    el.querySelector(`#${more.getAttribute('aria-controls')}`).classList.toggle('mo-open', open)
   }
   el.addEventListener('click', onClick)
-  cleanups.push(() => { el.removeEventListener('click', onClick); wide.removeEventListener('change', onWide) })
+  cleanups.push(() => el.removeEventListener('click', onClick))
 
   /* rail: scrollspy, following light, jump links */
   let tick = () => {}

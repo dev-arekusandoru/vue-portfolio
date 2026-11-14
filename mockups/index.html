@@ -17,7 +17,7 @@ ul,ol{list-style:none}
 button{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
-/* design tokens: variants inherit these */
+/* design tokens */
 .site{
   --bg:#080a0c;--fg:#e6e0d4;--muted:#a69f92;--rule:rgb(230 224 212/.16);
   --accent:#ff8c2b;--blue:#5ad1e6;
@@ -27,7 +27,7 @@ button{font:inherit;color:inherit}
   font:300 .92rem/1.7 var(--mono)}
 .wrap{position:relative;z-index:2;width:min(1120px,100% - 40px);margin-inline:auto}
 
-/* shared bits variants may use */
+/* shared bits */
 .ti{display:inline-block;flex:none;width:var(--ti-size,22px);height:var(--ti-size,22px);background:currentColor;-webkit-mask:var(--ti) center/contain no-repeat;mask:var(--ti) center/contain no-repeat;transition:color .3s var(--ease),filter .3s var(--ease),opacity .3s var(--ease)}
 .ti-txt{display:inline-grid;place-items:center;background:none;-webkit-mask:none;mask:none;border:1px solid currentColor;font:400 calc(var(--ti-size,22px)*.42)/1 var(--mono);text-transform:uppercase}
 .badge{display:inline-flex;align-items:center;font-size:.72rem;color:var(--blue)}
@@ -138,9 +138,8 @@ button{font:inherit;color:inherit}
 
 .foot{position:relative;z-index:2;padding:clamp(80px,12vw,140px) 0 40px;font-size:.76rem;color:var(--muted);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
-/* native scroll snap, experience page only. Resting points: the header, each frame, the page end. A frame taller than the screen scrolls freely inside. */
-html[data-route=experience][data-snap=firm]{scroll-snap-type:y mandatory}
-html[data-route=experience][data-snap=soft]{scroll-snap-type:y proximity}
+/* native scroll snap, experience page only. Resting points: each frame and the page end. A frame taller than the screen scrolls freely inside. */
+html[data-route=experience]{scroll-snap-type:y mandatory}
 /* experience page: the header floats over the first frame instead of taking its own row */
 html[data-route=experience] #hero{position:absolute;top:0;left:0;right:0;z-index:5;overflow:visible;background:none}
 html[data-route=experience] #hero::after,html[data-route=experience] #hero .glow{display:none}
@@ -171,23 +170,6 @@ html[data-route=experience] #hero::after,html[data-route=experience] #hero .glow
   *,*::before,*::after{animation:none!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
   .grain{display:none}
 }
-
-/* picker: deliberately outside the design system */
-.variant-picker{all:unset;position:fixed;z-index:200;right:16px;bottom:16px;display:none;flex-direction:column;gap:16px;max-height:calc(100dvh - 32px);overflow-y:auto;scrollbar-width:none;padding:6px;border-radius:14px;background:rgb(20 20 20/.94);box-shadow:inset 0 0 0 1px rgb(255 255 255/.1),0 10px 30px rgb(0 0 0/.4);font:13px/1 system-ui,-apple-system,"Segoe UI",sans-serif;user-select:none;width:196px;box-sizing:border-box}
-.variant-picker-select{position:fixed;z-index:200;right:16px;bottom:16px;display:none;color:#fff}
-.variant-picker[hidden],.variant-picker-select[hidden]{display:none!important}
-.variant-picker-group{display:flex;flex-direction:column;gap:2px}
-.variant-picker-heading{display:flex;align-items:center;gap:6px;padding:4px 10px 6px;font-size:11px;font-weight:500;color:rgb(255 255 255/.45)}
-.variant-picker button{all:unset;flex:none;padding:8px 10px;border-radius:8px;font:inherit;color:rgb(255 255 255/.6);cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:color .2s ease-out,font-weight .2s ease-out}
-.variant-picker button:hover{color:rgb(255 255 255/.85)}
-.variant-picker button[aria-pressed=true]{background:rgb(255 255 255/.14);color:#fff;font-weight:500}
-.variant-picker button:focus-visible{outline:2px solid rgb(255 255 255/.7);outline-offset:2px}
-.variant-picker .variant-action{margin-top:2px;border-top:1px solid rgb(255 255 255/.1);border-radius:0 0 8px 8px;padding-top:10px}
-.variant-picker-select select{all:unset;box-sizing:border-box;max-width:100%;padding:10px 36px 10px 16px;border-radius:999px;background:rgb(20 20 20/.94);box-shadow:inset 0 0 0 1px rgb(255 255 255/.1);font:500 13px/1 system-ui,sans-serif;cursor:pointer}
-.variant-picker-select select:focus-visible{outline:2px solid rgb(255 255 255/.7);outline-offset:2px}
-.variant-picker-select svg{position:absolute;top:50%;right:14px;translate:0 -50%;pointer-events:none;color:rgb(255 255 255/.6)}
-@media (min-width:900px){.variant-picker{display:flex}}
-@media (max-width:899px){.variant-picker-select{display:block}}
 </style>
 <style id="xv-style"></style>
 </head>
@@ -256,33 +238,10 @@ html[data-route=experience] #hero::after,html[data-route=experience] #hero .glow
   </div>
 </div>
 
-<nav class="variant-picker" id="picker" aria-label="Scroll feel">
-  <div class="variant-picker-group" role="group" aria-labelledby="variants-snap">
-    <span class="variant-picker-heading" id="variants-snap">
-      <svg aria-hidden="true" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v4a3 3 0 0 0 3 3h7"/><path d="m10 7 3 3-3 3"/></svg>
-      Scroll feel
-    </span>
-    <button type="button" data-snap="off" aria-pressed="false">Off</button>
-    <button type="button" data-snap="soft" aria-pressed="false">Soft</button>
-    <button type="button" data-snap="firm" aria-pressed="true">Firm</button>
-    <button type="button" class="variant-action" id="replay">Replay boot</button>
-  </div>
-</nav>
-<div class="variant-picker-select" id="picker-select">
-  <select aria-label="Scroll feel">
-    <optgroup label="Scroll feel">
-      <option value="off">Off</option>
-      <option value="soft">Soft</option>
-      <option value="firm" selected>Firm</option>
-    </optgroup>
-  </select>
-  <svg aria-hidden="true" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 4 4 4-4"/></svg>
-</div>
-
 <script type="module">
 import { esc, reduce, projects, employers, currentEmployers, isLive } from './lib/data.js'
+import * as experience from './experience.js'
 
-const site = document.getElementById('site')
 document.documentElement.classList.add('js')
 document.getElementById('src').textContent = isLive ? 'Data: local PocketBase' : 'Data: sample (PocketBase offline)'
 
@@ -304,22 +263,13 @@ const projectHTML = (p) => `
 document.querySelectorAll('[data-list=projects]').forEach((el) => { el.innerHTML = projects.slice(0, +el.dataset.limit || projects.length).map(projectHTML).join('') })
 document.getElementById('all-projects').textContent = `All projects (${projects.length})`
 
-/* experience: the variant module exports css (string) and mount(el, { employers, compact }) -> optional cleanup fn */
-const variant = 'monolith'
-const xvStyle = document.getElementById('xv-style')
-const mounts = []
-let renderToken = 0
-async function renderExperience() {
-  const my = ++renderToken
-  const mod = await import(`./variants/${variant}.js?v=${Date.now()}`)
-  if (my !== renderToken) return
-  mounts.splice(0).forEach((fn) => { try { fn?.() } catch (e) { console.error(e) } })
-  xvStyle.textContent = mod.css
+/* experience section: the module exports css (string) and mount(el, { employers, compact }) */
+document.getElementById('xv-style').textContent = experience.css
+function renderExperience() {
   document.querySelectorAll('[data-xp]').forEach((el) => {
     const compact = el.dataset.xp === 'compact'
-    el.replaceChildren()
-    el.className = `xv xv-${variant}${compact ? ' xv-compact' : ''}`
-    mounts.push(mod.mount(el, { employers: compact ? currentEmployers() : employers, compact }))
+    el.className = `xv xv-monolith${compact ? ' xv-compact' : ''}`
+    experience.mount(el, { employers: compact ? currentEmployers() : employers, compact })
   })
 }
 
@@ -340,30 +290,6 @@ function go() {
 }
 addEventListener('hashchange', go)
 
-/* picker: scroll-snap feel, applied on the experience page only */
-const SNAPS = ['off', 'soft', 'firm']
-let snapMode = 'firm'
-const buttons = [...document.querySelectorAll('.variant-picker [data-snap]')]
-const select = document.querySelector('.variant-picker-select select')
-function applySnap() { document.documentElement.dataset.snap = snapMode }
-function setSnap(m, { push = true } = {}) {
-  if (!SNAPS.includes(m)) m = 'firm'
-  snapMode = m
-  buttons.forEach((b) => b.setAttribute('aria-pressed', b.dataset.snap === m))
-  select.value = m
-  if (push) { const u = new URL(location); u.searchParams.set('__snap', m); history.replaceState(null, '', u) }
-  applySnap()
-}
-buttons.forEach((b) => b.addEventListener('click', () => setSnap(b.dataset.snap)))
-select.addEventListener('change', () => setSnap(select.value))
-addEventListener('keydown', (e) => {
-  if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey || e.defaultPrevented) return
-  if (e.target.closest('input,textarea,select,[contenteditable]')) return
-  if (!document.getElementById('boot').hidden) return
-  if (e.key.toLowerCase() === 'h') { const h = !document.getElementById('picker').hidden; document.getElementById('picker').hidden = h; document.getElementById('picker-select').hidden = h; return }
-  if (e.key.toLowerCase() === 'v') setSnap(SNAPS[(SNAPS.indexOf(snapMode) + 1) % SNAPS.length])
-})
-
 /* hero glow warms on scroll */
 const hero = document.getElementById('hero')
 let raf = 0
@@ -379,7 +305,6 @@ async function runBoot() {
   if (reduce) return
   const my = ++token
   document.documentElement.dataset.boot = 'running'
-  dispatchEvent(new Event('boot-start'))
   out.textContent = ''; boot.hidden = false; boot.classList.remove('out')
   const end = () => {
     boot.classList.add('out')
@@ -392,12 +317,9 @@ async function runBoot() {
   for (const l of lines) { for (const ch of l) { if (my !== token) return; out.textContent += ch; await sleep(14) } out.textContent += '\n'; await sleep(160) }
   if (my === token) { await sleep(250); if (my === token) end() }
 }
-document.getElementById('replay').addEventListener('click', () => { scrollTo(0, 0); runBoot() })
 
 const qs = new URLSearchParams(location.search)
-if (!location.hash && qs.get('__snap')) history.replaceState(null, '', location.pathname + location.search + '#/experience')
 go()
-setSnap(qs.get('__snap') || 'firm', { push: false })
 renderExperience()
 if (qs.get('boot') !== '0') runBoot()
 </script>
