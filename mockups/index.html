@@ -138,6 +138,12 @@ button{font:inherit;color:inherit}
 
 .foot{position:relative;z-index:2;padding:clamp(80px,12vw,140px) 0 40px;font-size:.76rem;color:var(--muted);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
+/* native scroll snap, experience page only. Resting points: the header, each frame, the page end. A frame taller than the screen scrolls freely inside. */
+html[data-route=experience][data-snap=firm]{scroll-snap-type:y mandatory}
+html[data-route=experience][data-snap=soft]{scroll-snap-type:y proximity}
+#hero{scroll-snap-align:start}
+.foot{scroll-snap-align:end}
+
 /* boot */
 #boot{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:#080a0c;color:var(--accent);padding:24px;transition:opacity .6s var(--ease),filter .6s var(--ease)}
 #boot.out{opacity:0;filter:blur(10px);pointer-events:none}
@@ -254,7 +260,8 @@ button{font:inherit;color:inherit}
       Scroll feel
     </span>
     <button type="button" data-snap="off" aria-pressed="false">Off</button>
-    <button type="button" data-snap="magnetic" aria-pressed="true">Magnetic</button>
+    <button type="button" data-snap="soft" aria-pressed="false">Soft</button>
+    <button type="button" data-snap="firm" aria-pressed="true">Firm</button>
     <button type="button" class="variant-action" id="replay">Replay boot</button>
   </div>
 </nav>
@@ -262,7 +269,8 @@ button{font:inherit;color:inherit}
   <select aria-label="Scroll feel">
     <optgroup label="Scroll feel">
       <option value="off">Off</option>
-      <option value="magnetic" selected>Magnetic</option>
+      <option value="soft">Soft</option>
+      <option value="firm" selected>Firm</option>
     </optgroup>
   </select>
   <svg aria-hidden="true" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 4 4 4-4"/></svg>
@@ -324,18 +332,19 @@ function go() {
   document.title = titles[next]
   if (route && route !== next) scrollTo({ top: 0, behavior: 'instant' })
   route = next
+  document.documentElement.dataset.route = next
   onScroll()
 }
 addEventListener('hashchange', go)
 
 /* picker: scroll-snap feel, applied on the experience page only */
-const SNAPS = ['off', 'magnetic']
-let snapMode = 'magnetic'
+const SNAPS = ['off', 'soft', 'firm']
+let snapMode = 'firm'
 const buttons = [...document.querySelectorAll('.variant-picker [data-snap]')]
 const select = document.querySelector('.variant-picker-select select')
 function applySnap() { document.documentElement.dataset.snap = snapMode }
 function setSnap(m, { push = true } = {}) {
-  if (!SNAPS.includes(m)) m = 'magnetic'
+  if (!SNAPS.includes(m)) m = 'firm'
   snapMode = m
   buttons.forEach((b) => b.setAttribute('aria-pressed', b.dataset.snap === m))
   select.value = m
@@ -366,8 +375,15 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 async function runBoot() {
   if (reduce) return
   const my = ++token
+  document.documentElement.dataset.boot = 'running'
+  dispatchEvent(new Event('boot-start'))
   out.textContent = ''; boot.hidden = false; boot.classList.remove('out')
-  const end = () => { boot.classList.add('out'); setTimeout(() => { if (boot.classList.contains('out')) boot.hidden = true }, 600); removeEventListener('keydown', skip); boot.removeEventListener('click', skip) }
+  const end = () => {
+    boot.classList.add('out')
+    setTimeout(() => { if (boot.classList.contains('out')) boot.hidden = true }, 600)
+    setTimeout(() => { if (document.documentElement.dataset.boot) { delete document.documentElement.dataset.boot; dispatchEvent(new Event('boot-done')) } }, 220)
+    removeEventListener('keydown', skip); boot.removeEventListener('click', skip)
+  }
   const skip = () => { token++; end() }
   addEventListener('keydown', skip, { once: true }); boot.addEventListener('click', skip, { once: true })
   for (const l of lines) { for (const ch of l) { if (my !== token) return; out.textContent += ch; await sleep(14) } out.textContent += '\n'; await sleep(160) }
@@ -378,7 +394,7 @@ document.getElementById('replay').addEventListener('click', () => { scrollTo(0, 
 const qs = new URLSearchParams(location.search)
 if (!location.hash && qs.get('__snap')) history.replaceState(null, '', location.pathname + location.search + '#/experience')
 go()
-setSnap(qs.get('__snap') || 'magnetic', { push: false })
+setSnap(qs.get('__snap') || 'firm', { push: false })
 renderExperience()
 if (qs.get('boot') !== '0') runBoot()
 </script>

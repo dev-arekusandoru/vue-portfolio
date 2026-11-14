@@ -45,7 +45,7 @@ export const css = `
 
 /* ---------- frames ---------- */
 .xv-monolith .mo-frames{min-width:0}
-.xv-monolith .mo-frame{position:relative;isolation:isolate;overflow-x:clip;display:flex;flex-direction:column;justify-content:flex-start;min-height:clamp(560px,100svh,960px);padding:clamp(72px,15svh,150px) 0 clamp(64px,11svh,128px) clamp(10px,2vw,28px)}
+.xv-monolith .mo-frame{position:relative;isolation:isolate;overflow-x:clip;display:flex;flex-direction:column;justify-content:flex-start;min-height:clamp(560px,100svh,960px);padding:clamp(72px,15svh,150px) 0 clamp(64px,11svh,128px) clamp(10px,2vw,28px);scroll-snap-align:start}
 .xv-monolith .mo-frame + .mo-frame{border-top:1px solid var(--rule)}
 .xv-monolith .mo-frame::before{content:"";position:absolute;z-index:-1;right:-8%;top:50%;width:min(80vw,860px);aspect-ratio:1;transform:translateY(-50%);pointer-events:none;background:radial-gradient(closest-side,rgb(255 140 43/.08),rgb(255 140 43/.026) 55%,transparent)}
 .xv-monolith .mo-frame.mo-live::before{background:radial-gradient(closest-side,rgb(90 209 230/.12),rgb(90 209 230/.04) 55%,transparent)}
@@ -56,11 +56,7 @@ export const css = `
 .xv-monolith .mo-sk{color:var(--muted)}
 .xv-monolith .mo-sv{color:var(--fg)}
 .xv-monolith .mo-sn{margin-left:auto;color:var(--muted)}
-.xv-monolith .mo-desc{max-width:34rem;margin-top:14px;font-size:.76rem;line-height:1.75;color:var(--muted)}
-.xv-monolith .mo-desc p{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
-.xv-monolith .mo-desc.mo-full p{display:block;-webkit-line-clamp:unset;overflow:visible}
-.xv-monolith .mo-link{margin-top:2px;padding:6px 0;background:none;border:0;cursor:pointer;font:inherit;font-size:.74rem;color:var(--accent);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px;min-height:32px}
-.xv-monolith .mo-link[hidden]{display:none}
+.xv-monolith .mo-desc{max-width:40rem;margin-top:14px;font-size:.8rem;line-height:1.75;color:var(--muted)}
 
 .xv-monolith .mo-name{position:relative;margin:clamp(22px,4svh,44px) 0 clamp(18px,3svh,30px);font:200 clamp(1.45rem,7.2vw,5.6rem)/1.06 var(--display);letter-spacing:.035em;overflow-wrap:anywhere}
 .xv-monolith .mo-name:focus-visible{outline-offset:8px}
@@ -89,7 +85,7 @@ export const css = `
 
 .xv-monolith .mo-dtl{margin-top:clamp(22px,4svh,40px)}
 .xv-monolith .mo-more{display:inline-flex;align-items:center;gap:14px;min-height:44px;padding:0;background:none;border:0;cursor:pointer;font:inherit;font-size:.78rem;color:var(--fg)}
-.xv-monolith .mo-more:focus-visible,.xv-monolith .mo-link:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.xv-monolith .mo-more:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 .xv-monolith .mo-pm{position:relative;flex:none;width:20px;height:20px;border:1px solid rgb(255 140 43/.55);transition:border-color .4s var(--ease),transform .6s var(--ease)}
 .xv-monolith .mo-pm::before,.xv-monolith .mo-pm::after{content:"";position:absolute;left:50%;top:50%;background:var(--accent);transition:transform .6s var(--ease)}
 .xv-monolith .mo-pm::before{width:8px;height:1px;margin:-.5px 0 0 -4px}
@@ -171,7 +167,7 @@ export function mount(el, { employers, compact }) {
       ? `<p class="mo-strap mo-x" style="--d:0"><span class="mo-sk">Employer</span><span class="mo-sv">${esc(e.name)}</span>${e.contracts.length > 1 ? `<span class="mo-sn"><span class="mo-cw">Contract </span>${ci + 1} of ${e.contracts.length}</span>` : ''}</p>`
       : ''
     const desc = group && ci === 0 && e.desc && !compact
-      ? `<div class="mo-desc mo-x" style="--d:90"><p id="mo${u}-${i}-dt">${esc(e.desc)}</p><button type="button" class="mo-link" aria-expanded="false" aria-controls="mo${u}-${i}-dt" hidden>Read more</button></div>`
+      ? `<p class="mo-desc mo-x" style="--d:90">${esc(e.desc)}</p>`
       : ''
     const stack = c.skills.map((s, k) => `<li class="mo-x" style="--d:${300 + k * 45}"><span aria-hidden="true">${icon(s)}</span><span class="mo-cap">${esc(techName(s))}</span></li>`).join('')
     const pts = c.pts.length
@@ -211,42 +207,59 @@ export function mount(el, { employers, compact }) {
   const frames = [...el.querySelectorAll('.mo-frame')]
   const cleanups = []
 
-  /* animated scroll: one easing for rail jumps and settles; any user input cancels it */
+  /* animated scroll for rail jumps. Native scroll-snap is suspended while it runs and restored after (the target is a snap point, so nothing moves). Any user input cancels it. */
   const root = document.documentElement
-  const outCubic = (p) => 1 - (1 - p) ** 3
   const inOutCubic = (p) => (p < 0.5 ? 4 * p ** 3 : 1 - (-2 * p + 2) ** 3 / 2)
-  let glideRaf = 0, gliding = false, lastY = scrollY, dir = 0
-  const stopGlide = () => { cancelAnimationFrame(glideRaf); gliding = false }
-  const glide = (to, ms, ease) => {
-    stopGlide()
+  let glideRaf = 0, gliding = false
+  const endGlide = () => {
+    cancelAnimationFrame(glideRaf)
+    if (!gliding) return
+    gliding = false
+    root.style.removeProperty('scroll-snap-type')
+  }
+  const glide = (to, ms) => {
+    endGlide()
     const from = scrollY, dist = to - from
-    if (reduce || Math.abs(dist) < 2) { scrollTo({ top: to, behavior: 'instant' }); lastY = scrollY; return }
+    if (reduce || Math.abs(dist) < 2) { scrollTo({ top: to, behavior: 'instant' }); return }
     gliding = true
+    root.style.scrollSnapType = 'none'
     let t0
     const step = (now) => {
       t0 ??= now
       const p = Math.min(1, (now - t0) / ms)
-      scrollTo({ top: from + dist * ease(p), behavior: 'instant' })
-      lastY = scrollY
+      scrollTo({ top: from + dist * inOutCubic(p), behavior: 'instant' })
       if (p < 1 && gliding) glideRaf = requestAnimationFrame(step)
-      else { gliding = false; lastY = scrollY }
+      else endGlide()
     }
     glideRaf = requestAnimationFrame(step)
   }
-  cleanups.push(() => cancelAnimationFrame(glideRaf))
+  cleanups.push(endGlide)
 
-  /* arm entrance transitions and observe frames */
+  /* entrance: frames start hidden and play once as they scroll into view. While the boot overlay is up the entrance waits, so it plays as the overlay lifts instead of behind it. */
   if (!reduce) {
     el.classList.add('mo-armed')
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((en) => {
-        if (!en.isIntersecting) return
-        en.target.classList.add('mo-in')
-        io.unobserve(en.target)
-      })
-    }, { rootMargin: '0px 0px -16% 0px', threshold: 0.1 })
-    frames.forEach((f) => io.observe(f))
-    cleanups.push(() => io.disconnect())
+    let io
+    const observe = () => {
+      io?.disconnect()
+      io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => {
+          if (!en.isIntersecting) return
+          en.target.classList.add('mo-in')
+          io.unobserve(en.target)
+        })
+      }, { rootMargin: '0px 0px -16% 0px', threshold: 0.1 })
+      frames.forEach((f) => io.observe(f))
+    }
+    const arm = () => {
+      io?.disconnect()
+      frames.forEach((f) => f.classList.remove('mo-in'))
+      removeEventListener('boot-done', observe)
+      if (root.dataset.boot === 'running') addEventListener('boot-done', observe, { once: true })
+      else observe()
+    }
+    addEventListener('boot-start', arm)
+    cleanups.push(() => { io?.disconnect(); removeEventListener('boot-start', arm); removeEventListener('boot-done', observe) })
+    arm()
   }
 
   /* details + employer description */
@@ -258,27 +271,10 @@ export function mount(el, { employers, compact }) {
       more.setAttribute('aria-expanded', String(open))
       more.querySelector('.mo-more-t').firstChild.textContent = open ? 'Hide details' : 'Show details'
       panel.classList.toggle('mo-open', open)
-      return
-    }
-    const link = ev.target.closest('.mo-link')
-    if (link && el.contains(link)) {
-      const box = link.parentElement
-      const full = !box.classList.contains('mo-full')
-      box.classList.toggle('mo-full', full)
-      link.setAttribute('aria-expanded', String(full))
-      link.textContent = full ? 'Read less' : 'Read more'
     }
   }
   el.addEventListener('click', onClick)
   cleanups.push(() => el.removeEventListener('click', onClick))
-
-  /* only offer "Read more" when the description is actually clamped */
-  const descs = [...el.querySelectorAll('.mo-desc')]
-  const checkDesc = () => descs.forEach((d) => {
-    const p = d.querySelector('p'), b = d.querySelector('.mo-link')
-    if (!p.clientHeight || d.classList.contains('mo-full')) return
-    b.hidden = p.scrollHeight <= p.clientHeight + 1
-  })
 
   /* rail: scrollspy, following light, jump links */
   let tick = () => {}
@@ -321,45 +317,20 @@ export function mount(el, { employers, compact }) {
       ev.preventDefault()
       const f = frames[+a.dataset.i]
       const top = f.getBoundingClientRect().top + scrollY
-      glide(top, Math.min(1000, 450 + Math.abs(top - scrollY) * 0.25), inOutCubic)
+      glide(top, Math.min(1000, 450 + Math.abs(top - scrollY) * 0.25))
       f.querySelector('.mo-name').focus({ preventScroll: true })
     })
-    var ro = new ResizeObserver(() => { checkDesc(); queue() })
+    const ro = new ResizeObserver(queue)
     ro.observe(el)
+    cleanups.push(() => ro.disconnect())
     queue()
-  } else {
-    var ro = new ResizeObserver(checkDesc)
-    ro.observe(el)
   }
-  cleanups.push(() => ro.disconnect())
-  checkDesc()
 
-  /* magnetic settle: a scroll that ends just short of a frame's top eases the rest of the way.
-     Directional: it never pulls the reader back, so wheel ticks and keys cannot get trapped the way native scroll-snap does. */
+  /* any user input cancels a rail jump and hands control back to native snapping */
   if (!compact) {
-    let timer = 0
-    const settle = () => {
-      if (gliding || reduce || !dir || root.dataset.snap === 'off' || !el.getClientRects().length) return
-      const y = scrollY, T = Math.min(innerHeight * 0.18, 160)
-      let best
-      for (let k = 1; k < n; k++) {
-        const top = frames[k].getBoundingClientRect().top + y
-        const ahead = dir > 0 ? top - y : y - top
-        if (ahead > 1 && ahead <= T && (!best || ahead < best.ahead)) best = { top, ahead }
-      }
-      if (best) glide(best.top, 360 + best.ahead * 1.8, outCubic)
-    }
-    const onUserScroll = () => {
-      if (gliding) return
-      const y = scrollY
-      if (y !== lastY) { dir = y > lastY ? 1 : -1; lastY = y }
-      clearTimeout(timer)
-      timer = setTimeout(settle, 150)
-    }
     const inputs = ['wheel', 'touchstart', 'keydown', 'pointerdown']
-    addEventListener('scroll', onUserScroll, { passive: true })
-    inputs.forEach((t) => addEventListener(t, stopGlide, { passive: true }))
-    cleanups.push(() => { removeEventListener('scroll', onUserScroll); inputs.forEach((t) => removeEventListener(t, stopGlide)); clearTimeout(timer) })
+    inputs.forEach((t) => addEventListener(t, endGlide, { passive: true }))
+    cleanups.push(() => inputs.forEach((t) => removeEventListener(t, endGlide)))
   }
 
   return () => cleanups.forEach((fn) => fn())
