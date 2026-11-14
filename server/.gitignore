@@ -1,5 +1,5 @@
-
-node_modules
-.env
-public
-.manifest
+# PocketBase binary and runtime data are not committed.
+pocketbase
+pb_data/
+pb_public/
+*.zip

@@ -20,16 +20,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+
 
 defineOptions({
   name: 'ResumeView',
 })
 
-// Get the PDF URL from the assets folder
-const pdfUrl = computed(() => {
-  return new URL('../assets/Muresan_Alexandru_Resume_2025.pdf', import.meta.url).href
-})
+// Served from client/public, same file the nav links to.
+const pdfUrl = '/Muresan_Alexandru_Resume_2025.pdf'
 </script>
 
 <style scoped>

@@ -19,7 +19,7 @@ defineProps<{
     </h3>
     <div v-else>
       <h3 class="text-lg">{{ title }}</h3>
-      <p class="text-md text-gray-500">
+      <p v-if="experiences.length" class="text-md text-gray-500">
         {{ formatDate(experiences[experiences.length - 1].start_date) }} -
         {{ experiences[0].current ? 'Present' : formatDate(experiences[0].end_date) }}
       </p>
@@ -48,8 +48,8 @@ defineProps<{
         :start_date="experience.start_date"
         :end_date="experience.end_date"
         :current="experience.current"
-        :skills="JSON.parse(experience.skills as string)"
-        :description="JSON.parse(experience.description as string)"
+        :skills="experience.skills"
+        :description="experience.description"
       />
     </div>
     <span v-if="dev" class="text-purple">end</span>

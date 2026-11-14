@@ -1,0 +1,14 @@
+[Unit]
+Description=Portfolio (PocketBase: API, admin dashboard, static site)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/portfolio
+ExecStart=%h/portfolio/pocketbase serve --http=127.0.0.1:8091 --dir=%h/portfolio/pb_data --migrationsDir=%h/portfolio/pb_migrations --publicDir=%h/portfolio/pb_public
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target

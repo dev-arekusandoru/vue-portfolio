@@ -1,6 +1,6 @@
 # Vue Portfolio Resume
 
-This is a portfolio resume project built with **Vue.js** and **Manifest.build** to showcase my skills and experience while learning these technologies.
+This is a portfolio resume project built with **Vue.js** and **PocketBase** to showcase my skills and experience while learning these technologies.
 
 ## Purpose
 

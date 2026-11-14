@@ -89,8 +89,8 @@ export type ExperienceCardProps = {
   start_date: string
   end_date: string | null
   current: boolean
-  description: string[] | string
-  skills: string[] | string
+  description: string[]
+  skills: string[]
   group?: string
 }
 </script>

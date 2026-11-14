@@ -1,19 +1,15 @@
 <script setup lang="ts">
 import ProjectCard, { type ProjectProps } from '@/components/ProjectCard.vue'
-import { ref } from 'vue'
 import { dev } from '@/App.vue'
-import manifest from '../config/manifest'
+import pb from '@/config/pocketbase'
 
 defineOptions({
   name: 'ProjectsView',
 })
 
-const projects = ref<ProjectProps[]>([])
-const paginator = await manifest.from('projects').find()
-projects.value = paginator.data as ProjectProps[]
-projects.value.sort((a, b) => {
-  return new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
-})
+const projects = await pb
+  .collection('projects')
+  .getFullList<ProjectProps>({ sort: '-start_date,created' })
 </script>
 
 <template>
@@ -39,8 +35,8 @@ projects.value.sort((a, b) => {
               :start_date="project.start_date"
               :end_date="project.end_date"
               :current="project.current"
-              :stack="(project.stack as string)?.split('\n')"
-              :highlights="(project.highlights as string)?.split('\n')"
+              :stack="project.stack"
+              :highlights="project.highlights"
               :code_url="project.code_url"
               :demo_url="project.demo_url"
               :index="index"

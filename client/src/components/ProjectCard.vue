@@ -182,10 +182,10 @@ export type ProjectProps = {
   start_date: string
   end_date: string | null
   current: boolean
-  stack: string[] | string
-  highlights: string[] | string
+  stack: string[]
+  highlights: string[]
   code_url?: string
   demo_url?: string
-  index: number
+  index?: number
 }
 </script>

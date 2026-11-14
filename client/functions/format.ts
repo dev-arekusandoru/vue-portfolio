@@ -1,6 +1,7 @@
 export const formatDate = (date: string | null) => {
   if (!date) return date
-  const dateObj = new Date(date)
+  // PocketBase stores dates as "2021-10-02 00:00:00.000Z"; Safari needs the T.
+  const dateObj = new Date(date.replace(' ', 'T'))
 
   const formatted = new Intl.DateTimeFormat('en-US', {
     month: 'long',

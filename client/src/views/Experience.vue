@@ -1,26 +1,29 @@
 <script setup lang="ts">
 import ExperienceCard, { type ExperienceCardProps } from '@/components/ExperienceCard.vue'
 import ExperienceGroup, { type ExperienceGroupProps } from '@/components/ExperienceGroup.vue'
-import { ref } from 'vue'
 import { dev } from '@/App.vue'
 import { motion } from 'motion-v'
-import manifest from '../config/manifest'
-
-const experienceGroups = ref<ExperienceGroupProps[]>([])
-const experienceGroupPaginator = await manifest
-  .from('experience-groups')
-  .with(['experiences'])
-  .find()
-experienceGroups.value = experienceGroupPaginator.data as ExperienceGroupProps[]
-
-const experiences = ref<ExperienceCardProps[]>([])
-const paginator = await manifest.from('experiences').find()
-experiences.value = paginator.data as ExperienceCardProps[]
-experiences.value = experiences.value.filter((experience) => !experience.group)
+import pb from '@/config/pocketbase'
 
 defineOptions({
   name: 'ExperienceView',
 })
+
+const [groups, experiences] = await Promise.all([
+  pb.collection('experience_groups').getFullList({ sort: 'created' }),
+  pb.collection('experiences').getFullList<ExperienceCardProps>({ sort: '-start_date,created' }),
+])
+
+const experienceGroups: ExperienceGroupProps[] = groups
+  .map((group) => ({
+    id: group.id,
+    name: group.name,
+    description: group.description,
+    experiences: experiences.filter((experience) => experience.group === group.id),
+  }))
+  .filter((group) => group.experiences.length > 0)
+
+const ungroupedExperiences = experiences.filter((experience) => !experience.group)
 </script>
 
 <template>
@@ -46,17 +49,10 @@ defineOptions({
         <ExperienceGroup
           :title="group.name"
           :description="group.description"
-          :experiences="
-            group.experiences.sort((a: ExperienceCardProps, b: ExperienceCardProps) => {
-              if (a.start_date && b.start_date) {
-                return new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
-              }
-              return 0
-            })
-          "
+          :experiences="group.experiences"
         />
       </div>
-      <div v-for="experience in experiences" :key="experience.id">
+      <div v-for="experience in ungroupedExperiences" :key="experience.id">
         <ExperienceCard
           :id="experience.id"
           :company="experience.company"
@@ -64,8 +60,8 @@ defineOptions({
           :start_date="experience.start_date"
           :end_date="experience.end_date"
           :current="experience.current"
-          :skills="JSON.parse(experience.skills as string)"
-          :description="JSON.parse(experience.description as string)"
+          :skills="experience.skills"
+          :description="experience.description"
         />
       </div>
     </div>

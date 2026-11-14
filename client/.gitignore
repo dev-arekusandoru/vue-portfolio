@@ -27,7 +27,6 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+dist/
 
 .env
-public
-manifest/backend.db

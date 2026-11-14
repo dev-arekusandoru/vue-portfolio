@@ -1,0 +1,13 @@
+[Unit]
+Description=Cloudflare Tunnel for alexmuresan.dev
+After=network-online.target portfolio.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/cloudflared tunnel --config %h/.cloudflared/config.yml --no-autoupdate run portfolio
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

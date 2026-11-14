@@ -5,7 +5,7 @@ import { dev } from '@/App.vue'
 import { formatLinks } from '../../functions/format'
 import Collapsible from '@/components/Collapsible.vue'
 import { motion } from 'motion-v'
-import manifest from '../config/manifest'
+import pb from '@/config/pocketbase'
 
 type HomePage = {
   overview: string
@@ -18,8 +18,18 @@ type HomePage = {
   devops: string
 }
 
-const homePage = (await manifest.single('home').get()) as HomePage
-console.log(homePage)
+const { items: homeItems } = await pb.collection('home').getList<HomePage>(1, 1)
+
+const homePage: HomePage = homeItems[0] ?? {
+  overview: '',
+  now: '',
+  interests: '',
+  futureGoals: '',
+  languages: '',
+  frameworks: '',
+  databases: '',
+  devops: '',
+}
 
 const varDef = (name: string, type: string, value: string) =>
   defineComponent({
