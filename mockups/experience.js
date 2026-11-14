@@ -1,47 +1,17 @@
-// Monolith: one contract per frame, an establishing shot each. A sticky light rail follows the scroll.
+// Monolith: one contract per frame, an establishing shot each. A rail module (rails/*.js) follows the scroll.
 import { esc, reduce, range, dur, grpMeta, techName } from './lib/data.js'
 import { icon } from './lib/icons.js'
 
 let uid = 0
 
 export const css = `
-.xv-monolith{--g:124px;--lx:72px;--rh:min(72svh,560px);--ti-size:52px;position:relative;display:grid;grid-template-columns:var(--g) minmax(0,1fr);color:var(--fg)}
+.xv-monolith{--g:96px;--ti-size:52px;position:relative;display:grid;grid-template-columns:var(--g) minmax(0,1fr);color:var(--fg)}
 .xv-monolith ol,.xv-monolith ul{list-style:none}
 .xv-monolith.xv-compact{display:block;--ti-size:36px}
 
-/* ---------- light rail ---------- */
+/* ---------- rail mount points: a rail module fills .mo-gut (wide screens) and .mo-bar (narrow screens) ---------- */
 .xv-monolith .mo-gut{position:relative}
-.xv-monolith .mo-rail{position:sticky;top:calc((100svh - var(--rh)) / 2);height:var(--rh)}
-.xv-monolith .mo-line{position:absolute;left:var(--lx);top:0;bottom:0;width:1px;background:rgb(255 140 43/.26)}
-.xv-monolith .mo-fill{position:absolute;inset:0;background:var(--accent);opacity:.9;transform-origin:top;transform:scaleY(0);box-shadow:0 0 8px rgb(255 140 43/.7)}
-.xv-monolith .mo-dot{position:absolute;left:var(--lx);top:0;width:0;height:0;will-change:transform;pointer-events:none}
-.xv-monolith .mo-dot i{position:absolute;left:0;top:0;width:0;height:0;transition:opacity .7s var(--ease)}
-.xv-monolith .mo-dot i::before{content:"";position:absolute;left:-4px;top:-4px;width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px 2px rgb(255 140 43/.7),0 0 34px 7px rgb(255 140 43/.28)}
-.xv-monolith .mo-dot i::after{content:"";position:absolute;left:-.5px;top:-52px;width:1px;height:104px;background:linear-gradient(transparent,var(--accent) 50%,transparent);opacity:.55}
-.xv-monolith .mo-dot .b{opacity:0}
-.xv-monolith .mo-dot .b::before{background:var(--blue);box-shadow:0 0 10px 2px rgb(90 209 230/.75),0 0 34px 7px rgb(90 209 230/.3)}
-.xv-monolith .mo-dot .b::after{background:linear-gradient(transparent,var(--blue) 50%,transparent)}
-.xv-monolith .mo-rail.mo-onlive .mo-dot .o{opacity:0}
-.xv-monolith .mo-rail.mo-onlive .mo-dot .b{opacity:1}
-
-.xv-monolith .mo-emps{position:absolute;inset:0}
-.xv-monolith .mo-remp{position:absolute;left:0;right:0;top:var(--t);height:var(--h)}
-.xv-monolith .mo-remp::before{content:"";position:absolute;left:8px;top:7px;bottom:7px;width:8px;border:1px solid rgb(255 140 43/.8);border-right:0}
-.xv-monolith .mo-rlabel{position:absolute;left:24px;top:7px;bottom:7px;width:1.5em;display:block;writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:.7rem;line-height:1.5;color:var(--muted)}
-.xv-monolith .mo-cur .mo-rlabel{color:var(--fg)}
-.xv-monolith .mo-stops{position:absolute;inset:0}
-.xv-monolith .mo-stops li{position:absolute;left:0;top:var(--y)}
-.xv-monolith .mo-stop{position:absolute;left:var(--lx);top:0;width:32px;height:32px;transform:translate(-50%,-50%);display:grid;place-items:center;text-decoration:none}
-.xv-monolith .mo-stop::before{content:"";width:9px;height:9px;border-radius:50%;border:1px solid var(--accent);background:var(--bg);transition:transform .6s var(--ease),background-color .5s var(--ease),box-shadow .6s var(--ease)}
-.xv-monolith .mo-stop:hover::before{background:rgb(255 140 43/.5)}
-.xv-monolith .mo-stop[aria-current=true]::before{background:var(--accent);transform:scale(1.4);box-shadow:0 0 12px rgb(255 140 43/.6)}
-.xv-monolith .mo-stop.mo-live::before{border-color:var(--blue)}
-.xv-monolith .mo-stop.mo-live:hover::before{background:rgb(90 209 230/.5)}
-.xv-monolith .mo-stop.mo-live[aria-current=true]::before{background:var(--blue);box-shadow:0 0 14px rgb(90 209 230/.8)}
-.xv-monolith .mo-stop.mo-live::after{content:"";position:absolute;left:50%;top:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;border:1px solid var(--blue);animation:mo-ring 3.2s var(--ease) infinite}
-@keyframes mo-ring{0%{transform:scale(1);opacity:.7}100%{transform:scale(3.2);opacity:0}}
-.xv-monolith .mo-yr{position:absolute;left:calc(100% - 2px);top:50%;transform:translateY(-50%);font-size:.7rem;color:var(--muted);transition:color .4s var(--ease)}
-.xv-monolith .mo-stop[aria-current=true] .mo-yr,.xv-monolith .mo-stop:hover .mo-yr{color:var(--fg)}
+.xv-monolith .mo-bar{display:none}
 
 /* ---------- frames ---------- */
 .xv-monolith .mo-frames{min-width:0}
@@ -51,6 +21,11 @@ export const css = `
 .xv-monolith .mo-frame::before{content:"";position:absolute;z-index:-1;right:-8%;top:50%;width:min(80vw,860px);aspect-ratio:1;transform:translateY(-50%);pointer-events:none;background:radial-gradient(closest-side,rgb(255 140 43/.08),rgb(255 140 43/.026) 55%,transparent)}
 .xv-monolith .mo-frame.mo-live::before{background:radial-gradient(closest-side,rgb(90 209 230/.12),rgb(90 209 230/.04) 55%,transparent)}
 .xv-monolith .mo-body{position:relative;max-width:60rem}
+
+/* optional layer: the contract's start year, huge and faint, behind its frame */
+html[data-ghost=on] .xv-monolith:not(.xv-compact) .mo-frame::after{content:attr(data-year);content:attr(data-year) / "";position:absolute;z-index:-1;right:-2%;bottom:-3%;font:200 clamp(9rem,26vw,24rem)/.8 var(--display);letter-spacing:-.02em;color:rgb(255 140 43/.05);pointer-events:none;user-select:none;transition:opacity 2.4s var(--ease) .3s}
+html[data-ghost=on] .xv-monolith:not(.xv-compact) .mo-live::after{color:rgb(90 209 230/.06)}
+html[data-ghost=on] .xv-monolith.mo-armed .mo-frame:not(.mo-in)::after{opacity:0}
 
 .xv-monolith .mo-emp{position:relative;max-width:46rem;padding:clamp(18px,2.4vw,26px) clamp(18px,3vw,32px) clamp(20px,2.6vw,28px);background:linear-gradient(135deg,rgb(255 140 43/.09),rgb(255 140 43/.02) 60%,transparent);box-shadow:inset 0 0 0 1px rgb(255 140 43/.3)}
 .xv-monolith .mo-emp-name{font:300 clamp(1.2rem,2.4vw,1.75rem)/1.15 var(--display);letter-spacing:.06em;color:var(--fg)}
@@ -137,13 +112,12 @@ export const css = `
 .xv-monolith.xv-compact .mo-stack{grid-template-columns:repeat(auto-fill,5.6rem);margin-top:26px;gap:18px 8px}
 .xv-monolith.xv-compact .mo-dtl{margin-top:18px}
 
-/* ---------- narrow: rail collapses to a thin left line ---------- */
+/* ---------- narrow: the rail moves to a bar pinned to the bottom of the screen ---------- */
 @media (max-width:899px){
-  .xv-monolith{--g:28px;--lx:17px;--rh:min(64svh,420px);--ti-size:26px}
-  .xv-monolith .mo-rlabel,.xv-monolith .mo-yr{display:none}
-  .xv-monolith .mo-remp::before{left:3px;width:5px}
-  .xv-monolith .mo-stop{width:28px;height:28px}
-  .xv-monolith .mo-frame{min-height:min(100svh,860px);padding:clamp(44px,8svh,72px) 0 clamp(44px,8svh,72px) 12px}
+  .xv-monolith{grid-template-columns:minmax(0,1fr);--ti-size:26px}
+  .xv-monolith .mo-gut{display:none}
+  .xv-monolith .mo-bar{display:block;grid-column:1/-1;position:sticky;bottom:0;z-index:30;padding-bottom:env(safe-area-inset-bottom)}
+  .xv-monolith .mo-frame{min-height:min(100svh,860px);padding:clamp(44px,8svh,72px) 0 clamp(44px,8svh,72px) 0}
   .xv-monolith .mo-name{font-size:clamp(1.7rem,9vw,3rem)}
   .xv-monolith .mo-stack{grid-template-columns:repeat(auto-fill,minmax(4.4rem,1fr));gap:16px 6px}
   .xv-monolith .mo-cap{font-size:.62rem}
@@ -163,7 +137,7 @@ export const css = `
 }
 `
 
-export function mount(el, { employers, compact }) {
+export function mount(el, { employers, compact, rail }) {
   const u = ++uid
   const flat = []
   employers.forEach((e) => e.contracts.forEach((c, ci) => flat.push({ e, c, ci, i: flat.length })))
@@ -171,7 +145,6 @@ export function mount(el, { employers, compact }) {
   if (!n) return
 
   const H = compact ? 'h3' : 'h2'
-  let step = 0
   const frameHTML = ({ e, c, ci, i }) => {
     const group = e.kind === 'group'
     const hid = `mo${u}-${i}-h`
@@ -187,7 +160,7 @@ export function mount(el, { employers, compact }) {
     const pts = c.pts.length
       ? `<div class="mo-dtl mo-x" style="--d:${420 + c.skills.length * 45}"><button type="button" class="mo-more" aria-expanded="false" aria-controls="mo${u}-${i}-p"><span class="mo-pm" aria-hidden="true"></span><span class="mo-more-t">Show details<span class="sr"> for ${esc(c.co)}</span></span></button><div class="mo-panel" id="mo${u}-${i}-p"><div class="mo-pin"><ul class="mo-pts">${c.pts.map((p) => `<li>${esc(p)}</li>`).join('')}</ul></div></div></div>`
       : ''
-    return `<article class="mo-frame${live ? ' mo-live' : ''}" data-i="${i}" aria-labelledby="${hid}">
+    return `<article class="mo-frame${live ? ' mo-live' : ''}" data-i="${i}" data-year="${c.start.getUTCFullYear()}" aria-labelledby="${hid}">
       ${live ? '<div class="mo-scan" aria-hidden="true"></div>' : ''}
       <div class="mo-body">
         ${plate}${strap}
@@ -200,23 +173,7 @@ export function mount(el, { employers, compact }) {
     </article>`
   }
 
-  let railHTML = ''
-  if (!compact) {
-    railHTML = `<div class="mo-gut"><nav class="mo-rail" aria-label="Experience timeline"><div class="mo-line" aria-hidden="true"><div class="mo-fill"></div></div><ol class="mo-emps">${
-      employers.map((e) => {
-        const k = e.contracts.length, t = (step / n) * 100, h = (k / n) * 100
-        const stops = e.contracts.map((c, j) => {
-          const g = step + j, y = ((j + 0.5) / k) * 100
-          const label = `${c.co}, ${c.title}, ${range(c)}${c.current ? ', current' : ''}`
-          return `<li style="--y:${y}%"><a class="mo-stop${c.current ? ' mo-live' : ''}" href="#/experience" data-i="${g}" aria-label="${esc(label)}" title="${esc(`${c.co}, ${range(c)}`)}"><span class="mo-yr" aria-hidden="true">${c.start.getUTCFullYear()}</span></a></li>`
-        }).join('')
-        step += k
-        return `<li class="mo-remp${e.current ? ' mo-cur' : ''}" style="--t:${t}%;--h:${h}%"><span class="mo-rlabel" title="${esc(e.name)}">${esc(e.name)}</span><ol class="mo-stops">${stops}</ol></li>`
-      }).join('')
-    }</ol><div class="mo-dot" aria-hidden="true"><i class="o"></i><i class="b"></i></div></nav></div>`
-  }
-
-  el.innerHTML = `${railHTML}<div class="mo-frames">${flat.map(frameHTML).join('')}</div>`
+  el.innerHTML = `${compact ? '' : '<div class="mo-gut"></div>'}<div class="mo-frames">${flat.map(frameHTML).join('')}</div>${compact ? '' : '<div class="mo-bar"></div>'}`
 
   const frames = [...el.querySelectorAll('.mo-frame')]
   const cleanups = []
@@ -281,54 +238,43 @@ export function mount(el, { employers, compact }) {
   el.addEventListener('click', onClick)
   cleanups.push(() => el.removeEventListener('click', onClick))
 
-  /* rail: scrollspy, following light, jump links */
-  let tick = () => {}
+  /* progress shared with the rail. q is 0 when frame 0's top is at the top of the screen and n-1 at the last frame's top, linear in between, so a rail marker stays aligned however tall a frame grows. idx is the frame under the middle of the screen. */
   if (!compact) {
-    const rail = el.querySelector('.mo-rail')
-    const dot = el.querySelector('.mo-dot')
-    const fill = el.querySelector('.mo-fill')
-    const stops = [...el.querySelectorAll('.mo-stop')]
-    let raf = 0, cur = -1
-    tick = () => {
+    const subs = new Set()
+    let state = null, raf = 0
+    const compute = () => {
       raf = 0
       if (!el.getClientRects().length) return
       const y = scrollY, ref = innerHeight * 0.5
       const rects = frames.map((f) => f.getBoundingClientRect())
-      /* the light sits exactly on a stop when that frame's top is at the top of the screen, however tall the frame has grown */
       let q = n - 1
       if (rects[0].top >= 0) q = 0
       else for (let k = 0; k < n - 1; k++) {
         const a = rects[k].top + y, b = rects[k + 1].top + y
         if (y < b) { q = k + Math.max(0, y - a) / (b - a || 1); break }
       }
-      const f = (q + 0.5) / n
-      dot.style.transform = `translate3d(0,${(f * rail.offsetHeight).toFixed(1)}px,0)`
-      fill.style.transform = `scaleY(${f.toFixed(4)})`
       let idx = rects.findIndex((r) => ref < r.bottom)
       if (idx < 0) idx = n - 1
-      if (idx !== cur) {
-        cur = idx
-        stops.forEach((s, k) => (k === idx ? s.setAttribute('aria-current', 'true') : s.removeAttribute('aria-current')))
-        rail.classList.toggle('mo-onlive', flat[idx].c.current)
-      }
+      state = { q, idx }
+      subs.forEach((fn) => fn(state))
     }
-    const queue = () => { if (!raf) raf = requestAnimationFrame(tick) }
+    const queue = () => { if (!raf) raf = requestAnimationFrame(compute) }
     addEventListener('scroll', queue, { passive: true })
     addEventListener('resize', queue)
-    cleanups.push(() => { removeEventListener('scroll', queue); removeEventListener('resize', queue); cancelAnimationFrame(raf) })
+    const ro = new ResizeObserver(queue)
+    ro.observe(el)
+    cleanups.push(() => { removeEventListener('scroll', queue); removeEventListener('resize', queue); ro.disconnect(); cancelAnimationFrame(raf) })
 
-    rail.addEventListener('click', (ev) => {
-      const a = ev.target.closest('a[data-i]')
-      if (!a || ev.button || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return
-      ev.preventDefault()
-      const f = frames[+a.dataset.i]
+    const goTo = (i) => {
+      const f = frames[i]
       const top = f.getBoundingClientRect().top + scrollY
       glide(top, Math.min(1000, 450 + Math.abs(top - scrollY) * 0.25))
       f.querySelector('.mo-name').focus({ preventScroll: true })
-    })
-    const ro = new ResizeObserver(queue)
-    ro.observe(el)
-    cleanups.push(() => ro.disconnect())
+    }
+    const subscribe = (fn) => { subs.add(fn); if (state) fn(state); return () => subs.delete(fn) }
+    el.classList.add(`rail-${rail.id}`)
+    const stop = rail.mount({ el, gut: el.querySelector('.mo-gut'), bar: el.querySelector('.mo-bar'), flat, employers, n, frames, goTo, subscribe })
+    cleanups.push(() => { stop?.(); el.classList.remove(`rail-${rail.id}`) })
     queue()
   }
 
