@@ -45,8 +45,7 @@ export const css = `
 
 /* ---------- frames ---------- */
 .xv-monolith .mo-frames{min-width:0}
-.xv-monolith .mo-frame{position:relative;isolation:isolate;overflow-x:clip;display:flex;flex-direction:column;justify-content:center;min-height:clamp(540px,88svh,900px);padding:clamp(64px,11svh,128px) 0 clamp(64px,11svh,128px) clamp(10px,2vw,28px);scroll-snap-align:start}
-.xv-monolith .mo-frame:first-child{scroll-snap-align:none}
+.xv-monolith .mo-frame{position:relative;isolation:isolate;overflow-x:clip;display:flex;flex-direction:column;justify-content:flex-start;min-height:clamp(560px,100svh,960px);padding:clamp(72px,15svh,150px) 0 clamp(64px,11svh,128px) clamp(10px,2vw,28px)}
 .xv-monolith .mo-frame + .mo-frame{border-top:1px solid var(--rule)}
 .xv-monolith .mo-frame::before{content:"";position:absolute;z-index:-1;right:-8%;top:50%;width:min(80vw,860px);aspect-ratio:1;transform:translateY(-50%);pointer-events:none;background:radial-gradient(closest-side,rgb(255 140 43/.08),rgb(255 140 43/.026) 55%,transparent)}
 .xv-monolith .mo-frame.mo-live::before{background:radial-gradient(closest-side,rgb(90 209 230/.12),rgb(90 209 230/.04) 55%,transparent)}
@@ -79,8 +78,8 @@ export const css = `
 .xv-monolith .mo-title{color:var(--fg)}
 .xv-monolith .mo-lede{margin-top:clamp(18px,3svh,30px);max-width:44ch;font-size:clamp(1rem,1.5vw,1.18rem);line-height:1.75;color:var(--fg)}
 
-.xv-monolith .mo-stack{display:flex;flex-wrap:wrap;gap:22px 14px;margin-top:clamp(28px,5svh,52px)}
-.xv-monolith .mo-stack li{display:grid;justify-items:start;align-content:start;gap:10px;min-width:4.6rem;max-width:6.6rem;color:var(--muted);transition:color .4s var(--ease)}
+.xv-monolith .mo-stack{display:grid;grid-template-columns:repeat(auto-fill,6.4rem);gap:24px 10px;margin-top:clamp(28px,5svh,52px)}
+.xv-monolith .mo-stack li{display:grid;justify-items:start;align-content:start;gap:10px;color:var(--muted);transition:color .4s var(--ease)}
 .xv-monolith .mo-stack .ti{transition:color .4s var(--ease),filter .5s var(--ease),opacity .4s var(--ease)}
 .xv-monolith .mo-stack li:hover{color:var(--fg)}
 .xv-monolith .mo-stack li:hover .ti{color:var(--accent)}
@@ -97,46 +96,49 @@ export const css = `
 .xv-monolith .mo-pm::after{width:1px;height:8px;margin:-4px 0 0 -.5px}
 .xv-monolith .mo-more:hover .mo-pm{border-color:var(--accent)}
 .xv-monolith .mo-more[aria-expanded=true] .mo-pm::after{transform:scaleY(0)}
-.xv-monolith .mo-panel{position:relative;max-width:62ch;margin-top:8px}
-.xv-monolith .mo-panel[hidden]{display:none}
+.xv-monolith .mo-panel{position:relative;max-width:62ch;margin-top:8px;display:grid;grid-template-rows:0fr;visibility:hidden;transition:grid-template-rows .75s var(--ease),visibility 0s linear .75s}
+.xv-monolith .mo-panel.mo-open{grid-template-rows:1fr;visibility:visible;transition:grid-template-rows .75s var(--ease),visibility 0s}
+.xv-monolith .mo-pin{min-height:0;overflow:hidden}
+.xv-monolith .mo-pts{opacity:0;transform:translateY(-10px);transition:opacity .4s var(--ease),transform .6s var(--ease)}
+.xv-monolith .mo-panel.mo-open .mo-pts{opacity:1;transform:none;transition-delay:.1s}
 .xv-monolith .mo-pts li{position:relative;padding:14px 0 14px 28px;border-top:1px solid var(--rule);font-size:.86rem;line-height:1.75}
 .xv-monolith .mo-pts li::before{content:"";position:absolute;left:0;top:calc(14px + .875em);width:14px;height:1px;background:var(--accent)}
 .xv-monolith .mo-live .mo-pts li::before{background:var(--blue)}
-.xv-monolith .mo-panel.mo-open{animation:mo-recon 1.1s var(--ease) both}
-.xv-monolith .mo-panel.mo-open::after{content:"";position:absolute;left:0;right:0;top:0;height:100%;pointer-events:none;background:linear-gradient(transparent calc(100% - 40px),rgb(255 140 43/.14) calc(100% - 1px),var(--accent) calc(100% - 1px));animation:mo-sweep 1.1s var(--ease) both}
-@keyframes mo-recon{from{clip-path:inset(0 -30px 100% -30px);filter:blur(5px);opacity:.2}to{clip-path:inset(-30px -30px -30px -30px);filter:blur(0);opacity:1}}
+.xv-monolith .mo-panel.mo-open::after{content:"";position:absolute;left:0;right:0;top:0;height:100%;pointer-events:none;background:linear-gradient(transparent calc(100% - 40px),rgb(255 140 43/.14) calc(100% - 1px),var(--accent) calc(100% - 1px));animation:mo-sweep 1s var(--ease) both}
 @keyframes mo-sweep{0%{transform:translateY(-100%);opacity:0}15%,80%{opacity:1}100%{transform:translateY(0);opacity:0}}
 
 /* ---------- entrance: blur to sharp, light blooms in; the live frame is scanned ---------- */
-.xv-monolith .mo-x{transition:opacity 1.5s var(--ease) calc(var(--d,0) * var(--dm,1) * 1ms),filter 1.5s var(--ease) calc(var(--d,0) * var(--dm,1) * 1ms),transform 1.5s var(--ease) calc(var(--d,0) * var(--dm,1) * 1ms)}
-.xv-monolith.mo-armed .mo-frame:not(.mo-in) .mo-x{opacity:0;filter:blur(12px);transform:translateY(14px)}
-.xv-monolith.mo-armed .mo-frame:not(.mo-in) .mo-name.mo-x{filter:blur(22px);transform:translateY(8px) scale(1.015)}
-.xv-monolith.mo-armed .mo-frame::before{transition:opacity 2.6s var(--ease),transform 3s var(--ease)}
+.xv-monolith .mo-x{--tx:calc(var(--d,0) * var(--dm,1) * 1ms);transition:opacity .9s var(--ease) var(--tx),transform .9s var(--ease) var(--tx)}
+.xv-monolith .mo-name.mo-x{transition:opacity 1s var(--ease) var(--tx),transform 1s var(--ease) var(--tx),filter 1.1s var(--ease) var(--tx)}
+.xv-monolith.mo-armed .mo-frame:not(.mo-in) .mo-x{opacity:0;transform:translateY(12px)}
+.xv-monolith.mo-armed .mo-frame:not(.mo-in) .mo-name.mo-x{filter:blur(14px);transform:translateY(6px) scale(1.012)}
+.xv-monolith.mo-armed .mo-frame::before{transition:opacity 2s var(--ease),transform 2.4s var(--ease)}
 .xv-monolith.mo-armed .mo-frame:not(.mo-in)::before{opacity:0;transform:translateY(-50%) scale(.8)}
-.xv-monolith .mo-live{--dm:1.9}
+.xv-monolith .mo-live{--dm:1.25}
 .xv-monolith .mo-live.mo-in::before{animation:mo-breathe 8s ease-in-out 3s infinite}
 @keyframes mo-breathe{50%{opacity:.72}}
 .xv-monolith .mo-scan{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;background:linear-gradient(transparent calc(100% - 90px),rgb(90 209 230/.1) calc(100% - 1px),rgb(90 209 230/.9) calc(100% - 1px))}
-.xv-monolith.mo-armed .mo-live.mo-in .mo-scan{animation:mo-scan 2.8s cubic-bezier(.45,0,.35,1) both}
+.xv-monolith.mo-armed .mo-live.mo-in .mo-scan{animation:mo-scan 2.2s cubic-bezier(.45,0,.35,1) both}
 @keyframes mo-scan{0%{transform:translateY(-100%);opacity:0}8%,88%{opacity:1}100%{transform:translateY(0);opacity:0}}
 
 /* ---------- compact (home) ---------- */
-.xv-monolith.xv-compact .mo-frame{min-height:0;max-width:880px;overflow:visible;padding:clamp(28px,4.5vw,52px);scroll-snap-align:none;--dm:1.3;background:linear-gradient(var(--accent),var(--accent)) 0 0/18px 1px no-repeat,linear-gradient(var(--accent),var(--accent)) 0 0/1px 18px no-repeat,linear-gradient(var(--accent),var(--accent)) 100% 100%/18px 1px no-repeat,linear-gradient(var(--accent),var(--accent)) 100% 100%/1px 18px no-repeat}
+.xv-monolith.xv-compact .mo-frame{min-height:0;max-width:880px;overflow:visible;padding:clamp(28px,4.5vw,52px);--dm:1.3;background:linear-gradient(var(--accent),var(--accent)) 0 0/18px 1px no-repeat,linear-gradient(var(--accent),var(--accent)) 0 0/1px 18px no-repeat,linear-gradient(var(--accent),var(--accent)) 100% 100%/18px 1px no-repeat,linear-gradient(var(--accent),var(--accent)) 100% 100%/1px 18px no-repeat}
 .xv-monolith.xv-compact .mo-frame::before{right:-14%;width:min(120%,760px)}
 .xv-monolith.xv-compact .mo-name{margin:clamp(18px,3vw,28px) 0 14px;font-size:clamp(1.5rem,4.4vw,2.9rem)}
 .xv-monolith.xv-compact .mo-lede{margin-top:16px;font-size:1rem}
-.xv-monolith.xv-compact .mo-stack{margin-top:26px;gap:18px 12px}
+.xv-monolith.xv-compact .mo-stack{grid-template-columns:repeat(auto-fill,5.6rem);margin-top:26px;gap:18px 8px}
 .xv-monolith.xv-compact .mo-dtl{margin-top:18px}
 
 /* ---------- narrow: rail collapses to a thin left line ---------- */
 @media (max-width:899px){
-  .xv-monolith{--g:28px;--lx:17px;--rh:min(64svh,420px);--ti-size:40px}
+  .xv-monolith{--g:28px;--lx:17px;--rh:min(64svh,420px);--ti-size:38px}
   .xv-monolith .mo-rlabel,.xv-monolith .mo-yr{display:none}
   .xv-monolith .mo-remp::before{left:3px;width:5px}
   .xv-monolith .mo-stop{width:28px;height:28px}
-  .xv-monolith .mo-frame{min-height:min(78svh,640px);padding:clamp(44px,8svh,72px) 0 clamp(44px,8svh,72px) 12px}
-  .xv-monolith .mo-stack{gap:18px 8px}
-  .xv-monolith .mo-stack li{min-width:4.2rem}
+  .xv-monolith .mo-frame{min-height:min(100svh,860px);padding:clamp(44px,8svh,72px) 0 clamp(44px,8svh,72px) 12px}
+  .xv-monolith .mo-name{font-size:clamp(1.7rem,9vw,3rem)}
+  .xv-monolith .mo-stack{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 8px}
+  .xv-monolith .mo-cw{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .xv-monolith .mo-lede{max-width:34ch}
   .xv-monolith.xv-compact{--ti-size:34px}
   .xv-monolith.xv-compact .mo-frame{padding:28px 20px}
@@ -147,7 +149,8 @@ export const css = `
   .xv-monolith .mo-x{transform:none!important}
   .xv-monolith .mo-frame::before{transform:translateY(-50%)!important}
   .xv-monolith .mo-scan{display:none}
-  .xv-monolith .mo-panel.mo-open,.xv-monolith .mo-panel.mo-open::after{animation:none!important}
+  .xv-monolith .mo-panel.mo-open::after{animation:none!important}
+  .xv-monolith .mo-pts{opacity:1;transform:none}
 }
 `
 
@@ -165,22 +168,22 @@ export function mount(el, { employers, compact }) {
     const hid = `mo${u}-${i}-h`
     const live = c.current
     const strap = group
-      ? `<p class="mo-strap mo-x" style="--d:0"><span class="mo-sk">Employer</span><span class="mo-sv">${esc(e.name)}</span>${e.contracts.length > 1 ? `<span class="mo-sn">Contract ${ci + 1} of ${e.contracts.length}</span>` : ''}</p>`
+      ? `<p class="mo-strap mo-x" style="--d:0"><span class="mo-sk">Employer</span><span class="mo-sv">${esc(e.name)}</span>${e.contracts.length > 1 ? `<span class="mo-sn"><span class="mo-cw">Contract </span>${ci + 1} of ${e.contracts.length}</span>` : ''}</p>`
       : ''
     const desc = group && ci === 0 && e.desc && !compact
       ? `<div class="mo-desc mo-x" style="--d:90"><p id="mo${u}-${i}-dt">${esc(e.desc)}</p><button type="button" class="mo-link" aria-expanded="false" aria-controls="mo${u}-${i}-dt" hidden>Read more</button></div>`
       : ''
-    const stack = c.skills.map((s, k) => `<li class="mo-x" style="--d:${620 + k * 55}"><span aria-hidden="true">${icon(s)}</span><span class="mo-cap">${esc(techName(s))}</span></li>`).join('')
+    const stack = c.skills.map((s, k) => `<li class="mo-x" style="--d:${300 + k * 45}"><span aria-hidden="true">${icon(s)}</span><span class="mo-cap">${esc(techName(s))}</span></li>`).join('')
     const pts = c.pts.length
-      ? `<div class="mo-dtl mo-x" style="--d:${760 + c.skills.length * 55}"><button type="button" class="mo-more" aria-expanded="false" aria-controls="mo${u}-${i}-p"><span class="mo-pm" aria-hidden="true"></span><span class="mo-more-t">Show details<span class="sr"> for ${esc(c.co)}</span></span></button><div class="mo-panel" id="mo${u}-${i}-p" hidden><ul class="mo-pts">${c.pts.map((p) => `<li>${esc(p)}</li>`).join('')}</ul></div></div>`
+      ? `<div class="mo-dtl mo-x" style="--d:${420 + c.skills.length * 45}"><button type="button" class="mo-more" aria-expanded="false" aria-controls="mo${u}-${i}-p"><span class="mo-pm" aria-hidden="true"></span><span class="mo-more-t">Show details<span class="sr"> for ${esc(c.co)}</span></span></button><div class="mo-panel" id="mo${u}-${i}-p"><div class="mo-pin"><ul class="mo-pts">${c.pts.map((p) => `<li>${esc(p)}</li>`).join('')}</ul></div></div></div>`
       : ''
     return `<article class="mo-frame${live ? ' mo-live' : ''}" data-i="${i}" aria-labelledby="${hid}">
       ${live ? '<div class="mo-scan" aria-hidden="true"></div>' : ''}
       <div class="mo-body">
         ${strap}${desc}
-        <${H} class="mo-name mo-x" id="${hid}" tabindex="-1" data-t="${esc(c.co)}" style="--d:160">${esc(c.co)}</${H}>
-        <p class="mo-meta mo-x" style="--d:380"><span class="mo-title">${esc(c.title)}</span><span>${esc(range(c))}</span><span>${esc(dur(c.start, c.end))}</span>${live ? '<span class="badge">Live</span>' : ''}</p>
-        <p class="mo-lede mo-x" style="--d:500">${esc(c.headline)}</p>
+        <${H} class="mo-name mo-x" id="${hid}" tabindex="-1" data-t="${esc(c.co)}" style="--d:100">${esc(c.co)}</${H}>
+        <p class="mo-meta mo-x" style="--d:220"><span class="mo-title">${esc(c.title)}</span><span>${esc(range(c))}</span><span>${esc(dur(c.start, c.end))}</span>${live ? '<span class="badge">Live</span>' : ''}</p>
+        <p class="mo-lede mo-x" style="--d:300">${esc(c.headline)}</p>
         <ul class="mo-stack" aria-label="Technologies used at ${esc(c.co)}">${stack}</ul>
         ${pts}
       </div>
@@ -208,6 +211,30 @@ export function mount(el, { employers, compact }) {
   const frames = [...el.querySelectorAll('.mo-frame')]
   const cleanups = []
 
+  /* animated scroll: one easing for rail jumps and settles; any user input cancels it */
+  const root = document.documentElement
+  const outCubic = (p) => 1 - (1 - p) ** 3
+  const inOutCubic = (p) => (p < 0.5 ? 4 * p ** 3 : 1 - (-2 * p + 2) ** 3 / 2)
+  let glideRaf = 0, gliding = false, lastY = scrollY, dir = 0
+  const stopGlide = () => { cancelAnimationFrame(glideRaf); gliding = false }
+  const glide = (to, ms, ease) => {
+    stopGlide()
+    const from = scrollY, dist = to - from
+    if (reduce || Math.abs(dist) < 2) { scrollTo({ top: to, behavior: 'instant' }); lastY = scrollY; return }
+    gliding = true
+    let t0
+    const step = (now) => {
+      t0 ??= now
+      const p = Math.min(1, (now - t0) / ms)
+      scrollTo({ top: from + dist * ease(p), behavior: 'instant' })
+      lastY = scrollY
+      if (p < 1 && gliding) glideRaf = requestAnimationFrame(step)
+      else { gliding = false; lastY = scrollY }
+    }
+    glideRaf = requestAnimationFrame(step)
+  }
+  cleanups.push(() => cancelAnimationFrame(glideRaf))
+
   /* arm entrance transitions and observe frames */
   if (!reduce) {
     el.classList.add('mo-armed')
@@ -230,9 +257,7 @@ export function mount(el, { employers, compact }) {
       const open = more.getAttribute('aria-expanded') !== 'true'
       more.setAttribute('aria-expanded', String(open))
       more.querySelector('.mo-more-t').firstChild.textContent = open ? 'Hide details' : 'Show details'
-      panel.hidden = !open
-      panel.classList.remove('mo-open')
-      if (open && !reduce) { void panel.offsetWidth; panel.classList.add('mo-open') }
+      panel.classList.toggle('mo-open', open)
       return
     }
     const link = ev.target.closest('.mo-link')
@@ -295,7 +320,8 @@ export function mount(el, { employers, compact }) {
       if (!a || ev.button || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return
       ev.preventDefault()
       const f = frames[+a.dataset.i]
-      f.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+      const top = f.getBoundingClientRect().top + scrollY
+      glide(top, Math.min(1000, 450 + Math.abs(top - scrollY) * 0.25), inOutCubic)
       f.querySelector('.mo-name').focus({ preventScroll: true })
     })
     var ro = new ResizeObserver(() => { checkDesc(); queue() })
@@ -308,12 +334,32 @@ export function mount(el, { employers, compact }) {
   cleanups.push(() => ro.disconnect())
   checkDesc()
 
-  /* gentle snapping on the experience page only; proximity never traps scrolling */
-  let prevSnap
+  /* magnetic settle: a scroll that ends just short of a frame's top eases the rest of the way.
+     Directional: it never pulls the reader back, so wheel ticks and keys cannot get trapped the way native scroll-snap does. */
   if (!compact) {
-    prevSnap = document.documentElement.style.scrollSnapType
-    document.documentElement.style.scrollSnapType = 'y proximity'
-    cleanups.push(() => { document.documentElement.style.scrollSnapType = prevSnap })
+    let timer = 0
+    const settle = () => {
+      if (gliding || reduce || !dir || root.dataset.snap === 'off' || !el.getClientRects().length) return
+      const y = scrollY, T = Math.min(innerHeight * 0.18, 160)
+      let best
+      for (let k = 1; k < n; k++) {
+        const top = frames[k].getBoundingClientRect().top + y
+        const ahead = dir > 0 ? top - y : y - top
+        if (ahead > 1 && ahead <= T && (!best || ahead < best.ahead)) best = { top, ahead }
+      }
+      if (best) glide(best.top, 360 + best.ahead * 1.8, outCubic)
+    }
+    const onUserScroll = () => {
+      if (gliding) return
+      const y = scrollY
+      if (y !== lastY) { dir = y > lastY ? 1 : -1; lastY = y }
+      clearTimeout(timer)
+      timer = setTimeout(settle, 150)
+    }
+    const inputs = ['wheel', 'touchstart', 'keydown', 'pointerdown']
+    addEventListener('scroll', onUserScroll, { passive: true })
+    inputs.forEach((t) => addEventListener(t, stopGlide, { passive: true }))
+    cleanups.push(() => { removeEventListener('scroll', onUserScroll); inputs.forEach((t) => removeEventListener(t, stopGlide)); clearTimeout(timer) })
   }
 
   return () => cleanups.forEach((fn) => fn())

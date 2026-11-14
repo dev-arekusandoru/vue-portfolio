@@ -247,28 +247,22 @@ button{font:inherit;color:inherit}
   </div>
 </div>
 
-<nav class="variant-picker" id="picker" aria-label="Variants">
-  <div class="variant-picker-group" role="group" aria-labelledby="variants-structure">
-    <span class="variant-picker-heading" id="variants-structure">
+<nav class="variant-picker" id="picker" aria-label="Scroll feel">
+  <div class="variant-picker-group" role="group" aria-labelledby="variants-snap">
+    <span class="variant-picker-heading" id="variants-snap">
       <svg aria-hidden="true" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v4a3 3 0 0 0 3 3h7"/><path d="m10 7 3 3-3 3"/></svg>
-      Experience structure
+      Scroll feel
     </span>
-    <button type="button" data-variant="interlinked" aria-pressed="true">Interlinked</button>
-    <button type="button" data-variant="matrix" aria-pressed="false">Stack matrix</button>
-    <button type="button" data-variant="memory" aria-pressed="false">Memory scan</button>
-    <button type="button" data-variant="tenure" aria-pressed="false">Tenure strip</button>
-    <button type="button" data-variant="monolith" aria-pressed="false">Monolith</button>
+    <button type="button" data-snap="off" aria-pressed="false">Off</button>
+    <button type="button" data-snap="magnetic" aria-pressed="true">Magnetic</button>
     <button type="button" class="variant-action" id="replay">Replay boot</button>
   </div>
 </nav>
 <div class="variant-picker-select" id="picker-select">
-  <select aria-label="Variant">
-    <optgroup label="Experience structure">
-      <option value="interlinked">Interlinked</option>
-      <option value="matrix">Stack matrix</option>
-      <option value="memory">Memory scan</option>
-      <option value="tenure">Tenure strip</option>
-      <option value="monolith">Monolith</option>
+  <select aria-label="Scroll feel">
+    <optgroup label="Scroll feel">
+      <option value="off">Off</option>
+      <option value="magnetic" selected>Magnetic</option>
     </optgroup>
   </select>
   <svg aria-hidden="true" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 4 4 4-4"/></svg>
@@ -299,11 +293,11 @@ const projectHTML = (p) => `
 document.querySelectorAll('[data-list=projects]').forEach((el) => { el.innerHTML = projects.slice(0, +el.dataset.limit || projects.length).map(projectHTML).join('') })
 document.getElementById('all-projects').textContent = `All projects (${projects.length})`
 
-/* experience variants: each module exports css (string) and mount(el, { employers, compact }) -> optional cleanup fn */
-const order = ['interlinked', 'matrix', 'memory', 'tenure', 'monolith']
+/* experience: the variant module exports css (string) and mount(el, { employers, compact }) -> optional cleanup fn */
+const variant = 'monolith'
 const xvStyle = document.getElementById('xv-style')
 const mounts = []
-let variant, renderToken = 0
+let renderToken = 0
 async function renderExperience() {
   const my = ++renderToken
   const mod = await import(`./variants/${variant}.js?v=${Date.now()}`)
@@ -334,27 +328,28 @@ function go() {
 }
 addEventListener('hashchange', go)
 
-/* picker */
-const buttons = [...document.querySelectorAll('.variant-picker [data-variant]')]
+/* picker: scroll-snap feel, applied on the experience page only */
+const SNAPS = ['off', 'magnetic']
+let snapMode = 'magnetic'
+const buttons = [...document.querySelectorAll('.variant-picker [data-snap]')]
 const select = document.querySelector('.variant-picker-select select')
-function setVariant(v, { push = true, nav = true } = {}) {
-  if (!order.includes(v)) v = order[0]
-  variant = v
-  buttons.forEach((b) => { const on = b.dataset.variant === v; b.setAttribute('aria-pressed', on); if (on) b.scrollIntoView({ block: 'nearest' }) })
-  select.value = v
-  if (push) { const u = new URL(location); u.searchParams.set('__variant', v); history.replaceState(null, '', u) }
-  renderExperience()
-  if (nav && route !== 'experience') location.hash = '#/experience'
+function applySnap() { document.documentElement.dataset.snap = snapMode }
+function setSnap(m, { push = true } = {}) {
+  if (!SNAPS.includes(m)) m = 'magnetic'
+  snapMode = m
+  buttons.forEach((b) => b.setAttribute('aria-pressed', b.dataset.snap === m))
+  select.value = m
+  if (push) { const u = new URL(location); u.searchParams.set('__snap', m); history.replaceState(null, '', u) }
+  applySnap()
 }
-buttons.forEach((b) => b.addEventListener('click', () => setVariant(b.dataset.variant)))
-select.addEventListener('change', () => setVariant(select.value))
+buttons.forEach((b) => b.addEventListener('click', () => setSnap(b.dataset.snap)))
+select.addEventListener('change', () => setSnap(select.value))
 addEventListener('keydown', (e) => {
   if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey || e.defaultPrevented) return
   if (e.target.closest('input,textarea,select,[contenteditable]')) return
   if (!document.getElementById('boot').hidden) return
   if (e.key.toLowerCase() === 'h') { const h = !document.getElementById('picker').hidden; document.getElementById('picker').hidden = h; document.getElementById('picker-select').hidden = h; return }
-  if (e.key.toLowerCase() !== 'v') return // [ and ] would clash with variant keyboard handling; V cycles
-  setVariant(order[(order.indexOf(variant) + 1) % order.length])
+  if (e.key.toLowerCase() === 'v') setSnap(SNAPS[(SNAPS.indexOf(snapMode) + 1) % SNAPS.length])
 })
 
 /* hero glow warms on scroll */
@@ -381,9 +376,10 @@ async function runBoot() {
 document.getElementById('replay').addEventListener('click', () => { scrollTo(0, 0); runBoot() })
 
 const qs = new URLSearchParams(location.search)
-if (!location.hash && qs.get('__variant')) history.replaceState(null, '', location.pathname + location.search + '#/experience')
+if (!location.hash && qs.get('__snap')) history.replaceState(null, '', location.pathname + location.search + '#/experience')
 go()
-setVariant(qs.get('__variant') || order[0], { push: false, nav: false })
+setSnap(qs.get('__snap') || 'magnetic', { push: false })
+renderExperience()
 if (qs.get('boot') !== '0') runBoot()
 </script>
 </body>
