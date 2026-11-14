@@ -6,6 +6,7 @@
 <title>Alexandru Muresan</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.iconify.design" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@200;300&family=Martian+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -16,6 +17,7 @@ ul,ol{list-style:none}
 button{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 
+/* design tokens: variants inherit these */
 .site{
   --bg:#080a0c;--fg:#e6e0d4;--muted:#a69f92;--rule:rgb(230 224 212/.16);
   --accent:#ff8c2b;--blue:#5ad1e6;
@@ -24,6 +26,15 @@ button{font:inherit;color:inherit}
   position:relative;min-height:100dvh;overflow:clip;background:var(--bg);color:var(--fg);
   font:300 .92rem/1.7 var(--mono)}
 .wrap{position:relative;z-index:2;width:min(1120px,100% - 40px);margin-inline:auto}
+
+/* shared bits variants may use */
+.ti{display:inline-block;flex:none;width:var(--ti-size,22px);height:var(--ti-size,22px);background:currentColor;-webkit-mask:var(--ti) center/contain no-repeat;mask:var(--ti) center/contain no-repeat;transition:color .3s var(--ease),filter .3s var(--ease),opacity .3s var(--ease)}
+.ti-txt{display:inline-grid;place-items:center;background:none;-webkit-mask:none;mask:none;border:1px solid currentColor;font:400 calc(var(--ti-size,22px)*.42)/1 var(--mono);text-transform:uppercase}
+.badge{display:inline-flex;align-items:center;font-size:.72rem;color:var(--blue)}
+.badge::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--blue);box-shadow:0 0 8px var(--blue);margin-right:7px;animation:pulse 2.4s ease-in-out infinite}
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--blue);box-shadow:0 0 10px var(--blue);margin-right:8px;animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.3}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 .grain{position:fixed;inset:-50%;z-index:50;pointer-events:none;mix-blend-mode:overlay;opacity:.16;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -54,8 +65,6 @@ button{font:inherit;color:inherit}
 .readout{font-size:.78rem;display:grid;gap:10px}
 .readout div{display:grid;grid-template-columns:7.5rem 1fr;gap:12px;padding-bottom:10px;border-bottom:1px solid rgb(230 224 212/.22)}
 .readout dt{color:var(--muted)}
-.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--blue);box-shadow:0 0 10px var(--blue);margin-right:8px;animation:pulse 2.4s ease-in-out infinite}
-@keyframes pulse{50%{opacity:.3}}
 
 /* sections */
 .view{display:none}
@@ -69,7 +78,7 @@ button{font:inherit;color:inherit}
 .page-top h1{font:200 clamp(2rem,5vw,3.6rem)/1.1 var(--display);letter-spacing:.08em;margin-bottom:12px}
 .page-top p{color:var(--muted);max-width:52ch}
 
-/* ===== projects: shared ===== */
+/* projects */
 .spec{position:relative}
 .spec h3{font:300 1.5rem/1.15 var(--display);letter-spacing:.05em}
 .spec .yr,.spec .st{font-size:.76rem;color:var(--muted)}
@@ -88,8 +97,6 @@ button{font:inherit;color:inherit}
 .spec-art::after{filter:hue-rotate(80deg) saturate(1.6)}
 .spec:hover .spec-art::before,.spec:focus-within .spec-art::before{opacity:.75;transform:translateX(-5px)}
 .spec:hover .spec-art::after,.spec:focus-within .spec-art::after{opacity:.75;transform:translateX(5px)}
-
-/* plates (home) */
 .specs.plates{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:clamp(20px,3vw,40px)}
 .plates .spec{display:grid;grid-template-rows:auto 1fr;gap:18px}
 .plates .spec-art{aspect-ratio:5/4;box-shadow:inset 0 0 0 1px var(--rule)}
@@ -99,8 +106,6 @@ button{font:inherit;color:inherit}
 .plates .spec h3{font-size:1.25rem}
 .plates .spec p{font-size:.84rem;color:var(--muted)}
 .plates .spec .links{padding-top:6px}
-
-/* index (projects page): text rows, art + detail revealed on hover/focus */
 .specs.index{border-top:1px solid var(--rule)}
 .index .spec{border-bottom:1px solid var(--rule);transition:background .5s var(--ease)}
 .index .spec:hover,.index .spec:focus-within{background:rgb(255 140 43/.05)}
@@ -113,92 +118,6 @@ button{font:inherit;color:inherit}
 .index .more-in>div{overflow:hidden;display:grid;gap:14px;padding-left:5rem;max-width:calc(5rem + 58ch)}
 .index .more-in>div>:last-child{margin-bottom:26px}
 .index .spec p{max-width:58ch}
-
-/* ===== experience: shared ===== */
-.xp-co{font:300 1.35rem/1.2 var(--display);letter-spacing:.04em}
-.xp-meta{font-size:.78rem;color:var(--muted)}
-.xp-grp-name{font:300 1.6rem/1.15 var(--display);letter-spacing:.05em}
-.xp-desc{max-width:62ch;color:var(--fg)}
-.points{display:grid;gap:8px;max-width:60ch}
-.points li{padding-left:18px;position:relative}
-.points li::before{content:"";position:absolute;left:0;top:.95em;width:8px;height:1px;background:var(--accent)}
-.badge{display:inline-flex;align-items:center;font-size:.72rem;color:var(--blue)}
-.badge::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--blue);box-shadow:0 0 8px var(--blue);margin-right:7px;animation:pulse 2.4s ease-in-out infinite}
-.body{display:grid;gap:12px;align-content:start}
-.body .title-row{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
-@keyframes flicker{0%,93%,100%{opacity:1}94%{opacity:.72}96%{opacity:1}97.5%{opacity:.82}}
-.live .xp-co{text-shadow:-1px 0 rgb(255 140 43/.55),1px 0 rgb(90 209 230/.55);animation:flicker 7s infinite}
-
-/* --- A. Trace: circuit rail, groups branch into contracts --- */
-.tr{position:relative;display:grid;gap:52px;padding-left:40px}
-.tr::before{content:"";position:absolute;left:6px;top:8px;bottom:0;width:1px;background:linear-gradient(var(--accent) 0,rgb(255 140 43/.45) 70%,transparent)}
-.tr-item{position:relative}
-.tr-dot{position:absolute;left:-40px;top:.55rem;width:13px;height:13px;border-radius:50%;background:var(--bg);border:1px solid var(--accent);box-shadow:0 0 0 4px var(--bg)}
-.tr-grp>.tr-dot{width:19px;height:19px;left:-43px;top:.4rem;background:var(--accent);box-shadow:0 0 0 4px var(--bg),0 0 18px rgb(255 140 43/.6)}
-.tr-dot.on{background:var(--blue);border-color:var(--blue);box-shadow:0 0 0 4px var(--bg),0 0 16px var(--blue);animation:pulse 2.4s ease-in-out infinite}
-.tr-kids{position:relative;display:grid;gap:36px;margin-top:34px;padding-left:34px}
-.tr-kids::before{content:"";position:absolute;left:-34px;width:40px;top:-18px;height:1px;background:var(--accent)}
-.tr-kids::after{content:"";position:absolute;left:6px;top:-18px;bottom:0;width:1px;background:linear-gradient(var(--accent),rgb(255 140 43/.2))}
-.tr-kids .tr-dot{left:-34px}
-.tr-grp>.tr-card{display:grid;gap:10px}
-.tr-card.arch .xp-co{color:var(--fg)}
-
-/* --- B. Span: nested timeline + enhance panel --- */
-.sp{display:grid;gap:36px}
-.sp-chart{position:relative;display:grid;gap:18px;padding-top:30px}
-.sp-ticks{position:absolute;inset:0;pointer-events:none}
-.sp-ticks i{position:absolute;top:0;bottom:0;width:1px;background:var(--rule)}
-.sp-ticks b{position:absolute;top:0;font-weight:300;font-size:.72rem;color:var(--muted);padding-left:6px}
-.sp-row{position:relative;display:grid;gap:7px}
-.sp-row.kid{padding-left:clamp(12px,3vw,28px)}
-.sp-label{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;font-size:.8rem}
-.sp-label strong{font-weight:400}
-.sp-label small{font-size:.74rem;color:var(--muted)}
-.sp-track{position:relative;height:18px}
-.sp-row.kid .sp-track{margin-left:calc(-1*clamp(12px,3vw,28px));}
-.sp-bar{all:unset;box-sizing:border-box;position:absolute;top:0;bottom:0;min-width:12px;cursor:pointer;background:rgb(255 140 43/.78);transition:background .3s var(--ease),box-shadow .3s var(--ease),transform .3s var(--ease)}
-.sp-bar:hover{background:var(--accent)}
-.sp-bar:focus-visible{outline:2px solid var(--fg);outline-offset:3px}
-.sp-bar.grp{background:repeating-linear-gradient(135deg,rgb(255 140 43/.18) 0 3px,transparent 3px 7px);border:1px solid var(--accent)}
-.sp-bar.grp:hover{background:repeating-linear-gradient(135deg,rgb(255 140 43/.3) 0 3px,transparent 3px 7px)}
-.sp-bar.on{background:var(--blue);box-shadow:0 0 16px rgb(90 209 230/.55)}
-.sp-bar[aria-pressed=true]{outline:1px solid var(--fg);outline-offset:3px}
-.sp-panel{position:relative;padding:clamp(20px,3vw,32px);border:1px solid var(--rule);min-height:200px;overflow:hidden}
-.sp-panel .inner{display:grid;gap:14px}
-.sp-scan{position:absolute;left:0;right:0;top:0;height:2px;background:var(--accent);box-shadow:0 0 18px 3px rgb(255 140 43/.7);opacity:0;pointer-events:none}
-
-/* --- C. Memory scan: cards resolve from wireframe --- */
-.ms{display:grid;gap:clamp(48px,7vw,80px)}
-.ms-emp{display:grid;gap:22px}
-.ms-file{display:grid;gap:8px;padding-bottom:20px;border-bottom:1px solid var(--rule)}
-.ms-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:22px}
-.ms-card{position:relative;border:1px solid var(--rule);background:linear-gradient(rgb(255 140 43/.05),transparent 60%);overflow:hidden}
-.ms-card.live{border-color:rgb(90 209 230/.4)}
-.ms-inner{padding:clamp(20px,3vw,30px)}
-.ms-wire{position:absolute;inset:0;pointer-events:none;opacity:0;background-image:linear-gradient(rgb(255 140 43/.2) 1px,transparent 1px),linear-gradient(90deg,rgb(255 140 43/.2) 1px,transparent 1px);background-size:22px 22px}
-.ms-scan{position:absolute;left:0;right:0;top:0;height:2px;background:var(--accent);box-shadow:0 0 18px 3px rgb(255 140 43/.7);opacity:0;pointer-events:none}
-.ms-card.live .ms-scan{background:var(--blue);box-shadow:0 0 18px 3px rgb(90 209 230/.7)}
-.js .ms-card .ms-inner{clip-path:inset(0 0 100% 0);filter:blur(6px) brightness(1.4);transition:clip-path 1.5s cubic-bezier(.45,.05,.3,1),filter 1.6s var(--ease)}
-.js .ms-card .ms-wire{opacity:1;transition:opacity 1.8s var(--ease)}
-.js .ms-card.in .ms-inner{clip-path:inset(0);filter:none}
-.js .ms-card.in .ms-wire{opacity:0}
-.js .ms-card.in .ms-scan{animation:scan 1.5s cubic-bezier(.45,.05,.3,1) forwards}
-@keyframes scan{0%{top:0;opacity:1}90%{opacity:1}100%{top:100%;opacity:0}}
-
-/* --- D. Unit file: replicant spec sheet --- */
-.uf{display:grid;gap:clamp(40px,6vw,72px)}
-.uf-emp{display:grid;gap:18px}
-.uf-head{display:grid;gap:8px;padding:18px 0;border-top:1px solid var(--accent);border-bottom:1px solid var(--rule)}
-.uf-head .kind{font-size:.74rem;color:var(--accent)}
-.uf-card{position:relative;display:grid;grid-template-columns:minmax(220px,300px) minmax(0,1fr);gap:clamp(20px,4vw,48px);padding:clamp(20px,3vw,30px);border:1px solid var(--rule);background:linear-gradient(135deg,rgb(255 140 43/.05),transparent 50%)}
-.uf-card.live{border-color:rgb(90 209 230/.4)}
-.uf-side{display:grid;gap:16px;align-content:start}
-.uf-serial{font:300 1.3rem/1 var(--display);letter-spacing:.08em}
-.uf-code{height:38px;opacity:.8;background:repeating-linear-gradient(90deg,var(--fg) 0 2px,transparent 2px 4px,var(--fg) 4px 5px,transparent 5px 9px,var(--fg) 9px 12px,transparent 12px 14px,var(--fg) 14px 15px,transparent 15px 18px)}
-.uf-fields{display:grid;gap:0;font-size:.76rem}
-.uf-fields div{display:grid;grid-template-columns:5.5rem 1fr;gap:10px;padding:7px 0;border-bottom:1px solid var(--rule)}
-.uf-fields dt{color:var(--muted)}
-.uf-fields dd{overflow-wrap:anywhere}
 
 /* off the clock (parked) */
 .shelf{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:clamp(16px,2.5vw,32px)}
@@ -236,14 +155,11 @@ button{font:inherit;color:inherit}
   .index .more-in>div{padding-left:0}
   .index .spec-art{display:none}
   .specs.plates{grid-template-columns:1fr}
-  .uf-card{grid-template-columns:1fr}
 }
 @media (max-width:420px){.readout div{grid-template-columns:1fr;gap:2px}}
 @media (hover:none){.index .more-in{grid-template-rows:1fr}}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
-  .js .ms-card .ms-inner{clip-path:none;filter:none}
-  .js .ms-card .ms-wire{opacity:0}
   .grain{display:none}
 }
 
@@ -264,9 +180,10 @@ button{font:inherit;color:inherit}
 @media (min-width:900px){.variant-picker{display:flex}}
 @media (max-width:899px){.variant-picker-select{display:block}}
 </style>
+<style id="xv-style"></style>
 </head>
 <body>
-<div class="site" id="site" data-xv="trace">
+<div class="site" id="site">
   <div class="grain" aria-hidden="true"></div>
   <div id="boot" hidden role="status" aria-live="polite"><pre id="boot-text"></pre><small>click or press any key to skip</small></div>
 
@@ -303,7 +220,7 @@ button{font:inherit;color:inherit}
       </section>
       <section class="sec" aria-labelledby="h-now">
         <div class="sec-head"><h2 id="h-now">Current role</h2><a class="more" href="#/experience">Full experience</a></div>
-        <div data-list="experience" data-compact></div>
+        <div data-xp="compact"></div>
       </section>
       <section class="sec" aria-labelledby="h-off">
         <div class="sec-head"><h2 id="h-off">Off the clock</h2></div>
@@ -323,7 +240,7 @@ button{font:inherit;color:inherit}
 
     <div class="view" data-route="experience">
       <div class="page-top"><h1>Experience</h1><p>Where I have worked, newest first.</p></div>
-      <section class="sec tight" aria-label="All experience"><div data-list="experience"></div></section>
+      <section class="sec tight" aria-label="All experience"><div data-xp="full"></div></section>
     </div>
 
     <footer class="foot"><span>© 2025 Alexandru Muresan</span><span id="src"></span></footer>
@@ -334,241 +251,140 @@ button{font:inherit;color:inherit}
   <div class="variant-picker-group" role="group" aria-labelledby="variants-structure">
     <span class="variant-picker-heading" id="variants-structure">
       <svg aria-hidden="true" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v4a3 3 0 0 0 3 3h7"/><path d="m10 7 3 3-3 3"/></svg>
-      Experience layout
+      Experience structure
     </span>
-    <button type="button" data-variant="trace" aria-pressed="true">Trace</button>
-    <button type="button" data-variant="span" aria-pressed="false">Span</button>
+    <button type="button" data-variant="interlinked" aria-pressed="true">Interlinked</button>
+    <button type="button" data-variant="matrix" aria-pressed="false">Stack matrix</button>
     <button type="button" data-variant="memory" aria-pressed="false">Memory scan</button>
-    <button type="button" data-variant="unit" aria-pressed="false">Unit file</button>
+    <button type="button" data-variant="tenure" aria-pressed="false">Tenure strip</button>
+    <button type="button" data-variant="monolith" aria-pressed="false">Monolith</button>
     <button type="button" class="variant-action" id="replay">Replay boot</button>
   </div>
 </nav>
 <div class="variant-picker-select" id="picker-select">
   <select aria-label="Variant">
-    <optgroup label="Experience layout">
-      <option value="trace">Trace</option>
-      <option value="span">Span</option>
+    <optgroup label="Experience structure">
+      <option value="interlinked">Interlinked</option>
+      <option value="matrix">Stack matrix</option>
       <option value="memory">Memory scan</option>
-      <option value="unit">Unit file</option>
+      <option value="tenure">Tenure strip</option>
+      <option value="monolith">Monolith</option>
     </optgroup>
   </select>
   <svg aria-hidden="true" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 4 4 4-4"/></svg>
 </div>
 
-<script>
-(async () => {
-  const site = document.getElementById('site');
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  document.documentElement.classList.add('js');
-  const PB = new URLSearchParams(location.search).get('pb') || 'http://127.0.0.1:8091';
-  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
-  const list = v => Array.isArray(v) ? v : String(v || '').split(/[,\n]/).map(x => x.trim()).filter(Boolean);
-  const D = s => new Date(String(s).replace(' ', 'T'));
-  const fmt = d => d.toLocaleDateString('en-US', { month:'short', year:'numeric', timeZone:'UTC' });
-  const dur = (a, b) => { const m = Math.max(1, Math.round((b - a) / 2.63e9)); const y = Math.floor(m / 12), r = m % 12; return [y && `${y} yr`, r && `${r} mo`].filter(Boolean).join(' '); };
+<script type="module">
+import { esc, reduce, projects, employers, currentEmployers, isLive } from './lib/data.js'
 
-  /* ---------- data: live PocketBase, fallback sample ---------- */
-  async function pbList(c, sort) {
-    const r = await fetch(`${PB}/api/collections/${c}/records?perPage=100&sort=${sort}`, { signal: AbortSignal.timeout(2500) });
-    if (!r.ok) throw new Error(c + ' ' + r.status);
-    return (await r.json()).items;
-  }
-  let live = true, rawP, rawE, rawG;
-  try { [rawP, rawE, rawG] = await Promise.all([pbList('projects', '-start_date,created'), pbList('experiences', '-start_date,created'), pbList('experience_groups', 'created')]); }
-  catch (e) {
-    live = false; console.warn('PocketBase unreachable, using sample data', e);
-    rawG = [{ id:'g1', name:'SYSTOLIC Inc', description:'Working as a government subcontractor in software development, providing high-quality software engineering services to the Intelligence Community (IC) in support of U.S. national defense.' }];
-    rawE = [
-      { id:'e1', company:'SYSTOLIC Inc', title:'Software Engineer', start_date:'2025-01-08', end_date:'', current:true, group:'g1', skills:['Ruby','Ruby on Rails','PostgreSQL'], description:['Sample bullet.'] },
-      { id:'e2', company:'Peraton', title:'Software Engineer', start_date:'2024-09-04', end_date:'2025-01-07', current:false, group:'g1', skills:['Java','Docker'], description:['Sample bullet.'] },
-      { id:'e3', company:'Katapult Engineering', title:'Software Development Intern', start_date:'2023-06-01', end_date:'2023-11-30', current:false, group:'', skills:['Firebase','CSS'], description:['Sample bullet.'] },
-    ];
-    rawP = [{ id:'p1', name:'Sample project', start_date:'2025-01-01', current:true, stack:['Vue'], highlights:['Sample highlight.'] }];
-  }
-  document.getElementById('src').textContent = live ? 'Data: local PocketBase' : 'Data: sample (PocketBase offline)';
+const site = document.getElementById('site')
+document.documentElement.classList.add('js')
+document.getElementById('src').textContent = isLive ? 'Data: local PocketBase' : 'Data: sample (PocketBase offline)'
 
-  /* projects */
-  const palettes = [['#ff8c2b','#1b2a33','#5ad1e6'],['#c0502a','#101820','#ff8c2b'],['#5ad1e6','#2a1608','#ff8c2b'],['#ff8c2b','#0e1a1f','#c0502a'],['#d98a4a','#1a1208','#5ad1e6']];
-  const projects = rawP.map(p => ({ ...p, pal: palettes[[...p.name].reduce((a, c) => a + c.charCodeAt(0), 0) % palettes.length] }));
-  const projectHTML = p => `
-    <article class="spec">
-      <div class="spec-art" style="--a1:${p.pal[0]};--a2:${p.pal[1]};--a3:${p.pal[2]}"><span aria-hidden="true">${esc(p.name[0])}</span></div>
-      <div class="spec-body">
-        <header class="spec-head"><span class="yr">${D(p.start_date).getUTCFullYear()}</span><h3>${esc(p.name)}</h3><span class="st ${p.current ? 'live' : 'off'}">${p.current ? 'Active' : 'Shipped'}</span></header>
-        <div class="more-in"><div>
-          <p>${esc(list(p.highlights)[0] || '')}</p>
-          <ul class="stack">${list(p.stack).map(s => `<li>${esc(s)}</li>`).join('')}</ul>
-          ${(p.code_url || p.demo_url) ? `<div class="links">${p.code_url ? `<a href="${esc(p.code_url)}" target="_blank" rel="noopener noreferrer">Code</a>` : ''}${p.demo_url ? `<a href="${esc(p.demo_url)}" target="_blank" rel="noopener noreferrer">Demo</a>` : ''}</div>` : ''}
-        </div></div>
-      </div>
-    </article>`;
+/* projects */
+const D = (s) => new Date(String(s).replace(' ', 'T'))
+const list = (v) => (Array.isArray(v) ? v : String(v || '').split(/[,\n]/).map((x) => x.trim()).filter(Boolean))
+const projectHTML = (p) => `
+  <article class="spec">
+    <div class="spec-art" style="--a1:${p.pal[0]};--a2:${p.pal[1]};--a3:${p.pal[2]}"><span aria-hidden="true">${esc(p.name[0])}</span></div>
+    <div class="spec-body">
+      <header class="spec-head"><span class="yr">${D(p.start_date).getUTCFullYear()}</span><h3>${esc(p.name)}</h3><span class="st ${p.current ? 'live' : 'off'}">${p.current ? 'Active' : 'Shipped'}</span></header>
+      <div class="more-in"><div>
+        <p>${esc(list(p.highlights)[0] || '')}</p>
+        <ul class="stack">${list(p.stack).map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
+        ${(p.code_url || p.demo_url) ? `<div class="links">${p.code_url ? `<a href="${esc(p.code_url)}" target="_blank" rel="noopener noreferrer">Code</a>` : ''}${p.demo_url ? `<a href="${esc(p.demo_url)}" target="_blank" rel="noopener noreferrer">Demo</a>` : ''}</div>` : ''}
+      </div></div>
+    </div>
+  </article>`
+document.querySelectorAll('[data-list=projects]').forEach((el) => { el.innerHTML = projects.slice(0, +el.dataset.limit || projects.length).map(projectHTML).join('') })
+document.getElementById('all-projects').textContent = `All projects (${projects.length})`
 
-  /* experience model: employers (group or solo) -> contracts */
-  const contracts = rawE.map(e => ({ id:e.id, co:e.company, title:e.title, start:D(e.start_date), end:e.current ? new Date() : D(e.end_date), current:!!e.current, skills:list(e.skills), pts:Array.isArray(e.description) ? e.description : list(e.description), group:e.group }));
-  const range = c => `${fmt(c.start)} – ${c.current ? 'Present' : fmt(c.end)}`;
-  let employers = rawG.map(g => {
-    const cs = contracts.filter(c => c.group === g.id).sort((a, b) => b.start - a.start);
-    return cs.length && { kind:'group', id:g.id, name:g.name, desc:g.description, contracts:cs, start:new Date(Math.min(...cs.map(c => c.start))), end:new Date(Math.max(...cs.map(c => c.end))), current:cs.some(c => c.current) };
-  }).filter(Boolean);
-  employers.push(...contracts.filter(c => !rawG.some(g => g.id === c.group)).map(c => ({ kind:'solo', id:c.id, name:c.co, contracts:[c], start:c.start, end:c.end, current:c.current })));
-  employers.sort((a, b) => b.end - a.end || b.start - a.start);
-  const currentEmployers = () => { const f = employers.filter(e => e.current).map(e => ({ ...e, contracts:e.contracts.filter(c => c.current) })); return f.length ? f : employers.slice(0, 1); };
+/* experience variants: each module exports css (string) and mount(el, { employers, compact }) -> optional cleanup fn */
+const order = ['interlinked', 'matrix', 'memory', 'tenure', 'monolith']
+const xvStyle = document.getElementById('xv-style')
+const mounts = []
+let variant, renderToken = 0
+async function renderExperience() {
+  const my = ++renderToken
+  const mod = await import(`./variants/${variant}.js?v=${Date.now()}`)
+  if (my !== renderToken) return
+  mounts.splice(0).forEach((fn) => { try { fn?.() } catch (e) { console.error(e) } })
+  xvStyle.textContent = mod.css
+  document.querySelectorAll('[data-xp]').forEach((el) => {
+    const compact = el.dataset.xp === 'compact'
+    el.replaceChildren()
+    el.className = `xv xv-${variant}${compact ? ' xv-compact' : ''}`
+    mounts.push(mod.mount(el, { employers: compact ? currentEmployers() : employers, compact }))
+  })
+}
 
-  const badge = c => c.current ? `<span class="badge">Live</span>` : '';
-  const body = (c, { head = true } = {}) => `
-    <div class="body">
-      <div class="title-row"><h3 class="xp-co">${esc(c.co)}</h3>${badge(c)}</div>
-      <p class="xp-meta">${esc(c.title)} · ${range(c)} · ${dur(c.start, c.end)}</p>
-      <ul class="points">${c.pts.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
-      <ul class="stack">${c.skills.map(s => `<li>${esc(s)}</li>`).join('')}</ul>
-    </div>`;
-  const grpMeta = e => `${fmt(e.start)} – ${e.current ? 'Present' : fmt(e.end)} · ${e.contracts.length} contract${e.contracts.length > 1 ? 's' : ''}`;
+/* routing */
+const titles = { home: 'Alexandru Muresan', projects: 'Projects — Alexandru Muresan', experience: 'Experience — Alexandru Muresan' }
+let route
+function go() {
+  const r = location.hash.replace(/^#\/?/, '') || 'home'
+  const next = ['projects', 'experience'].includes(r) ? r : 'home'
+  document.querySelectorAll('.view').forEach((v) => v.classList.toggle('on', v.dataset.route === next))
+  document.querySelectorAll('[data-home-only]').forEach((v) => (v.style.display = next === 'home' ? '' : 'none'))
+  document.querySelectorAll('[data-nav]').forEach((a) => (next === a.dataset.nav ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current')))
+  document.title = titles[next]
+  if (route && route !== next) scrollTo({ top: 0, behavior: 'instant' })
+  route = next
+  onScroll()
+}
+addEventListener('hashchange', go)
 
-  /* A. Trace */
-  const trace = emps => `<ol class="tr">${emps.map(e => e.kind === 'solo'
-    ? `<li class="tr-item ${e.contracts[0].current ? 'live' : ''}"><span class="tr-dot ${e.contracts[0].current ? 'on' : ''}"></span><div class="tr-card">${body(e.contracts[0])}</div></li>`
-    : `<li class="tr-item tr-grp"><span class="tr-dot"></span>
-        <div class="tr-card"><h3 class="xp-grp-name">${esc(e.name)}</h3><p class="xp-meta">Subcontractor · ${grpMeta(e)}</p><p class="xp-desc">${esc(e.desc)}</p></div>
-        <ol class="tr-kids">${e.contracts.map(c => `<li class="tr-item ${c.current ? 'live' : ''}"><span class="tr-dot ${c.current ? 'on' : ''}"></span><div class="tr-card">${body(c)}</div></li>`).join('')}</ol></li>`).join('')}</ol>`;
+/* picker */
+const buttons = [...document.querySelectorAll('.variant-picker [data-variant]')]
+const select = document.querySelector('.variant-picker-select select')
+function setVariant(v, { push = true, nav = true } = {}) {
+  if (!order.includes(v)) v = order[0]
+  variant = v
+  buttons.forEach((b) => { const on = b.dataset.variant === v; b.setAttribute('aria-pressed', on); if (on) b.scrollIntoView({ block: 'nearest' }) })
+  select.value = v
+  if (push) { const u = new URL(location); u.searchParams.set('__variant', v); history.replaceState(null, '', u) }
+  renderExperience()
+  if (nav && route !== 'experience') location.hash = '#/experience'
+}
+buttons.forEach((b) => b.addEventListener('click', () => setVariant(b.dataset.variant)))
+select.addEventListener('change', () => setVariant(select.value))
+addEventListener('keydown', (e) => {
+  if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey || e.defaultPrevented) return
+  if (e.target.closest('input,textarea,select,[contenteditable]')) return
+  if (!document.getElementById('boot').hidden) return
+  if (e.key.toLowerCase() === 'h') { const h = !document.getElementById('picker').hidden; document.getElementById('picker').hidden = h; document.getElementById('picker-select').hidden = h; return }
+  if (e.key.toLowerCase() !== 'v') return // [ and ] would clash with variant keyboard handling; V cycles
+  setVariant(order[(order.indexOf(variant) + 1) % order.length])
+})
 
-  /* B. Span */
-  function span(emps, el) {
-    const all = emps.flatMap(e => e.contracts);
-    const y0 = Math.min(...all.map(c => c.start.getUTCFullYear()));
-    const t0 = +new Date(y0, 0, 1), t1 = Math.max(...all.map(c => +c.end), Date.now()) + 20 * 864e5;
-    const pct = d => (+d - t0) / (t1 - t0) * 100;
-    const ticks = []; for (let y = y0; +new Date(y, 0, 1) < t1; y++) ticks.push(y);
-    const bar = (a, b, cls, sel, label) => `<button type="button" class="sp-bar ${cls}" data-sel="${sel}" aria-pressed="false" aria-controls="sp-panel" aria-label="${esc(label)}" style="left:${pct(a).toFixed(2)}%;width:${Math.max(0.01, pct(b) - pct(a)).toFixed(2)}%"></button>`;
-    const row = (name, meta, track, kid) => `<div class="sp-row ${kid ? 'kid' : ''}"><div class="sp-label"><strong>${esc(name)}</strong><small>${esc(meta)}</small></div><div class="sp-track">${track}</div></div>`;
-    const rows = emps.map(e => e.kind === 'solo'
-      ? row(e.name, `${e.contracts[0].title} · ${range(e.contracts[0])}`, bar(e.start, e.end, e.current ? 'on' : '', e.contracts[0].id, `${e.name}, ${range(e.contracts[0])}`))
-      : row(e.name, `Subcontractor · ${grpMeta(e)}`, bar(e.start, e.end, 'grp', 'g:' + e.id, `${e.name}, all contracts`)) +
-        e.contracts.map(c => row(c.co, `${c.title} · ${range(c)}`, bar(c.start, c.end, c.current ? 'on' : '', c.id, `${c.co}, ${range(c)}`), true)).join('')).join('');
-    el.innerHTML = `<div class="sp"><div class="sp-chart">
-      <div class="sp-ticks" aria-hidden="true">${ticks.map(y => `<i style="left:${pct(new Date(y, 0, 1)).toFixed(2)}%"></i><b style="left:${pct(new Date(y, 0, 1)).toFixed(2)}%">${y}</b>`).join('')}</div>
-      ${rows}</div>
-      <div class="sp-panel brk" id="sp-panel" aria-live="polite"><i class="sp-scan"></i><div class="inner"></div></div></div>`;
-    const panel = el.querySelector('.sp-panel'), inner = panel.querySelector('.inner'), scan = panel.querySelector('.sp-scan');
-    const detail = id => {
-      if (id.startsWith('g:')) { const e = emps.find(x => 'g:' + x.id === id); return `<h3 class="xp-grp-name">${esc(e.name)}</h3><p class="xp-meta">Subcontractor · ${grpMeta(e)}</p><p class="xp-desc">${esc(e.desc)}</p><ul class="points">${e.contracts.map(c => `<li>${esc(c.co)}: ${esc(c.title)}, ${range(c)}</li>`).join('')}</ul>`; }
-      return body(all.find(c => c.id === id));
-    };
-    const select = (id, animate = true) => {
-      el.querySelectorAll('.sp-bar').forEach(b => b.setAttribute('aria-pressed', b.dataset.sel === id));
-      inner.innerHTML = detail(id);
-      if (!animate || reduce) return;
-      inner.animate([{ clipPath:'inset(0 0 100% 0)', filter:'blur(6px) brightness(1.6)' }, { clipPath:'inset(0)', filter:'none' }], { duration:700, easing:'cubic-bezier(.45,.05,.3,1)' });
-      scan.animate([{ top:'0', opacity:1 }, { top:'100%', opacity:0 }], { duration:700, easing:'cubic-bezier(.45,.05,.3,1)' });
-    };
-    el.addEventListener('click', e => { const b = e.target.closest('[data-sel]'); if (b) select(b.dataset.sel); });
-    select((all.find(c => c.current) || all[0]).id, false);
-  }
+/* hero glow warms on scroll */
+const hero = document.getElementById('hero')
+let raf = 0
+function onScroll() { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => hero.style.setProperty('--p', Math.min(1, scrollY / (hero.offsetHeight || 1)).toFixed(3))) }
+addEventListener('scroll', onScroll, { passive: true })
 
-  /* C. Memory scan */
-  const memCard = c => `<article class="ms-card ${c.current ? 'live' : ''} brk"><div class="ms-wire"></div><div class="ms-inner">${body(c)}</div><i class="ms-scan"></i></article>`;
-  const memory = emps => `<div class="ms">${emps.map(e => e.kind === 'solo' ? `<div class="ms-grid">${memCard(e.contracts[0])}</div>`
-    : `<section class="ms-emp"><header class="ms-file"><h3 class="xp-grp-name">${esc(e.name)}</h3><p class="xp-meta">Subcontractor · ${grpMeta(e)}</p><p class="xp-desc">${esc(e.desc)}</p></header><div class="ms-grid">${e.contracts.map(memCard).join('')}</div></section>`).join('')}</div>`;
+/* boot: ~1.8s */
+const boot = document.getElementById('boot'), out = document.getElementById('boot-text')
+const lines = ['Constantly scanning.', 'Interlinked.', 'Baseline established.']
+let token = 0
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+async function runBoot() {
+  if (reduce) return
+  const my = ++token
+  out.textContent = ''; boot.hidden = false; boot.classList.remove('out')
+  const end = () => { boot.classList.add('out'); setTimeout(() => { if (boot.classList.contains('out')) boot.hidden = true }, 600); removeEventListener('keydown', skip); boot.removeEventListener('click', skip) }
+  const skip = () => { token++; end() }
+  addEventListener('keydown', skip, { once: true }); boot.addEventListener('click', skip, { once: true })
+  for (const l of lines) { for (const ch of l) { if (my !== token) return; out.textContent += ch; await sleep(14) } out.textContent += '\n'; await sleep(160) }
+  if (my === token) { await sleep(250); if (my === token) end() }
+}
+document.getElementById('replay').addEventListener('click', () => { scrollTo(0, 0); runBoot() })
 
-  /* D. Unit file */
-  const serial = c => `${c.co.replace(/[^a-z]/gi, '').slice(0, 3).toUpperCase()}-${String(c.start.getUTCFullYear()).slice(2)}${String(c.start.getUTCMonth() + 1).padStart(2, '0')}`;
-  const unit = c => `<article class="uf-card ${c.current ? 'live' : ''} brk">
-      <div class="uf-side"><span class="uf-serial">${serial(c)}</span><div class="uf-code" aria-hidden="true"></div>
-        <dl class="uf-fields">
-          <div><dt>Client</dt><dd>${esc(c.co)}</dd></div><div><dt>Role</dt><dd>${esc(c.title)}</dd></div>
-          <div><dt>Deployed</dt><dd>${fmt(c.start)}</dd></div><div><dt>Released</dt><dd>${c.current ? '—' : fmt(c.end)}</dd></div>
-          <div><dt>Duration</dt><dd>${dur(c.start, c.end)}</dd></div>
-          <div><dt>Status</dt><dd><span class="st ${c.current ? 'live' : 'off'}">${c.current ? 'Deployed' : 'Released'}</span></dd></div>
-        </dl></div>
-      <div class="body"><ul class="points">${c.pts.map(x => `<li>${esc(x)}</li>`).join('')}</ul><ul class="stack">${c.skills.map(s => `<li>${esc(s)}</li>`).join('')}</ul></div></article>`;
-  const unitList = emps => `<div class="uf">${emps.map(e => e.kind === 'solo' ? unit(e.contracts[0])
-    : `<section class="uf-emp"><header class="uf-head"><span class="kind">Contractor of record</span><h3 class="xp-grp-name">${esc(e.name)}</h3><p class="xp-meta">${grpMeta(e)}</p><p class="xp-desc">${esc(e.desc)}</p></header>${e.contracts.map(unit).join('')}</section>`).join('')}</div>`;
-
-  /* ---------- render ---------- */
-  const io = !reduce && 'IntersectionObserver' in window
-    ? new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .3 }) : null;
-  function renderExperience() {
-    const v = site.dataset.xv;
-    document.querySelectorAll('[data-list=experience]').forEach(el => {
-      const emps = el.hasAttribute('data-compact') ? currentEmployers() : employers;
-      const clone = el.cloneNode(false); el.replaceWith(clone); el = clone; // drops old listeners
-      if (v === 'span') span(emps, el);
-      else { el.innerHTML = { trace, memory, unit:unitList }[v](emps); el.querySelectorAll('.ms-card').forEach(c => io ? io.observe(c) : c.classList.add('in')); }
-    });
-  }
-  document.querySelectorAll('[data-list=projects]').forEach(el => { el.innerHTML = projects.slice(0, +el.dataset.limit || projects.length).map(projectHTML).join(''); });
-  document.getElementById('all-projects').textContent = `All projects (${projects.length})`;
-
-  /* ---------- routing ---------- */
-  const titles = { home:'Alexandru Muresan', projects:'Projects — Alexandru Muresan', experience:'Experience — Alexandru Muresan' };
-  let route;
-  function go() {
-    const r = location.hash.replace(/^#\/?/, '') || 'home';
-    const next = ['projects', 'experience'].includes(r) ? r : 'home';
-    document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.dataset.route === next));
-    document.querySelectorAll('[data-home-only]').forEach(v => v.style.display = next === 'home' ? '' : 'none');
-    document.querySelectorAll('[data-nav]').forEach(a => next === a.dataset.nav ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
-    document.title = titles[next];
-    if (route && route !== next) scrollTo({ top:0, behavior:'instant' });
-    route = next; onScroll();
-  }
-  addEventListener('hashchange', go);
-
-  /* ---------- picker ---------- */
-  const order = ['trace', 'span', 'memory', 'unit'];
-  const buttons = [...document.querySelectorAll('.variant-picker [data-variant]')];
-  const select = document.querySelector('.variant-picker-select select');
-  function setVariant(v, { push = true, nav = true } = {}) {
-    if (!order.includes(v)) v = order[0];
-    site.dataset.xv = v;
-    buttons.forEach(b => { const on = b.dataset.variant === v; b.setAttribute('aria-pressed', on); if (on) b.scrollIntoView({ block:'nearest' }); });
-    select.value = v;
-    if (push) { const u = new URL(location); u.searchParams.set('__variant', v); history.replaceState(null, '', u); }
-    renderExperience();
-    if (nav && route !== 'experience') location.hash = '#/experience';
-  }
-  buttons.forEach(b => b.addEventListener('click', () => setVariant(b.dataset.variant)));
-  select.addEventListener('change', () => setVariant(select.value));
-  addEventListener('keydown', e => {
-    if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey || e.defaultPrevented) return;
-    if (e.target.closest('input,textarea,select,[contenteditable]')) return;
-    if (!document.getElementById('boot').hidden) return;
-    if (e.key.toLowerCase() === 'h') { const h = !document.getElementById('picker').hidden; document.getElementById('picker').hidden = h; document.getElementById('picker-select').hidden = h; return; }
-    const dir = ['ArrowDown', 'ArrowRight'].includes(e.key) ? 1 : ['ArrowUp', 'ArrowLeft'].includes(e.key) ? -1 : 0;
-    if (!dir) return;
-    if (e.target.closest('button[data-sel]')) return; // keep arrows free on timeline bars
-    e.preventDefault();
-    setVariant(order[(order.indexOf(site.dataset.xv) + dir + order.length) % order.length]);
-  });
-
-  /* hero glow warms on scroll */
-  const hero = document.getElementById('hero');
-  let raf = 0;
-  function onScroll() { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => hero.style.setProperty('--p', Math.min(1, scrollY / (hero.offsetHeight || 1)).toFixed(3))); }
-  addEventListener('scroll', onScroll, { passive:true });
-
-  /* boot: ~1.8s */
-  const boot = document.getElementById('boot'), out = document.getElementById('boot-text');
-  const lines = ['Constantly scanning.', 'Interlinked.', 'Baseline established.'];
-  let token = 0;
-  const sleep = ms => new Promise(r => setTimeout(r, ms));
-  async function runBoot() {
-    if (reduce) return;
-    const my = ++token;
-    out.textContent = ''; boot.hidden = false; boot.classList.remove('out');
-    const end = () => { boot.classList.add('out'); setTimeout(() => { if (boot.classList.contains('out')) boot.hidden = true; }, 600); removeEventListener('keydown', skip); boot.removeEventListener('click', skip); };
-    const skip = () => { token++; end(); };
-    addEventListener('keydown', skip, { once:true }); boot.addEventListener('click', skip, { once:true });
-    for (const l of lines) { for (const ch of l) { if (my !== token) return; out.textContent += ch; await sleep(14); } out.textContent += '\n'; await sleep(160); }
-    if (my === token) { await sleep(250); if (my === token) end(); }
-  }
-  document.getElementById('replay').addEventListener('click', () => { scrollTo(0, 0); runBoot(); });
-
-  const qs = new URLSearchParams(location.search);
-  if (!location.hash && qs.get('__variant')) history.replaceState(null, '', location.pathname + location.search + '#/experience');
-  go();
-  setVariant(qs.get('__variant') || order[0], { push:false, nav:false });
-  if (qs.get('boot') !== '0') runBoot();
-})();
+const qs = new URLSearchParams(location.search)
+if (!location.hash && qs.get('__variant')) history.replaceState(null, '', location.pathname + location.search + '#/experience')
+go()
+setVariant(qs.get('__variant') || order[0], { push: false, nav: false })
+if (qs.get('boot') !== '0') runBoot()
 </script>
 </body>
 </html>
