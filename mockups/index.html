@@ -141,7 +141,10 @@ button{font:inherit;color:inherit}
 /* native scroll snap, experience page only. Resting points: the header, each frame, the page end. A frame taller than the screen scrolls freely inside. */
 html[data-route=experience][data-snap=firm]{scroll-snap-type:y mandatory}
 html[data-route=experience][data-snap=soft]{scroll-snap-type:y proximity}
-#hero{scroll-snap-align:start}
+/* experience page: the header floats over the first frame instead of taking its own row */
+html[data-route=experience] #hero{position:absolute;top:0;left:0;right:0;z-index:5;overflow:visible;background:none}
+html[data-route=experience] #hero::after,html[data-route=experience] #hero .glow{display:none}
+.sec.flush{padding-top:0}
 .foot{scroll-snap-align:end}
 
 /* boot */
@@ -245,8 +248,8 @@ html[data-route=experience][data-snap=soft]{scroll-snap-type:y proximity}
     </div>
 
     <div class="view" data-route="experience">
-      <div class="page-top"><h1>Experience</h1><p>Where I have worked, newest first.</p></div>
-      <section class="sec tight" aria-label="All experience"><div data-xp="full"></div></section>
+      <h1 class="sr">Experience</h1>
+      <section class="sec flush" aria-label="All experience"><div data-xp="full"></div></section>
     </div>
 
     <footer class="foot"><span>© 2025 Alexandru Muresan</span><span id="src"></span></footer>
