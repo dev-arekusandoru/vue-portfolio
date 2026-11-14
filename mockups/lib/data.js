@@ -67,6 +67,9 @@ try {
   ]
   rawP = [{ id: 'p1', name: 'Sample project', start_date: '2025-01-01', current: true, stack: ['Vue'], highlights: ['Sample highlight.'] }]
 }
+import { NOW, seed } from './seed.js'
+export const isSeeded = new URLSearchParams(location.search).get('seed') !== '0'
+if (isSeeded) ({ rawG, rawE } = seed(rawG, rawE))
 export const isLive = live
 
 const palettes = [['#ff8c2b', '#1b2a33', '#5ad1e6'], ['#c0502a', '#101820', '#ff8c2b'], ['#5ad1e6', '#2a1608', '#ff8c2b'], ['#ff8c2b', '#0e1a1f', '#c0502a'], ['#d98a4a', '#1a1208', '#5ad1e6']]
@@ -75,7 +78,7 @@ export const projects = rawP.map((p) => ({ ...p, pal: palettes[[...p.name].reduc
 export const contracts = rawE.map((e) => {
   const start = D(e.start_date)
   const pts = Array.isArray(e.description) ? e.description : list(e.description)
-  const end = e.current ? new Date() : (isNaN(D(e.end_date)) ? start : D(e.end_date))
+  const end = e.current ? (isSeeded ? NOW : new Date()) : (isNaN(D(e.end_date)) ? start : D(e.end_date))
   return { id: e.id, co: e.company, title: e.title, start, end, current: !!e.current, skills: list(e.skills), pts, headline: e.headline || firstSentence(pts[0] || ''), group: e.group }
 })
 

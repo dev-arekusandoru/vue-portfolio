@@ -171,24 +171,6 @@ html[data-route=experience] #hero::after,html[data-route=experience] #hero .glow
   .grain{display:none}
 }
 
-/* picker: deliberately outside the design system */
-.variant-picker{all:unset;position:fixed;z-index:200;right:16px;bottom:16px;display:none;flex-direction:column;gap:16px;max-height:calc(100dvh - 32px);overflow-y:auto;scrollbar-width:none;padding:6px;border-radius:14px;background:rgb(20 20 20/.94);box-shadow:inset 0 0 0 1px rgb(255 255 255/.1),0 10px 30px rgb(0 0 0/.4);font:13px/1 system-ui,-apple-system,"Segoe UI",sans-serif;user-select:none;width:196px;box-sizing:border-box}
-.variant-picker-select{position:fixed;z-index:200;right:16px;bottom:calc(84px + env(safe-area-inset-bottom));display:none;align-items:center;gap:8px;color:#fff}
-.variant-picker[hidden],.variant-picker-select[hidden]{display:none!important}
-.variant-picker-group{display:flex;flex-direction:column;gap:2px}
-.variant-picker-heading{display:flex;align-items:center;gap:6px;padding:4px 10px 6px;font-size:11px;font-weight:500;color:rgb(255 255 255/.45)}
-.variant-picker button{all:unset;flex:none;padding:8px 10px;border-radius:8px;font:inherit;color:rgb(255 255 255/.6);cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:color .2s ease-out,font-weight .2s ease-out}
-.variant-picker button:hover{color:rgb(255 255 255/.85)}
-.variant-picker button[aria-pressed=true]{background:rgb(255 255 255/.14);color:#fff;font-weight:500}
-.variant-picker button:focus-visible{outline:2px solid rgb(255 255 255/.7);outline-offset:2px}
-.variant-picker-selectwrap{position:relative;display:block}
-.variant-picker-select select{all:unset;box-sizing:border-box;max-width:100%;padding:10px 36px 10px 16px;border-radius:999px;background:rgb(20 20 20/.94);box-shadow:inset 0 0 0 1px rgb(255 255 255/.1);font:500 13px/1 system-ui,sans-serif;cursor:pointer}
-.variant-picker-select select:focus-visible,.variant-ghost:focus-visible{outline:2px solid rgb(255 255 255/.7);outline-offset:2px}
-.variant-picker-select svg{position:absolute;top:50%;right:14px;translate:0 -50%;pointer-events:none;color:rgb(255 255 255/.6)}
-.variant-ghost{all:unset;box-sizing:border-box;padding:10px 16px;border-radius:999px;background:rgb(20 20 20/.94);box-shadow:inset 0 0 0 1px rgb(255 255 255/.1);font:500 13px/1 system-ui,sans-serif;color:rgb(255 255 255/.6);cursor:pointer}
-.variant-ghost[aria-pressed=true]{color:#fff;box-shadow:inset 0 0 0 1px rgb(255 255 255/.5)}
-@media (min-width:900px){.variant-picker{display:flex}}
-@media (max-width:899px){.variant-picker-select{display:flex}}
 </style>
 <style id="xv-style"></style>
 </head>
@@ -257,47 +239,13 @@ html[data-route=experience] #hero::after,html[data-route=experience] #hero .glow
   </div>
 </div>
 
-<nav class="variant-picker" id="picker" aria-label="Variants">
-  <div class="variant-picker-group" role="group" aria-labelledby="variants-rail">
-    <span class="variant-picker-heading" id="variants-rail">
-      <svg aria-hidden="true" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v4a3 3 0 0 0 3 3h7"/><path d="m10 7 3 3-3 3"/></svg>
-      Rail style
-    </span>
-    <button type="button" data-variant="emanator" aria-pressed="true">Emanator</button>
-    <button type="button" data-variant="ruler" aria-pressed="false">Ruler</button>
-    <button type="button" data-variant="index" aria-pressed="false">Index</button>
-    <button type="button" data-variant="marker" aria-pressed="false">Edge marker</button>
-  </div>
-  <div class="variant-picker-group" role="group" aria-labelledby="variants-layer">
-    <span class="variant-picker-heading" id="variants-layer">Layer</span>
-    <button type="button" data-ghost aria-pressed="false">Ghost year</button>
-  </div>
-</nav>
-<div class="variant-picker-select" id="picker-select">
-  <button type="button" class="variant-ghost" data-ghost aria-pressed="false">Ghost year</button>
-  <span class="variant-picker-selectwrap">
-    <select aria-label="Rail style">
-      <optgroup label="Rail style">
-        <option value="emanator">Emanator</option>
-        <option value="ruler">Ruler</option>
-        <option value="index">Index</option>
-        <option value="marker">Edge marker</option>
-      </optgroup>
-    </select>
-    <svg aria-hidden="true" viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 4 4 4-4"/></svg>
-  </span>
-</div>
-
 <script type="module">
-import { esc, reduce, projects, employers, currentEmployers, isLive } from './lib/data.js'
+import { esc, reduce, projects, employers, currentEmployers, isLive, isSeeded } from './lib/data.js'
 import * as experience from './experience.js'
 import * as emanator from './rails/emanator.js'
-import * as ruler from './rails/ruler.js'
-import * as railIndex from './rails/index.js'
-import * as marker from './rails/marker.js'
 
 document.documentElement.classList.add('js')
-document.getElementById('src').textContent = isLive ? 'Data: local PocketBase' : 'Data: sample (PocketBase offline)'
+document.getElementById('src').textContent = `${isLive ? 'Data: local PocketBase' : 'Data: sample (PocketBase offline)'}${isSeeded ? ' + invented future contracts (?seed=0 to hide)' : ''}`
 
 /* projects */
 const D = (s) => new Date(String(s).replace(' ', 'T'))
@@ -317,54 +265,19 @@ const projectHTML = (p) => `
 document.querySelectorAll('[data-list=projects]').forEach((el) => { el.innerHTML = projects.slice(0, +el.dataset.limit || projects.length).map(projectHTML).join('') })
 document.getElementById('all-projects').textContent = `All projects (${projects.length})`
 
-/* experience section: experience.js exports css + mount(); the rail (rails/*.js) is the variant under review */
-const rails = { emanator, ruler, index: railIndex, marker }
+/* experience section: experience.js exports css + mount(); rails/emanator.js draws the timeline */
 const xvStyle = document.getElementById('xv-style')
 const mounts = []
-let railId
 function renderExperience() {
   mounts.splice(0).forEach((fn) => { try { fn?.() } catch (e) { console.error(e) } })
-  const rail = rails[railId]
-  xvStyle.textContent = experience.css + rail.css
+  xvStyle.textContent = experience.css + emanator.css
   document.querySelectorAll('[data-xp]').forEach((el) => {
     const compact = el.dataset.xp === 'compact'
     el.replaceChildren()
     el.className = `xv xv-monolith${compact ? ' xv-compact' : ''}`
-    mounts.push(experience.mount(el, { employers: compact ? currentEmployers() : employers, compact, rail }))
+    mounts.push(experience.mount(el, { employers: compact ? currentEmployers() : employers, compact, rail: emanator }))
   })
 }
-
-/* picker (variant harness) */
-const ORDER = Object.keys(rails)
-const pickBtns = [...document.querySelectorAll('.variant-picker [data-variant]')]
-const pickSel = document.querySelector('.variant-picker-select select')
-const ghostBtns = [...document.querySelectorAll('[data-ghost]')]
-function setRail(v, { push = true, nav = true } = {}) {
-  if (!ORDER.includes(v)) v = ORDER[0]
-  railId = v
-  pickBtns.forEach((b) => { const on = b.dataset.variant === v; b.setAttribute('aria-pressed', on); if (on) b.scrollIntoView({ block: 'nearest' }) })
-  pickSel.value = v
-  if (push) { const u = new URL(location); u.searchParams.set('__variant', v); history.replaceState(null, '', u) }
-  renderExperience()
-  if (nav && route !== 'experience') location.hash = '#/experience'
-}
-function setGhost(on, { push = true } = {}) {
-  document.documentElement.dataset.ghost = on ? 'on' : 'off'
-  ghostBtns.forEach((b) => b.setAttribute('aria-pressed', on))
-  if (push) { const u = new URL(location); if (on) u.searchParams.set('__ghost', 'on'); else u.searchParams.delete('__ghost'); history.replaceState(null, '', u) }
-}
-pickBtns.forEach((b) => b.addEventListener('click', () => setRail(b.dataset.variant)))
-pickSel.addEventListener('change', () => setRail(pickSel.value))
-ghostBtns.forEach((b) => b.addEventListener('click', () => setGhost(document.documentElement.dataset.ghost !== 'on')))
-addEventListener('keydown', (e) => {
-  if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey || e.defaultPrevented) return
-  if (e.target.closest?.('input,textarea,select,[contenteditable]')) return
-  if (!document.getElementById('boot').hidden) return
-  const k = e.key.toLowerCase()
-  if (k === 'h') { const h = !document.getElementById('picker').hidden; document.getElementById('picker').hidden = h; document.getElementById('picker-select').hidden = h }
-  if (k === 'v') setRail(ORDER[(ORDER.indexOf(railId) + 1) % ORDER.length])
-  if (k === 'g') setGhost(document.documentElement.dataset.ghost !== 'on')
-})
 
 /* routing */
 const titles = { home: 'Alexandru Muresan', projects: 'Projects — Alexandru Muresan', experience: 'Experience — Alexandru Muresan' }
@@ -412,10 +325,8 @@ async function runBoot() {
 }
 
 const qs = new URLSearchParams(location.search)
-if (!location.hash && qs.get('__variant')) history.replaceState(null, '', location.pathname + location.search + '#/experience')
 go()
-setGhost(qs.get('__ghost') === 'on', { push: false })
-setRail(qs.get('__variant') || ORDER[0], { push: false, nav: false })
+renderExperience()
 if (qs.get('boot') !== '0') runBoot()
 </script>
 </body>

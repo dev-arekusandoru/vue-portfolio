@@ -17,15 +17,9 @@ export const css = `
 .xv-monolith .mo-frames{min-width:0}
 .xv-monolith .mo-frame{position:relative;isolation:isolate;overflow-x:clip;display:flex;flex-direction:column;justify-content:flex-start;min-height:clamp(560px,100svh,960px);padding:clamp(72px,15svh,150px) 0 clamp(64px,11svh,128px) clamp(10px,2vw,28px);scroll-snap-align:start}
 .xv-monolith:not(.xv-compact) .mo-frame:first-child{padding-top:clamp(112px,16svh,170px)}
-.xv-monolith .mo-frame + .mo-frame{border-top:1px solid var(--rule)}
 .xv-monolith .mo-frame::before{content:"";position:absolute;z-index:-1;right:-8%;top:50%;width:min(80vw,860px);aspect-ratio:1;transform:translateY(-50%);pointer-events:none;background:radial-gradient(closest-side,rgb(255 140 43/.08),rgb(255 140 43/.026) 55%,transparent)}
 .xv-monolith .mo-frame.mo-live::before{background:radial-gradient(closest-side,rgb(90 209 230/.12),rgb(90 209 230/.04) 55%,transparent)}
 .xv-monolith .mo-body{position:relative;max-width:60rem}
-
-/* optional layer: the contract's start year, huge and faint, behind its frame */
-html[data-ghost=on] .xv-monolith:not(.xv-compact) .mo-frame::after{content:attr(data-year);content:attr(data-year) / "";position:absolute;z-index:-1;right:-2%;bottom:-3%;font:200 clamp(9rem,26vw,24rem)/.8 var(--display);letter-spacing:-.02em;color:rgb(255 140 43/.05);pointer-events:none;user-select:none;transition:opacity 2.4s var(--ease) .3s}
-html[data-ghost=on] .xv-monolith:not(.xv-compact) .mo-live::after{color:rgb(90 209 230/.06)}
-html[data-ghost=on] .xv-monolith.mo-armed .mo-frame:not(.mo-in)::after{opacity:0}
 
 .xv-monolith .mo-emp{position:relative;max-width:46rem;padding:clamp(18px,2.4vw,26px) clamp(18px,3vw,32px) clamp(20px,2.6vw,28px);background:linear-gradient(135deg,rgb(255 140 43/.09),rgb(255 140 43/.02) 60%,transparent);box-shadow:inset 0 0 0 1px rgb(255 140 43/.3)}
 .xv-monolith .mo-emp-name{font:300 clamp(1.2rem,2.4vw,1.75rem)/1.15 var(--display);letter-spacing:.06em;color:var(--fg)}
@@ -160,7 +154,7 @@ export function mount(el, { employers, compact, rail }) {
     const pts = c.pts.length
       ? `<div class="mo-dtl mo-x" style="--d:${420 + c.skills.length * 45}"><button type="button" class="mo-more" aria-expanded="false" aria-controls="mo${u}-${i}-p"><span class="mo-pm" aria-hidden="true"></span><span class="mo-more-t">Show details<span class="sr"> for ${esc(c.co)}</span></span></button><div class="mo-panel" id="mo${u}-${i}-p"><div class="mo-pin"><ul class="mo-pts">${c.pts.map((p) => `<li>${esc(p)}</li>`).join('')}</ul></div></div></div>`
       : ''
-    return `<article class="mo-frame${live ? ' mo-live' : ''}" data-i="${i}" data-year="${c.start.getUTCFullYear()}" aria-labelledby="${hid}">
+    return `<article class="mo-frame${live ? ' mo-live' : ''}" data-i="${i}" aria-labelledby="${hid}">
       ${live ? '<div class="mo-scan" aria-hidden="true"></div>' : ''}
       <div class="mo-body">
         ${plate}${strap}
