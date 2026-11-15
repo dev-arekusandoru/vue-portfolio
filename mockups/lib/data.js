@@ -67,8 +67,10 @@ try {
   ]
   rawP = [{ id: 'p1', name: 'Sample project', start_date: '2025-01-01', current: true, stack: ['Vue'], highlights: ['Sample highlight.'] }]
 }
-import { NOW, seed, seedProjects } from './seed.js'
-export const isSeeded = new URLSearchParams(location.search).get('seed') !== '0'
+/* Local-only test data: lib/seed.js is git-ignored. Without it (or with ?seed=0) only real data is shown. */
+let NOW, seed, seedProjects
+if (new URLSearchParams(location.search).get('seed') !== '0') { try { ({ NOW, seed, seedProjects } = await import('./seed.js')) } catch { /* no local seed file */ } }
+export const isSeeded = !!seed
 if (isSeeded) { ({ rawG, rawE } = seed(rawG, rawE)); rawP = seedProjects(rawP) }
 export const isLive = live
 
@@ -92,6 +94,7 @@ export const projects = rawP.map((p) => {
     headline: head, highlights: hl, role: p.role || 'Solo developer', kind,
     metric: p.metric_value ? { value: p.metric_value, label: p.metric_label || '' } : null, summary: p.summary || '', challenges: p.challenges || '',
     status: p.current ? 'active' : 'shipped', code_url: p.code_url || '', demo_url: p.demo_url || '',
+    cover: p.cover || '', screenshots: Array.isArray(p.screenshots) ? p.screenshots : list(p.screenshots),
     pal: palettes[[...p.name].reduce((a, c) => a + c.charCodeAt(0), 0) % palettes.length],
   }
 }).sort((a, b) => b.start - a.start)

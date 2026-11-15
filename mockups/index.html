@@ -74,9 +74,6 @@ button{font:inherit;color:inherit}
 .sec-head{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap;margin-bottom:clamp(28px,4vw,52px)}
 .sec h2{font:200 clamp(1.6rem,3.4vw,2.6rem)/1.1 var(--display);letter-spacing:.08em}
 .more{font-size:.8rem;text-underline-offset:6px;text-decoration-thickness:1px;color:var(--accent)}
-.page-top{padding-top:clamp(40px,6vw,80px)}
-.page-top h1{font:200 clamp(2rem,5vw,3.6rem)/1.1 var(--display);letter-spacing:.08em;margin-bottom:12px}
-.page-top p{color:var(--muted);max-width:52ch}
 
 /* projects */
 .spec{position:relative}
@@ -227,7 +224,7 @@ html[data-route=experience] .foot{display:none}
     </div>
 
     <div class="view" data-route="projects">
-      <div class="page-top"><h1>Projects</h1><p>Everything I have built, newest first.</p></div>
+      <h1 class="sr">Projects</h1>
       <section class="sec tight" aria-label="All projects"><div id="pj-mount"></div></section>
     </div>
 
@@ -246,6 +243,7 @@ import { icon } from './lib/icons.js'
 import * as experience from './experience.js'
 import * as emanator from './rails/emanator.js'
 import * as projectsPage from './projects.js'
+import * as techFilter from './filters/tech.js'
 
 document.documentElement.classList.add('js')
 const srcText = `${isLive ? 'Data: local PocketBase' : 'Data: sample (PocketBase offline)'}${isSeeded ? ' + invented future contracts (?seed=0 to hide)' : ''}`
@@ -265,37 +263,11 @@ const projectHTML = (p) => `
 document.querySelectorAll('[data-list=projects]').forEach((el) => { el.innerHTML = projects.slice(0, +el.dataset.limit || projects.length).map(projectHTML).join('') })
 document.getElementById('all-projects').textContent = `All projects (${projects.length})`
 
-/* projects page. TEST HARNESS: the filter variant picker (keys 5-8, ?f=) is removed once a filter is locked. */
-const FILTERS = { none: () => import('./filters/none.js'), rail: () => import('./filters/rail.js'), chips: () => import('./filters/chips.js'), graph: () => import('./filters/graph.js') }
+/* projects page: projects.js draws rows + detail dialog, filters/tech.js the tech filter (graph on desktop, chips on mobile) */
 const pjStyle = document.createElement('style')
 document.head.append(pjStyle)
-let fKey = Object.keys(FILTERS).includes(new URLSearchParams(location.search).get('f')) ? new URLSearchParams(location.search).get('f') : 'none'
-let pjUnmount
-async function renderProjects() {
-  pjUnmount?.()
-  const filter = await FILTERS[fKey]()
-  pjStyle.textContent = projectsPage.css + (filter.css || '')
-  pjUnmount = projectsPage.mount(document.getElementById('pj-mount'), { projects, filter })
-  document.querySelectorAll('#f-pick button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.f === fKey)))
-}
-{
-  const bx = document.createElement('div')
-  bx.id = 'f-pick'
-  bx.style.cssText = 'position:fixed;right:10px;bottom:10px;z-index:99;display:flex;gap:4px;font:300 11px/1 var(--mono)'
-  bx.innerHTML = Object.keys(FILTERS).map((f, k) => `<button type="button" data-f="${f}" style="padding:6px 8px;border:1px solid var(--rule);background:rgb(8 10 12/.9);color:var(--fg);cursor:pointer">${k + 5} ${f}</button>`).join('')
-  bx.addEventListener('click', (ev) => { const b = ev.target.closest('button'); if (b) setFilter(b.dataset.f) })
-  document.getElementById('site').append(bx)
-  const st = document.createElement('style')
-  st.textContent = '#f-pick button[aria-pressed=true]{border-color:var(--accent)!important;color:var(--accent)!important}html:not([data-route=projects]) #f-pick{display:none!important}'
-  document.head.append(st)
-  addEventListener('keydown', (ev) => { if (!ev.metaKey && !ev.ctrlKey && !ev.altKey && /^[5-8]$/.test(ev.key) && !/INPUT|TEXTAREA/.test(ev.target.tagName) && !document.querySelector('dialog[open]')) setFilter(Object.keys(FILTERS)[+ev.key - 5]) })
-}
-function setFilter(f) {
-  if (f === fKey) return
-  fKey = f
-  const u = new URL(location.href); u.searchParams.set('f', f); history.replaceState(null, '', u)
-  renderProjects()
-}
+pjStyle.textContent = projectsPage.css + techFilter.css
+const renderProjects = () => projectsPage.mount(document.getElementById('pj-mount'), { projects, filter: techFilter })
 
 /* experience section: experience.js exports css + mount(); rails/emanator.js draws the timeline */
 const xvStyle = document.getElementById('xv-style')
@@ -316,7 +288,7 @@ function renderExperience() {
 const titles = { home: 'Alexandru Muresan', projects: 'Projects — Alexandru Muresan', experience: 'Experience — Alexandru Muresan' }
 let route
 function go() {
-  const r = location.hash.replace(/^#\/?/, '') || 'home'
+  const r = location.hash.replace(/^#\/?/, '').split('/')[0] || 'home'
   const next = ['projects', 'experience'].includes(r) ? r : 'home'
   document.querySelectorAll('.view').forEach((v) => v.classList.toggle('on', v.dataset.route === next))
   document.querySelectorAll('[data-home-only]').forEach((v) => (v.style.display = next === 'home' ? '' : 'none'))

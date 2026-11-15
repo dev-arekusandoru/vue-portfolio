@@ -1,2 +1,6 @@
 .env
 .DS_Store
+
+# local-only mockup test data (invented jobs/projects)
+mockups/lib/seed.js
+mockups/samples/
