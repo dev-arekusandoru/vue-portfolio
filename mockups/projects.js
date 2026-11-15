@@ -19,20 +19,16 @@
 //   subscribe(fn)   fn(selectedSet, visibleProjects) is called now and after every change; returns unsubscribe
 import { esc, techKey, techName } from './lib/data.js'
 import { icon } from './lib/icons.js'
+import { dialog, status, css as detailCss } from './detail.js'
 
 const MAX_ICONS = 6
 const year = (d) => d.getUTCFullYear()
-const mon = (d) => d.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })
-const period = (p) => `${mon(p.start)} – ${p.current ? 'Present' : p.end ? mon(p.end) : mon(p.start)}`
-const link = (u, t) => `<a class="pj-lk" href="${esc(u)}" target="_blank" rel="noopener noreferrer">${t}<span aria-hidden="true"> ↗</span></a>`
-const links = (p) => [p.demo_url && link(/^https?:/.test(p.demo_url) ? p.demo_url : `https://${p.demo_url}`, 'Demo'), p.code_url && link(p.code_url, 'Code')].filter(Boolean).join('')
-const status = (p) => `<span class="pj-st ${p.status}">${p.status === 'active' ? 'Active' : 'Shipped'}</span>`
 const art = (p) => `style="--a1:${p.pal[0]};--a2:${p.pal[1]};--a3:${p.pal[2]};--pa:${p.accent}"`
 const slugOf = (p) => p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 const subOf = () => { const m = location.hash.match(/^#\/projects\/([^/?]+)/); return m ? decodeURIComponent(m[1]) : null }
 const PINK = '#ff4fa3', CYAN = '#5ad1e6'
 
-export const css = `
+const rowsCss = `
 .pj-wrap{display:grid;gap:clamp(20px,3vw,36px)}
 .pj-main{min-width:0}
 .pj-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:34px;margin-bottom:6px;font-size:.76rem;color:var(--muted)}
@@ -102,72 +98,9 @@ export const css = `
   .pj-tile{grid-area:tile}
 }
 
-/* detail dialog. Desktop: centred card. Under 900px: full-screen sheet. */
-.pj-pts{display:grid;gap:12px;font-size:.84rem;overflow-wrap:anywhere}
-.pj-pts li{display:grid;grid-template-columns:1.6rem minmax(0,1fr)}
-.pj-pts li::before{content:"—";color:var(--accent)}
-.pj-spec{display:grid;gap:8px;font-size:.78rem;align-content:start;overflow-wrap:anywhere}
-.pj-spec div{display:grid;grid-template-columns:5rem minmax(0,1fr);gap:12px;padding-bottom:8px;border-bottom:1px solid var(--rule)}
-.pj-spec dt{color:var(--muted)}
-.pj-spec .pj-metric dd b{font:300 1.15rem/1.2 var(--display);letter-spacing:.04em;color:var(--accent);margin-right:8px}
-.pj-tech{display:flex;flex-wrap:wrap;gap:10px 22px}
-.pj-tech li{display:inline-flex;align-items:center;gap:9px;font-size:.74rem;color:var(--fg);--ti-size:20px;min-width:0}
-.pj-tech .ti{color:var(--muted)}
-.pj-act{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center}
-.pj-lk{font-size:.8rem;color:var(--accent);text-underline-offset:5px;text-decoration-thickness:1px}
-
-.pj-dlg{position:fixed;inset:0;width:min(860px,100% - 24px);max-width:none;max-height:min(92dvh,900px);margin:auto;padding:0;border:1px solid var(--rule);background:var(--bg);color:var(--fg);font:300 .92rem/1.7 var(--mono);overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;opacity:0;transform:translateY(14px) scale(.985);transition:opacity .45s var(--ease),transform .6s var(--ease),overlay .6s allow-discrete,display .6s allow-discrete}
-.pj-dlg[open]{opacity:1;transform:none}
-@starting-style{.pj-dlg[open]{opacity:0;transform:translateY(14px) scale(.985)}}
-.pj-dlg::backdrop{background:rgb(3 4 5/.78);backdrop-filter:blur(3px);opacity:0;transition:opacity .45s var(--ease),overlay .6s allow-discrete,display .6s allow-discrete}
-.pj-dlg[open]::backdrop{opacity:1}
-@starting-style{.pj-dlg[open]::backdrop{opacity:0}}
-.pj-dlg *{min-width:0}
-.pj-tb{position:sticky;top:0;height:0;z-index:5}
-.pj-dx{position:absolute;top:14px;right:14px;width:40px;height:40px;border:1px solid var(--rule);background:rgb(8 10 12/.72);backdrop-filter:blur(6px);cursor:pointer;transition:border-color .3s var(--ease)}
-.pj-dx:hover{border-color:var(--accent)}
-.pj-dx::before,.pj-dx::after{content:"";position:absolute;left:12px;top:19px;width:14px;height:1px;background:var(--fg);transform:rotate(45deg)}
-.pj-dx::after{transform:rotate(-45deg)}
-.pj-dh{position:relative;isolation:isolate;overflow:hidden;padding:clamp(56px,7vw,64px) clamp(20px,4vw,40px) 28px;background:radial-gradient(circle at 25% 30%,var(--a1),transparent 60%),radial-gradient(circle at 85% 95%,var(--a3),transparent 52%),linear-gradient(160deg,var(--a2),#050607)}
-.pj-dh::before{content:"";position:absolute;inset:0;z-index:-1;mix-blend-mode:screen;opacity:.55;background:radial-gradient(circle at 20% 20%,${PINK},transparent 50%),radial-gradient(circle at 90% 80%,${CYAN},transparent 50%)}
-.pj-dh::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 40%,var(--bg));z-index:-1}
-.pj-dh .pj-k{font-size:.72rem;color:var(--fg);display:flex;gap:4px 14px;flex-wrap:wrap;align-items:center}
-.pj-dh h2{font:200 clamp(1.8rem,5vw,3.2rem)/1.1 var(--display);letter-spacing:.06em;margin:14px 0 12px;overflow-wrap:anywhere}
-.pj-dh p{max-width:56ch;font-size:.9rem;overflow-wrap:anywhere}
-.pj-cv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;opacity:.5;-webkit-mask:linear-gradient(#000 30%,transparent);mask:linear-gradient(#000 30%,transparent)}
-.pj-shots{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x proximity;padding:4px 2px 14px;margin:0 -2px;scrollbar-width:thin;scrollbar-color:var(--rule) transparent}
-.pj-shot{flex:none;scroll-snap-align:start;padding:0;border:1px solid var(--rule);background:#05070a;cursor:zoom-in;line-height:0;transition:border-color .35s var(--ease)}
-.pj-shot:hover{border-color:var(--accent)}
-.pj-shot img{display:block;height:clamp(170px,26vw,240px);width:auto;max-width:none;transition:opacity .4s var(--ease);opacity:.92}
-.pj-shot:hover img{opacity:1}
-.pj-lb{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:rgb(3 4 5/.94);cursor:zoom-out}
-.pj-lb[hidden]{display:none}
-.pj-lb img{max-width:94vw;max-height:84dvh;border:1px solid var(--rule);background:#05070a}
-.pj-lb button{position:absolute;width:44px;height:44px;border:1px solid var(--rule);background:rgb(8 10 12/.8);color:var(--fg);cursor:pointer;font-size:1.1rem;line-height:1}
-.pj-lb button:hover{border-color:var(--accent);color:var(--accent)}
-.pj-lb [data-lb="-1"]{left:12px;top:50%;margin-top:-22px}
-.pj-lb [data-lb="1"]{right:12px;top:50%;margin-top:-22px}
-.pj-lb [data-lb="0"]{right:12px;top:12px}
-.pj-lb.one [data-lb="-1"],.pj-lb.one [data-lb="1"]{display:none}
-.pj-db{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:0 clamp(20px,4vw,48px);padding:8px clamp(20px,4vw,40px) 30px}
-.pj-db h4{font-weight:400;font-size:.72rem;color:var(--muted);margin:0 0 12px;letter-spacing:.08em}
-.pj-db section{display:grid;gap:12px;align-content:start;margin-bottom:22px}
-.pj-db p{overflow-wrap:anywhere}
-.pj-db .pj-wide{grid-column:1/-1}
-.pj-dn{position:sticky;bottom:0;background:var(--bg);display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:6px clamp(20px,4vw,40px);padding-bottom:max(6px,env(safe-area-inset-bottom));border-top:1px solid var(--rule);font-size:.76rem}
-.pj-dn button{background:none;border:0;cursor:pointer;color:var(--muted);text-align:left;padding:12px 0;min-height:44px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .3s var(--ease)}
-.pj-dn button:hover:not(:disabled){color:var(--accent)}
-.pj-dn button:disabled{opacity:.3;cursor:default}
-.pj-dn button:last-child{text-align:right}
-html.pj-lock{overflow:hidden}
-@media (max-width:899px){
-  .pj-dlg{width:100%;max-width:100%;height:100dvh;max-height:none;margin:0;border:0;transform:translateY(24px)}
-  .pj-db{grid-template-columns:minmax(0,1fr)}
-  .pj-dh{padding-top:68px}
-  .pj-dx{top:max(14px,env(safe-area-inset-top))}
-}
 @media (prefers-reduced-motion:reduce){.pj,.pj-dlg,.pj-dlg::backdrop,.pj-art,.pj-art::before,.pj-art::after,.pj-t h3,.pj-go,.pj-shot,.pj-shot img{transition-duration:.01ms!important}}
 `
+export const css = rowsCss + detailCss
 
 const iconsOf = (p) => {
   const shown = p.stack.slice(0, MAX_ICONS), rest = p.stack.length - shown.length
@@ -188,77 +121,6 @@ const rowHTML = (p) => `
     </button>
   </div>
 </article>`
-
-/** Detail dialog: one per mount, content swapped per project. Prev/next walk the currently visible list. */
-function dialog(root, { getVisible, onNav, onClose }) {
-  const d = document.createElement('dialog')
-  d.className = 'pj-dlg'
-  d.setAttribute('aria-labelledby', 'pj-dt')
-  root.append(d)
-  let shots = [], si = 0
-  const fill = (p) => {
-    const v = getVisible(), i = v.indexOf(p)
-    const pv = i > 0 ? v[i - 1] : null, nx = i >= 0 ? v[i + 1] : null
-    d.setAttribute('style', `--a1:${p.pal[0]};--a2:${p.pal[1]};--a3:${p.pal[2]};--pa:${p.accent}`)
-    d.innerHTML = `
-      <div class="pj-tb"><button type="button" class="pj-dx" aria-label="Close"></button></div>
-      <header class="pj-dh">
-        ${p.cover ? `<img class="pj-cv" src="${esc(p.cover)}" alt="" decoding="async">` : ''}
-        <div class="pj-k"><span>${esc(p.kind)}</span><span>${esc(period(p))}</span>${status(p)}</div>
-        <h2 id="pj-dt">${esc(p.name)}</h2>
-        <p>${esc(p.summary || p.headline)}</p>
-      </header>
-      <div class="pj-db">
-        <section><h4>Highlights</h4><ul class="pj-pts">${(p.highlights.length ? p.highlights : [p.headline]).map((h) => `<li>${esc(h)}</li>`).join('')}</ul></section>
-        <section><h4>At a glance</h4><dl class="pj-spec">
-          <div><dt>Role</dt><dd>${esc(p.role)}</dd></div>
-          <div><dt>Kind</dt><dd>${esc(p.kind)}</dd></div>
-          <div><dt>Period</dt><dd>${esc(period(p))}</dd></div>
-          ${p.metric ? `<div class="pj-metric"><dt>Result</dt><dd><b>${esc(p.metric.value)}</b>${esc(p.metric.label)}</dd></div>` : ''}
-        </dl></section>
-        ${p.challenges ? `<section class="pj-wide"><h4>The hard part</h4><p>${esc(p.challenges)}</p></section>` : ''}
-        ${p.screenshots.length ? `<section class="pj-wide"><h4>Screens</h4><div class="pj-shots">${p.screenshots.map((s, k) => `<button type="button" class="pj-shot" data-i="${k}" aria-label="View screenshot ${k + 1} of ${p.screenshots.length}"><img src="${esc(s)}" alt="${esc(p.name)} screenshot ${k + 1}" loading="lazy" decoding="async"></button>`).join('')}</div></section>` : ''}
-        <section class="pj-wide"><h4>Built with</h4><ul class="pj-tech">${p.stack.map((s) => `<li>${icon(s)}<span>${esc(techName(s))}</span></li>`).join('')}</ul></section>
-        ${links(p) ? `<section class="pj-wide"><div class="pj-act">${links(p)}</div></section>` : ''}
-      </div>
-      <nav class="pj-dn" aria-label="Project navigation">
-        <button type="button" data-nav="${pv ? i - 1 : ''}" ${pv ? '' : 'disabled'}>${pv ? `← ${esc(pv.name)}` : ''}</button>
-        <button type="button" data-nav="${nx ? i + 1 : ''}" ${nx ? '' : 'disabled'}>${nx ? `${esc(nx.name)} →` : ''}</button>
-      </nav>
-      ${p.screenshots.length ? `<div class="pj-lb${p.screenshots.length < 2 ? ' one' : ''}" hidden><img alt=""><button type="button" data-lb="-1" aria-label="Previous screenshot">←</button><button type="button" data-lb="1" aria-label="Next screenshot">→</button><button type="button" data-lb="0" aria-label="Close screenshot">×</button></div>` : ''}`
-    shots = p.screenshots
-    d.scrollTop = 0
-  }
-  const showShot = (n) => {
-    const L = d.querySelector('.pj-lb')
-    if (!L || !shots.length) return
-    si = (n + shots.length) % shots.length
-    L.querySelector('img').src = shots[si]
-    L.hidden = false
-  }
-  d.addEventListener('click', (ev) => {
-    const lbBtn = ev.target.closest('[data-lb]')
-    if (lbBtn) { const k = +lbBtn.dataset.lb; return k ? showShot(si + k) : (d.querySelector('.pj-lb').hidden = true) }
-    if (ev.target.classList.contains('pj-lb') || ev.target.closest('.pj-lb img')) return (d.querySelector('.pj-lb').hidden = true)
-    const sh = ev.target.closest('.pj-shot')
-    if (sh) return showShot(+sh.dataset.i)
-    if (ev.target === d || ev.target.closest('.pj-dx')) return d.close()
-    const b = ev.target.closest('[data-nav]')
-    if (b && b.dataset.nav !== '') { const p = getVisible()[+b.dataset.nav]; fill(p); onNav(p) }
-  })
-  d.addEventListener('close', () => { document.documentElement.classList.remove('pj-lock'); onClose() })
-  d.addEventListener('cancel', (ev) => { const L = d.querySelector('.pj-lb'); if (L && !L.hidden) { ev.preventDefault(); L.hidden = true } })
-  d.addEventListener('keydown', (ev) => {
-    const L = d.querySelector('.pj-lb')
-    if (L && !L.hidden && (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight')) showShot(si + (ev.key === 'ArrowRight' ? 1 : -1))
-  })
-  return {
-    isOpen: () => d.open,
-    open(p) { fill(p); document.documentElement.classList.add('pj-lock'); if (!d.open) d.showModal() },
-    close() { if (d.open) d.close() },
-    destroy() { d.close(); d.remove() },
-  }
-}
 
 export function mount(el, { projects, filter }) {
   const sel = new Set(new URLSearchParams(location.search).get('tech')?.split(',').map(techKey).filter(Boolean))
