@@ -21,11 +21,41 @@ export const css = `
 .xv-monolith .mo-frame.mo-live::before{background:radial-gradient(closest-side,rgb(90 209 230/.12),rgb(90 209 230/.04) 55%,transparent)}
 .xv-monolith .mo-body{position:relative;max-width:60rem}
 
-.xv-monolith .mo-emp{position:relative;max-width:46rem;padding:clamp(18px,2.4vw,26px) clamp(18px,3vw,32px) clamp(20px,2.6vw,28px);background:linear-gradient(135deg,rgb(255 140 43/.09),rgb(255 140 43/.02) 60%,transparent);box-shadow:inset 0 0 0 1px rgb(255 140 43/.3)}
-.xv-monolith .mo-emp-name{font:300 clamp(1.2rem,2.4vw,1.75rem)/1.15 var(--display);letter-spacing:.06em;color:var(--fg)}
-.xv-monolith .mo-emp-meta{display:flex;flex-wrap:wrap;gap:2px 14px;margin-top:8px;font-size:.76rem;color:var(--muted)}
-.xv-monolith .mo-emp-meta b{font-weight:300;color:var(--accent)}
-.xv-monolith .mo-emp-desc{max-width:58ch;margin-top:16px;font-size:.88rem;line-height:1.8;color:var(--fg);opacity:.9}
+.xv-monolith .mo-emp-meta{max-width:58ch;margin-top:16px;font-size:.76rem;color:var(--muted)}
+.xv-monolith .mo-emp-desc{max-width:58ch;margin-top:8px;font-size:.88rem;line-height:1.8;color:var(--fg);opacity:.9}
+
+/* lineage: which contract of the employer this is, drawn in the same style as the rail */
+.xv-monolith .mo-lin{--la:255 140 43;display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;max-width:40rem;font-size:.86rem}
+.xv-monolith .mo-live .mo-lin{--lb:90 209 230}
+.xv-monolith .mo-lk{font-size:.74rem;color:var(--accent)}
+.xv-monolith .mo-lv{font:300 .95rem/1.3 var(--display);letter-spacing:.05em;color:var(--fg)}
+.xv-monolith .mo-ln{font-size:.76rem;color:var(--muted)}
+.xv-monolith .mo-lg{display:inline-flex;align-items:flex-start;height:22px}
+.xv-monolith .mo-dts{position:relative;display:inline-flex;align-items:center;gap:12px;height:22px}
+.xv-monolith .mo-dts::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgb(var(--la)/.45)}
+.xv-monolith .mo-ld{position:relative;width:9px;height:9px;border-radius:50%;border:1px solid rgb(var(--la)/.6);background:var(--bg)}
+.xv-monolith .mo-ld.past{background:rgb(var(--la));border-color:rgb(var(--la))}
+.xv-monolith .mo-ld.on{transform:scale(1.35);box-shadow:0 0 8px rgb(var(--la)/.7)}
+.xv-monolith .mo-live .mo-ld.on{background:rgb(var(--lb));border-color:rgb(var(--lb));box-shadow:0 0 9px rgb(var(--lb)/.8)}
+.xv-monolith .mo-st,.xv-monolith .mo-fk{display:none}
+/* fork: the trunk dips onto a lane, the contracts sit on it, then it merges back */
+.xv-monolith.gs-fork .mo-st{display:block;width:10px;height:1px;margin-top:4px;background:rgb(var(--la)/.45)}
+.xv-monolith.gs-fork .mo-fk{display:block;width:16px;height:22px;overflow:visible;fill:none;stroke:rgb(var(--la)/.5);stroke-width:1}
+.xv-monolith.gs-fork .mo-dts{align-self:flex-start;height:11px;margin-top:11px}
+/* capsule */
+.xv-monolith.gs-capsule .mo-dts{padding:0 12px;height:22px;border:1px solid rgb(var(--la)/.5);border-radius:99px}
+.xv-monolith.gs-capsule .mo-dts::before{left:12px;right:12px}
+/* node: dots only, no connecting line */
+.xv-monolith.gs-node .mo-dts{gap:9px}
+.xv-monolith.gs-node .mo-dts::before{display:none}
+.xv-monolith.gs-node .mo-ld{width:5px;height:5px}
+.xv-monolith.gs-node .mo-ld.on{width:9px;height:9px;transform:none}
+/* metro: a thick line per employer */
+.xv-monolith.gs-metro .mo-dts{padding:0 8px;gap:14px}
+.xv-monolith.gs-metro .mo-dts::before{left:0;right:0;height:5px;margin-top:-2.5px;border-radius:3px;background:rgb(var(--la)/.4)}
+.xv-monolith.gs-metro .mo-ld{width:11px;height:11px;background:var(--bg)}
+.xv-monolith.gs-metro .mo-ld.past{background:var(--bg);border-color:rgb(var(--la));border-width:2px}
+.xv-monolith.gs-metro .mo-ld.on{background:rgb(var(--la))}
 .xv-monolith .mo-strap{position:relative;display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 16px;max-width:34rem;padding:2px 0 12px 16px;border-bottom:1px solid var(--rule);font-size:.86rem}
 .xv-monolith .mo-strap::before{content:"";position:absolute;left:0;top:.25em;width:2px;height:1.35em;background:var(--accent)}
 .xv-monolith .mo-sk{font-size:.74rem;color:var(--accent)}
@@ -131,7 +161,7 @@ export const css = `
 }
 `
 
-export function mount(el, { employers, compact, rail }) {
+export function mount(el, { employers, compact, rail, gs }) {
   const u = ++uid
   const flat = []
   employers.forEach((e) => e.contracts.forEach((c, ci) => flat.push({ e, c, ci, i: flat.length })))
@@ -144,10 +174,12 @@ export function mount(el, { employers, compact, rail }) {
     const hid = `mo${u}-${i}-h`
     const live = c.current
     const total = e.contracts.length
-    const plate = group && ci === 0 && !compact
-      ? `<div class="mo-emp mo-x brk" style="--d:0" role="group" aria-label="Employer: ${esc(e.name)}"><p class="mo-emp-name">${esc(e.name)}</p><p class="mo-emp-meta"><b>Employer</b><span>${esc(grpMeta(e))}</span></p>${e.desc ? `<p class="mo-emp-desc">${esc(e.desc)}</p>` : ''}</div>`
+    const dots = e.contracts.map((_, k) => `<i class="mo-ld${k <= ci ? ' past' : ''}${k === ci ? ' on' : ''}"></i>`).join('')
+    const fk = (d) => `<svg class="mo-fk" viewBox="0 0 16 22" aria-hidden="true"><path d="${d}"/></svg>`
+    const plate = group && !compact
+      ? `<div class="mo-lin mo-x" style="--d:0" role="group" aria-label="Employer: ${esc(e.name)}, contract ${ci + 1} of ${total}"><span class="mo-lk">Employer</span><span class="mo-lv">${esc(e.name)}</span><span class="mo-lg" aria-hidden="true"><i class="mo-st"></i>${fk('M0 4.5C8 4.5 8 16.5 16 16.5')}<span class="mo-dts">${dots}</span>${fk('M0 16.5C8 16.5 8 4.5 16 4.5')}<i class="mo-st"></i></span><span class="mo-ln"><span class="mo-cw">Contract </span>${ci + 1} of ${total}</span></div>${ci === 0 ? `<p class="mo-emp-meta mo-x" style="--d:40">${esc(grpMeta(e))}</p>${e.desc ? `<p class="mo-emp-desc mo-x" style="--d:60">${esc(e.desc)}</p>` : ''}` : ''}`
       : ''
-    const strap = group && !plate
+    const strap = group && compact
       ? `<p class="mo-strap mo-x" style="--d:0"><span class="mo-sk">Employer</span><span class="mo-sv">${esc(e.name)}</span>${total > 1 ? `<span class="mo-sn"><span class="mo-cw">Contract </span>${ci + 1} of ${total}</span>` : ''}</p>`
       : ''
     const stack = c.skills.map((s, k) => `<li class="mo-x" style="--d:${300 + k * 45}"><span aria-hidden="true">${icon(s)}</span><span class="mo-cap">${esc(techName(s))}</span></li>`).join('')
@@ -267,7 +299,7 @@ export function mount(el, { employers, compact, rail }) {
     }
     const subscribe = (fn) => { subs.add(fn); if (state) fn(state); return () => subs.delete(fn) }
     el.classList.add(`rail-${rail.id}`)
-    const stop = rail.mount({ el, gut: el.querySelector('.mo-gut'), bar: el.querySelector('.mo-bar'), flat, employers, n, frames, goTo, subscribe })
+    const stop = rail.mount({ el, gut: el.querySelector('.mo-gut'), bar: el.querySelector('.mo-bar'), flat, employers, n, frames, goTo, subscribe, gs })
     cleanups.push(() => { stop?.(); el.classList.remove(`rail-${rail.id}`) })
     queue()
   }
