@@ -19,6 +19,9 @@ export const css = `
 .xv-monolith:not(.xv-compact) .mo-frame:first-child{padding-top:clamp(112px,16svh,170px)}
 .xv-monolith .mo-frame::before{content:"";position:absolute;z-index:-1;right:-8%;top:50%;width:min(80vw,860px);aspect-ratio:1;transform:translateY(-50%);pointer-events:none;background:radial-gradient(closest-side,rgb(255 140 43/.08),rgb(255 140 43/.026) 55%,transparent)}
 .xv-monolith .mo-frame.mo-live::before{background:radial-gradient(closest-side,rgb(90 209 230/.12),rgb(90 209 230/.04) 55%,transparent)}
+/* the footer lives inside the last frame, so the page ends where the last contract ends */
+.xv-monolith:not(.xv-compact) .mo-frame:last-child{padding-bottom:0;scroll-snap-align:start end}
+.xv-monolith .mo-foot{margin-top:auto;padding:clamp(64px,10svh,120px) 0 36px;display:flex;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;font-size:.76rem;color:var(--muted)}
 .xv-monolith .mo-body{position:relative;max-width:60rem}
 
 .xv-monolith .mo-emp-meta{max-width:58ch;margin-top:16px;font-size:.76rem;color:var(--muted)}
@@ -30,32 +33,14 @@ export const css = `
 .xv-monolith .mo-lk{font-size:.74rem;color:var(--accent)}
 .xv-monolith .mo-lv{font:300 .95rem/1.3 var(--display);letter-spacing:.05em;color:var(--fg)}
 .xv-monolith .mo-ln{font-size:.76rem;color:var(--muted)}
-.xv-monolith .mo-lg{display:inline-flex;align-items:flex-start;height:22px}
-.xv-monolith .mo-dts{position:relative;display:inline-flex;align-items:center;gap:12px;height:22px}
-.xv-monolith .mo-dts::before{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgb(var(--la)/.45)}
-.xv-monolith .mo-ld{position:relative;width:9px;height:9px;border-radius:50%;border:1px solid rgb(var(--la)/.6);background:var(--bg)}
-.xv-monolith .mo-ld.past{background:rgb(var(--la));border-color:rgb(var(--la))}
-.xv-monolith .mo-ld.on{transform:scale(1.35);box-shadow:0 0 8px rgb(var(--la)/.7)}
+.xv-monolith .mo-lg{display:inline-flex;align-items:center;height:22px}
+/* metro: a thick line behind the employer's contracts */
+.xv-monolith .mo-dts{position:relative;display:inline-flex;align-items:center;gap:14px;height:22px;padding:0 8px}
+.xv-monolith .mo-dts::before{content:"";position:absolute;left:0;right:0;top:50%;height:5px;margin-top:-2.5px;border-radius:3px;background:rgb(var(--la)/.4)}
+.xv-monolith .mo-ld{position:relative;box-sizing:border-box;width:11px;height:11px;border-radius:50%;border:2px solid rgb(var(--la));background:var(--bg)}
+.xv-monolith .mo-ld:not(.past){border-color:rgb(var(--la)/.6);border-width:1px}
+.xv-monolith .mo-ld.on{background:rgb(var(--la));box-shadow:0 0 8px rgb(var(--la)/.7)}
 .xv-monolith .mo-live .mo-ld.on{background:rgb(var(--lb));border-color:rgb(var(--lb));box-shadow:0 0 9px rgb(var(--lb)/.8)}
-.xv-monolith .mo-st,.xv-monolith .mo-fk{display:none}
-/* fork: the trunk dips onto a lane, the contracts sit on it, then it merges back */
-.xv-monolith.gs-fork .mo-st{display:block;width:10px;height:1px;margin-top:4px;background:rgb(var(--la)/.45)}
-.xv-monolith.gs-fork .mo-fk{display:block;width:16px;height:22px;overflow:visible;fill:none;stroke:rgb(var(--la)/.5);stroke-width:1}
-.xv-monolith.gs-fork .mo-dts{align-self:flex-start;height:11px;margin-top:11px}
-/* capsule */
-.xv-monolith.gs-capsule .mo-dts{padding:0 12px;height:22px;border:1px solid rgb(var(--la)/.5);border-radius:99px}
-.xv-monolith.gs-capsule .mo-dts::before{left:12px;right:12px}
-/* node: dots only, no connecting line */
-.xv-monolith.gs-node .mo-dts{gap:9px}
-.xv-monolith.gs-node .mo-dts::before{display:none}
-.xv-monolith.gs-node .mo-ld{width:5px;height:5px}
-.xv-monolith.gs-node .mo-ld.on{width:9px;height:9px;transform:none}
-/* metro: a thick line per employer */
-.xv-monolith.gs-metro .mo-dts{padding:0 8px;gap:14px}
-.xv-monolith.gs-metro .mo-dts::before{left:0;right:0;height:5px;margin-top:-2.5px;border-radius:3px;background:rgb(var(--la)/.4)}
-.xv-monolith.gs-metro .mo-ld{width:11px;height:11px;background:var(--bg)}
-.xv-monolith.gs-metro .mo-ld.past{background:var(--bg);border-color:rgb(var(--la));border-width:2px}
-.xv-monolith.gs-metro .mo-ld.on{background:rgb(var(--la))}
 .xv-monolith .mo-strap{position:relative;display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 16px;max-width:34rem;padding:2px 0 12px 16px;border-bottom:1px solid var(--rule);font-size:.86rem}
 .xv-monolith .mo-strap::before{content:"";position:absolute;left:0;top:.25em;width:2px;height:1.35em;background:var(--accent)}
 .xv-monolith .mo-sk{font-size:.74rem;color:var(--accent)}
@@ -140,7 +125,9 @@ export const css = `
 @media (max-width:899px){
   .xv-monolith{grid-template-columns:minmax(0,1fr);--ti-size:26px}
   .xv-monolith .mo-gut{display:none}
-  .xv-monolith .mo-bar{display:block;grid-column:1/-1;position:sticky;bottom:0;z-index:30;padding-bottom:env(safe-area-inset-bottom)}
+  /* the bar takes no height of its own: at the page end it sits over the last frame, whose footer clears it */
+  .xv-monolith .mo-bar{display:block;grid-column:1/-1;position:sticky;bottom:0;z-index:30;margin-top:calc(-60px - env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom)}
+  .xv-monolith .mo-foot{padding-bottom:calc(36px + 60px + env(safe-area-inset-bottom))}
   .xv-monolith .mo-frame{min-height:min(100svh,860px);padding:clamp(44px,8svh,72px) 0 clamp(44px,8svh,72px) 0}
   .xv-monolith .mo-name{font-size:clamp(1.7rem,9vw,3rem)}
   .xv-monolith .mo-stack{grid-template-columns:repeat(auto-fill,minmax(4.4rem,1fr));gap:16px 6px}
@@ -161,7 +148,7 @@ export const css = `
 }
 `
 
-export function mount(el, { employers, compact, rail, gs }) {
+export function mount(el, { employers, compact, rail, foot = '' }) {
   const u = ++uid
   const flat = []
   employers.forEach((e) => e.contracts.forEach((c, ci) => flat.push({ e, c, ci, i: flat.length })))
@@ -175,9 +162,8 @@ export function mount(el, { employers, compact, rail, gs }) {
     const live = c.current
     const total = e.contracts.length
     const dots = e.contracts.map((_, k) => `<i class="mo-ld${k <= ci ? ' past' : ''}${k === ci ? ' on' : ''}"></i>`).join('')
-    const fk = (d) => `<svg class="mo-fk" viewBox="0 0 16 22" aria-hidden="true"><path d="${d}"/></svg>`
     const plate = group && !compact
-      ? `<div class="mo-lin mo-x" style="--d:0" role="group" aria-label="Employer: ${esc(e.name)}, contract ${ci + 1} of ${total}"><span class="mo-lk">Employer</span><span class="mo-lv">${esc(e.name)}</span><span class="mo-lg" aria-hidden="true"><i class="mo-st"></i>${fk('M0 4.5C8 4.5 8 16.5 16 16.5')}<span class="mo-dts">${dots}</span>${fk('M0 16.5C8 16.5 8 4.5 16 4.5')}<i class="mo-st"></i></span><span class="mo-ln"><span class="mo-cw">Contract </span>${ci + 1} of ${total}</span></div>${ci === 0 ? `<p class="mo-emp-meta mo-x" style="--d:40">${esc(grpMeta(e))}</p>${e.desc ? `<p class="mo-emp-desc mo-x" style="--d:60">${esc(e.desc)}</p>` : ''}` : ''}`
+      ? `<div class="mo-lin mo-x" style="--d:0" role="group" aria-label="Employer: ${esc(e.name)}, contract ${ci + 1} of ${total}"><span class="mo-lk">Employer</span><span class="mo-lv">${esc(e.name)}</span><span class="mo-lg" aria-hidden="true"><span class="mo-dts">${dots}</span></span><span class="mo-ln"><span class="mo-cw">Contract </span>${ci + 1} of ${total}</span></div>${ci === 0 ? `<p class="mo-emp-meta mo-x" style="--d:40">${esc(grpMeta(e))}</p>${e.desc ? `<p class="mo-emp-desc mo-x" style="--d:60">${esc(e.desc)}</p>` : ''}` : ''}`
       : ''
     const strap = group && compact
       ? `<p class="mo-strap mo-x" style="--d:0"><span class="mo-sk">Employer</span><span class="mo-sv">${esc(e.name)}</span>${total > 1 ? `<span class="mo-sn"><span class="mo-cw">Contract </span>${ci + 1} of ${total}</span>` : ''}</p>`
@@ -196,6 +182,7 @@ export function mount(el, { employers, compact, rail, gs }) {
         <ul class="mo-stack" aria-label="Technologies used at ${esc(c.co)}">${stack}</ul>
         ${pts}
       </div>
+      ${!compact && i === n - 1 ? foot : ''}
     </article>`
   }
 
@@ -299,7 +286,7 @@ export function mount(el, { employers, compact, rail, gs }) {
     }
     const subscribe = (fn) => { subs.add(fn); if (state) fn(state); return () => subs.delete(fn) }
     el.classList.add(`rail-${rail.id}`)
-    const stop = rail.mount({ el, gut: el.querySelector('.mo-gut'), bar: el.querySelector('.mo-bar'), flat, employers, n, frames, goTo, subscribe, gs })
+    const stop = rail.mount({ el, gut: el.querySelector('.mo-gut'), bar: el.querySelector('.mo-bar'), flat, employers, n, frames, goTo, subscribe })
     cleanups.push(() => { stop?.(); el.classList.remove(`rail-${rail.id}`) })
     queue()
   }

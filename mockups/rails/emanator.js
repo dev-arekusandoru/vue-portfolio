@@ -52,15 +52,11 @@ ${R} .em-stop:hover .em-ring,${R} .em-stop:focus-visible .em-ring{transform:scal
 ${R} .em-stop:focus-visible{outline:none}
 ${R} .em-stop:focus-visible .em-ring{outline:2px solid var(--accent);outline-offset:3px}
 
-/* employers with several contracts. Four styles (class gs-* on the host): fork, capsule, node, metro. .em-br is the mark, .em-gn the employer name. */
-${R} .em-br{position:absolute;color:rgb(var(--em-a)/.5);transition:color .6s var(--ease),filter .6s var(--ease)}
-${R} .em-br.on{color:rgb(var(--em-a));filter:drop-shadow(0 0 4px rgb(var(--em-a)/.45))}
+/* employers with several contracts: a thick line behind their stops (metro). .em-br is the line, .em-gn the employer name. */
+${R} .em-br{position:absolute;border-radius:3px;background:currentColor;color:rgb(var(--em-a)/.38);transition:color .6s var(--ease),filter .6s var(--ease)}
+${R} .em-br.on{color:rgb(var(--em-a)/.9);filter:drop-shadow(0 0 4px rgb(var(--em-a)/.45))}
 ${R} .em-gn{position:absolute;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--muted);transition:color .6s var(--ease);pointer-events:none;font-size:.58rem;letter-spacing:.14em;text-transform:uppercase}
 ${R} .em-gn.on{color:var(--fg)}
-${R} .em-gc{display:none}
-${R}.gs-node .em-gc{display:inline}
-${R} .em-fk{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none}
-${R} .em-fk path{fill:none;stroke:currentColor;stroke-width:1}
 
 /* ===== wide: a vertical line at the far left ===== */
 ${R} .em-v{--h:clamp(260px,calc(var(--n)*150px),min(calc(100svh - 230px),760px));position:sticky;top:max(112px,calc((100svh - var(--h)) / 2));height:var(--h);width:150px;margin-left:var(--fx,0px)}
@@ -71,18 +67,10 @@ ${R} .em-v .em-fl{transform:scaleY(0)}
 ${R} .em-v .em-fa::after,${R} .em-v .em-fb::after{inset:0 -4px}
 ${R} .em-v .em-orb{left:28px;top:0}
 ${R} .em-v .em-streak{width:2px;height:100px;margin:-50px 0 0 -1px;background:linear-gradient(to bottom,transparent,var(--c) 50%,transparent);transform:translateY(var(--sh,0px)) scaleY(var(--ss,.34))}
-${R} .em-v .em-stop{left:calc(28px + var(--so,0px));top:var(--at);width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%}
+${R} .em-v .em-stop{left:28px;top:var(--at);width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%}
 ${R} .em-v .em-gn{left:0;top:calc(var(--ta) - 8px);height:calc(var(--sp) + 16px);width:12px;writing-mode:vertical-rl;transform:rotate(180deg);line-height:12px;text-align:center}
-${R}.gs-fork .em-v .em-stop.ing{--so:22px}
-${R}.gs-fork .em-v .em-stop.ing .em-lab{max-width:calc(var(--lw,calc(var(--g) - 52px + clamp(10px,2vw,28px))) - 22px)}
-${R}.gs-capsule .em-v .em-br{box-sizing:border-box;left:13px;width:30px;top:calc(var(--ta) - 17px);height:calc(var(--sp) + 34px);border:1px solid currentColor;border-radius:15px}
-${R}.gs-capsule .em-v .em-lab,${R}.gs-metro .em-v .em-lab{left:calc(100% + 4px)}
-${R}.gs-node .em-v .em-br{box-sizing:border-box;left:11px;width:5px;top:calc(var(--ta) - 8px);height:calc(var(--sp) + 16px);border:1px solid currentColor;border-right:0}
-${R}.gs-metro .em-v .em-br{left:25.5px;width:5px;top:calc(var(--ta) - 3px);height:calc(var(--sp) + 6px);border-radius:3px;background:currentColor;color:rgb(var(--em-a)/.38);filter:none}
-${R}.gs-metro .em-v .em-br.on{color:rgb(var(--em-a)/.9);filter:drop-shadow(0 0 4px rgb(var(--em-a)/.45))}
-${R}.gs-node .em-stop.ing:not(.on) .em-ring{transform:scale(.38)}
-${R}.gs-node .em-stop.ing:not(.on):hover .em-ring,${R}.gs-node .em-stop.ing:not(.on):focus-visible .em-ring{transform:scale(.8)}
-${R} .em-v .em-lab{position:absolute;left:calc(100% - 4px);top:50%;width:max-content;max-width:var(--lw,calc(var(--g) - 52px + clamp(10px,2vw,28px)));text-align:left;opacity:0;transform:translate(-8px,-50%);transition:opacity .55s var(--ease),transform .7s var(--ease);pointer-events:none}
+${R} .em-v .em-br{left:25.5px;width:5px;top:calc(var(--ta) - 3px);height:calc(var(--sp) + 6px)}
+${R} .em-v .em-lab{position:absolute;left:calc(100% + 4px);top:50%;width:max-content;max-width:var(--lw,calc(var(--g) - 52px + clamp(10px,2vw,28px)));text-align:left;opacity:0;transform:translate(-8px,-50%);transition:opacity .55s var(--ease),transform .7s var(--ease);pointer-events:none}
 ${R} .em-v .em-nm{position:relative;display:block;color:var(--fg);overflow-wrap:anywhere}
 ${R} .em-v .em-yr{display:block;color:var(--muted)}
 ${R} .em-v .em-eg{display:block;color:rgb(var(--em-a));overflow-wrap:anywhere}
@@ -116,13 +104,7 @@ ${R} .em-h .em-orb{left:0;top:22px}
 ${R} .em-h .em-bloom{width:64px;height:64px;margin:-32px 0 0 -32px}
 ${R} .em-h .em-streak{width:100px;height:2px;margin:-1px 0 0 -50px;background:linear-gradient(to right,transparent,var(--c) 50%,transparent);transform:translateX(var(--sh,0px)) scaleX(var(--ss,.34))}
 ${R} .em-h .em-stop{left:var(--at);top:22px;width:max(28px,calc(100% / var(--n)));height:44px;transform:translate(-50%,-50%)}
-${R} .em-h .em-stop{top:calc(22px + var(--so,0px))}
-${R}.gs-fork .em-h .em-stop.ing{--so:14px}
-${R}.gs-metro .em-h .em-ring{background:var(--bg)}
-${R}.gs-capsule .em-h .em-br{box-sizing:border-box;left:calc(var(--ta) - 11px);width:calc(var(--sp) + 22px);top:6px;height:32px;border:1px solid currentColor;border-radius:16px}
-${R}.gs-node .em-h .em-br{box-sizing:border-box;left:calc(var(--ta) - 11px);width:calc(var(--sp) + 22px);top:7px;height:5px;border:1px solid currentColor;border-bottom:0}
-${R}.gs-metro .em-h .em-br{left:calc(var(--ta) - 11px);width:calc(var(--sp) + 22px);top:19.5px;height:5px;border-radius:3px;background:currentColor;color:rgb(var(--em-a)/.38);filter:none}
-${R}.gs-metro .em-h .em-br.on{color:rgb(var(--em-a)/.9)}
+${R} .em-h .em-br{left:calc(var(--ta) - 11px);width:calc(var(--sp) + 22px);top:19.5px;height:5px}
 ${R} .em-h .em-gn,${R} .em-h .em-lab{display:none}
 
 @keyframes em-breathe{from{transform:scale(.88);opacity:.75}to{transform:scale(1.1);opacity:1}}
@@ -148,7 +130,7 @@ const cname = (e, c) => (e.kind === 'group' && c.co === e.name ? c.title : c.co)
 const aria = ({ e, c }) => `${c.co}, ${c.title}, ${range(c)}${c.current ? ', current' : ''}${e.kind === 'group' ? `, employer ${e.name}` : ''}`
 
 export function mount(ctx) {
-  const { el, gut, bar, flat, n, goTo, subscribe, gs = 'fork' } = ctx
+  const { el, gut, bar, flat, n, goTo, subscribe } = ctx
   if (!n) return () => {}
 
   const pct = (k) => ((k + 0.5) / n) * 100
@@ -161,38 +143,20 @@ export function mount(ctx) {
   const gIndex = (e) => groups.findIndex((g) => g.e === e)
 
   const inGroup = (it) => it.e.kind === 'group'
-  const LO = { v: 22, h: 14 }
-  const off = (k, h) => (gs === 'fork' && inGroup(flat[k]) ? LO[h ? 'h' : 'v'] : 0)
   const stopHTML = (it) => {
     const nm = cname(it.e, it.c)
     const eg = inGroup(it) ? `<span class="em-eg">${esc(it.e.name)}</span>` : ''
     return `<button type="button" class="em-stop${it.c.current ? ' is-live' : ''}${inGroup(it) ? ' ing' : ''}" data-i="${it.i}" style="--at:${pct(it.i)}%" aria-label="${esc(aria(it))}"><span class="em-ring"></span><span class="em-lab" aria-hidden="true">${eg}<span class="em-nm" data-t="${esc(nm)}">${esc(nm)}</span><span class="em-yr">${esc(yearSpan(it.c))}</span></span></button>`
   }
   const sty = (g) => `style="--ta:${pct(g.a)}%;--sp:${((g.b - g.a) / n) * 100}%"`
-  const brHTML = (g) => (gs === 'fork' ? '' : `<span class="em-br" ${sty(g)} aria-hidden="true"></span>`)
-  const gnHTML = (g) => `<span class="em-gn" ${sty(g)} title="${esc(g.e.name)}" aria-hidden="true">${esc(g.e.name)}<span class="em-gc"> · ${g.b - g.a + 1}</span></span>`
-  const forkHTML = () => (gs === 'fork' ? `<svg class="em-fk" aria-hidden="true">${groups.map(() => '<path class="em-br"/>').join('')}</svg>` : '')
+  const brHTML = (g) => `<span class="em-br" ${sty(g)} aria-hidden="true"></span>`
+  const gnHTML = (g) => `<span class="em-gn" ${sty(g)} title="${esc(g.e.name)}" aria-hidden="true">${esc(g.e.name)}</span>`
   const layers = '<span class="em-bloom"></span><span class="em-streak"></span><span class="em-core"></span>'
   const nowHTML = '<p class="em-now" aria-hidden="true"><span class="em-nn"><span class="em-ee"></span><span class="em-sep">›</span><span class="em-cn"></span></span><span class="em-ct"></span><span class="em-lv" hidden>now</span></p>'
 
-  /* fork: each group leaves the trunk at the stop before it, runs on its own lane, and rejoins at the stop after it */
-  const layout = (N) => {
-    if (gs !== 'fork' || !N.size) return
-    const base = N.h ? 22 : 28
-    const P = (k) => ((k + 0.5) / n) * N.size
-    const pt = (u, w) => (N.h ? `${u} ${base + w}` : `${base + w} ${u}`)
-    N.grp.forEach((g) => {
-      const pa = P(g.a), pb = P(g.b)
-      const u0 = g.a > 0 ? P(g.a - 1) : Math.max(0, pa - 24)
-      const u1 = g.b < n - 1 ? P(g.b + 1) : pb + 24
-      const w0 = g.a > 0 ? off(g.a - 1, N.h) : 0, w1 = g.b < n - 1 ? off(g.b + 1, N.h) : 0, wl = LO[N.h ? 'h' : 'v']
-      const m1 = (u0 + pa) / 2, m2 = (pb + u1) / 2
-      g.br.setAttribute('d', `M${pt(u0, w0)}C${pt(m1, w0)} ${pt(m1, wl)} ${pt(pa, wl)}L${pt(pb, wl)}C${pt(m2, wl)} ${pt(m2, w1)} ${pt(u1, w1)}`)
-    })
-  }
 
   const build = (host, axis) => {
-    host.innerHTML = `<nav class="em-nav em-${axis}" aria-label="Experience timeline" style="--n:${n}">${axis === 'h' ? nowHTML : ''}<div class="em-rail"><div class="em-lines" aria-hidden="true"><span class="em-ln"></span><span class="em-ha"></span><span class="em-fl"><span class="em-fa"></span><span class="em-fb"></span></span></div>${forkHTML()}${groups.map(brHTML).join('')}${groups.map(gnHTML).join('')}${flat.map(stopHTML).join('')}<div class="em-orb" aria-hidden="true"><span class="em-ly a">${layers}</span><span class="em-ly b">${layers}</span></div></div></nav>`
+    host.innerHTML = `<nav class="em-nav em-${axis}" aria-label="Experience timeline" style="--n:${n}">${axis === 'h' ? nowHTML : ''}<div class="em-rail"><div class="em-lines" aria-hidden="true"><span class="em-ln"></span><span class="em-ha"></span><span class="em-fl"><span class="em-fa"></span><span class="em-fb"></span></span></div>${groups.map(brHTML).join('')}${groups.map(gnHTML).join('')}${flat.map(stopHTML).join('')}<div class="em-orb" aria-hidden="true"><span class="em-ly a">${layers}</span><span class="em-ly b">${layers}</span></div></div></nav>`
     const nav = host.firstElementChild
     const $ = (s) => nav.querySelector(s)
     const brs = [...nav.querySelectorAll('.em-br')], gns = [...nav.querySelectorAll('.em-gn')]
@@ -232,7 +196,6 @@ export function mount(ctx) {
       const N = navs.find((x) => x.rail === en.target)
       if (N) {
         N.size = N.h ? en.contentRect.width : en.contentRect.height
-        layout(N)
       }
     }
     place()
@@ -247,19 +210,10 @@ export function mount(ctx) {
     const s = lag === 0 ? 0 : Math.min(Math.abs(lag) * n * 46, 130)
     const shift = -Math.sign(lag) * s / 2
     const scale = (34 + s) / 100
-    /* across the lane: the orb leaves the trunk with the same ease as the fork curve */
-    const q = cur * n - 0.5
-    const wOf = (h) => {
-      if (gs !== 'fork') return 0
-      if (q <= 0) return off(0, h)
-      if (q >= n - 1) return off(n - 1, h)
-      const k = Math.floor(q), f = q - k, s = f * f * (3 - 2 * f)
-      return off(k, h) + (off(k + 1, h) - off(k, h)) * s
-    }
     for (const N of navs) {
       if (!N.size) continue
-      const px = cur * N.size, w = wOf(N.h)
-      N.orb.style.transform = N.h ? `translate3d(${px}px,${w}px,0)` : `translate3d(${w}px,${px}px,0)`
+      const px = cur * N.size
+      N.orb.style.transform = N.h ? `translate3d(${px}px,0,0)` : `translate3d(0,${px}px,0)`
       N.fl.style.transform = N.h ? `scaleX(${cur})` : `scaleY(${cur})`
       N.orb.style.setProperty('--sh', `${shift}px`)
       N.orb.style.setProperty('--ss', scale)

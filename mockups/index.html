@@ -144,7 +144,7 @@ html[data-route=experience]{scroll-snap-type:y mandatory}
 html[data-route=experience] #hero{position:absolute;top:0;left:0;right:0;z-index:5;overflow:visible;background:none}
 html[data-route=experience] #hero::after,html[data-route=experience] #hero .glow{display:none}
 .sec.flush{padding-top:0}
-.foot{scroll-snap-align:end}
+html[data-route=experience] .foot{display:none}
 
 /* boot */
 #boot{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:#080a0c;color:var(--accent);padding:24px;transition:opacity .6s var(--ease),filter .6s var(--ease)}
@@ -245,7 +245,8 @@ import * as experience from './experience.js'
 import * as emanator from './rails/emanator.js'
 
 document.documentElement.classList.add('js')
-document.getElementById('src').textContent = `${isLive ? 'Data: local PocketBase' : 'Data: sample (PocketBase offline)'}${isSeeded ? ' + invented future contracts (?seed=0 to hide)' : ''}`
+const srcText = `${isLive ? 'Data: local PocketBase' : 'Data: sample (PocketBase offline)'}${isSeeded ? ' + invented future contracts (?seed=0 to hide)' : ''}`
+document.getElementById('src').textContent = srcText
 
 /* projects */
 const D = (s) => new Date(String(s).replace(' ', 'T'))
@@ -268,39 +269,16 @@ document.getElementById('all-projects').textContent = `All projects (${projects.
 /* experience section: experience.js exports css + mount(); rails/emanator.js draws the timeline */
 const xvStyle = document.getElementById('xv-style')
 const mounts = []
-const GS = ['fork', 'capsule', 'node', 'metro']
-let gs = ['fork', 'capsule', 'node', 'metro'].find((g) => g === new URLSearchParams(location.search).get('grp')) || 'fork'
 function renderExperience() {
   mounts.splice(0).forEach((fn) => { try { fn?.() } catch (e) { console.error(e) } })
   xvStyle.textContent = experience.css + emanator.css
+  const foot = `<footer class="mo-foot"><span>© 2025 Alexandru Muresan</span><span>${srcText}</span></footer>`
   document.querySelectorAll('[data-xp]').forEach((el) => {
     const compact = el.dataset.xp === 'compact'
     el.replaceChildren()
-    el.className = `xv xv-monolith gs-${gs}${compact ? ' xv-compact' : ''}`
-    mounts.push(experience.mount(el, { employers: compact ? currentEmployers() : employers, compact, rail: emanator, gs }))
+    el.className = `xv xv-monolith${compact ? ' xv-compact' : ''}`
+    mounts.push(experience.mount(el, { employers: compact ? currentEmployers() : employers, compact, rail: emanator, foot }))
   })
-  document.querySelectorAll('#gs-pick button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.gs === gs)))
-}
-/* test harness (removed once a style is picked): grouping style switch, keys 1-4 */
-{
-  const bx = document.createElement('div')
-  bx.id = 'gs-pick'
-  bx.style.cssText = 'position:fixed;right:10px;bottom:72px;z-index:99;display:flex;gap:4px;font:300 11px/1 var(--mono)'
-  bx.innerHTML = GS.map((g, k) => `<button type="button" data-gs="${g}" style="padding:6px 8px;border:1px solid var(--rule);background:rgb(8 10 12/.9);color:var(--fg);cursor:pointer">${k + 1} ${g}</button>`).join('')
-  bx.addEventListener('click', (ev) => { const b = ev.target.closest('button'); if (b) setGs(b.dataset.gs) })
-  document.body.append(bx)
-  const st = document.createElement('style')
-  st.textContent = '#gs-pick button[aria-pressed=true]{border-color:var(--accent)!important;color:var(--accent)!important}html:not([data-route=experience]) #gs-pick{display:none!important}'
-  document.head.append(st)
-  addEventListener('keydown', (ev) => { if (!ev.metaKey && !ev.ctrlKey && !ev.altKey && /^[1-4]$/.test(ev.key) && !/INPUT|TEXTAREA/.test(ev.target.tagName)) setGs(GS[+ev.key - 1]) })
-}
-function setGs(g) {
-  if (g === gs) return
-  gs = g
-  const u = new URL(location.href)
-  u.searchParams.set('grp', g)
-  history.replaceState(null, '', u)
-  renderExperience()
 }
 
 /* routing */
