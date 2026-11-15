@@ -75,6 +75,8 @@ if (isSeeded) { ({ rawG, rawE } = seed(rawG, rawE)); rawP = seedProjects(rawP) }
 export const isLive = live
 
 const palettes = [['#ff8c2b', '#1b2a33', '#5ad1e6'], ['#c0502a', '#101820', '#ff8c2b'], ['#5ad1e6', '#2a1608', '#ff8c2b'], ['#ff8c2b', '#0e1a1f', '#c0502a'], ['#d98a4a', '#1a1208', '#5ad1e6']]
+/* per-project accent (blue stays reserved for live things). Overridable with an `accent` field. */
+const accents = ['#ff8c2b', '#ff4fa3', '#f0b44c', '#e8603c', '#d98cff', '#7fe0b0']
 /**
  * Project object: { id, name, start:Date, end:Date, current, stack:string[], headline, highlights:string[], role, kind, metric:{value,label}|null,
  *                   status:'active'|'shipped', code_url, demo_url, pal }. Sorted newest first.
@@ -96,8 +98,9 @@ export const projects = rawP.map((p) => {
     status: p.current ? 'active' : 'shipped', code_url: p.code_url || '', demo_url: p.demo_url || '',
     cover: p.cover || '', screenshots: Array.isArray(p.screenshots) ? p.screenshots : list(p.screenshots),
     pal: palettes[[...p.name].reduce((a, c) => a + c.charCodeAt(0), 0) % palettes.length],
+    accent: p.accent || '',
   }
-}).sort((a, b) => b.start - a.start)
+}).sort((a, b) => b.start - a.start).map((p, i) => ({ ...p, accent: p.accent || accents[(i * 5) % accents.length] }))
 
 export const contracts = rawE.map((e) => {
   const start = D(e.start_date)
