@@ -50,5 +50,19 @@ export function seedProjects(rawP) {
     P('sp11', 'Glasswing', '2033-01-02', '', ['Vue', 'TypeScript', 'Rust', 'PocketBase'], ['A design-token editor that exports to CSS, Swift and Kotlin.', 'Used by two open-source projects.'], 'https://example.com/glasswing', 'https://example.com/glasswing'),
     P('sp12', 'Nightjar', '2033-11-02', '', ['Go', 'React', 'TypeScript', 'Terraform', 'AWS'], ['An uptime monitor that runs probes from the edge.', 'Alerts to Slack, email and a push app.'], 'https://example.com/nightjar', ''),
   ]
-  return [...ps, ...rawP]
+  const X = {
+    sp1: { kind: 'Web app', metric_value: '60fps', metric_label: 'charts from 40 yrs of data', summary: 'Tide tables are usually a PDF. Tidepool turns them into an interactive planner: pick a harbour, a date and a draft, and it shows safe windows. The physics core is Rust compiled to WebAssembly so scrubbing the timeline never drops a frame.', challenges: 'Keeping the WASM boundary cheap: passing typed arrays instead of objects cut the frame time from 14ms to 3ms.' },
+    sp2: { kind: 'CLI + server', metric_value: '9 MB', metric_label: 'single binary', summary: 'A notes server that ships as one Go binary with SQLite inside. Search is SQLite FTS5, the UI is server-rendered with HTMX, and a nightly job pushes a backup to any S3-compatible bucket.', challenges: 'Making full-text ranking feel right on short notes took a custom BM25 weighting.' },
+    sp3: { kind: 'Mobile app', metric_value: '4.8', metric_label: 'App Store rating', summary: 'A habit tracker built around the lock screen: one glance shows the streak, one tap logs the day. CloudKit syncs devices without an account.' },
+    sp4: { kind: 'Web app', metric_value: '5k/s', metric_label: 'log lines ingested', summary: 'Self-hosted log search for teams who do not want a SaaS bill. FastAPI ingests, Celery indexes into Postgres, and a small UI does the querying.' },
+    sp5: { kind: 'Mobile app', metric_value: '1,200', metric_label: 'saved articles offline', summary: 'An Android reading list that stores clean, offline copies of every article, images included, and syncs read state through Room.' },
+    sp6: { kind: 'Web app', metric_value: '90%', metric_label: 'transactions auto-categorised', summary: 'Bookkeeping for freelancers: drop in a bank export and it proposes categories, invoices and quarterly tax estimates.', challenges: 'Teaching the categoriser from corrections, with no model hosting.' },
+    sp7: { kind: 'Library', metric_value: '<2ms', metric_label: '10k-sprite frame', summary: 'A small 2D renderer for games that read like text files. Scenes are plain text, hot-reloaded on save.' },
+    sp8: { kind: 'Web app', metric_value: '0', metric_label: 'edit conflicts', summary: 'A recipe board where several cooks edit at once. LiveView pushes diffs, and CRDT merges mean nobody ever sees a conflict dialog.' },
+    sp9: { kind: 'Research', metric_value: '1.5 min', metric_label: 'median error (from 4)', summary: 'A small model that predicts bus arrivals from public GTFS feeds and weather. Trained on a laptop, served as a single endpoint.' },
+    sp10: { kind: 'System', metric_value: '3', metric_label: 'Raspberry Pis', summary: 'An event-driven home-automation hub. Devices publish to Kafka, small Spring services react, and Kubernetes keeps it all running on three Pis.' },
+    sp11: { kind: 'Web app', metric_value: '2', metric_label: 'open-source adopters', summary: 'A design-token editor: edit colours and spacing once, export CSS, Swift and Kotlin. The exporter is Rust, the editor is Vue, and PocketBase stores the sets.' },
+    sp12: { kind: 'Web app', metric_value: '12', metric_label: 'edge regions', summary: 'An uptime monitor that runs its probes from the edge, so an outage in one region is not mistaken for yours.' },
+  }
+  return [...ps.map((p) => ({ ...p, ...X[p.id] })), ...rawP]
 }

@@ -21,8 +21,8 @@ export const range = (c) => `${fmt(c.start)} – ${c.current ? 'Present' : fmt(c
 export const grpMeta = (e) => `${fmt(e.start)} – ${e.current ? 'Present' : fmt(e.end)} · ${e.contracts.length} contract${e.contracts.length > 1 ? 's' : ''}`
 
 /* ---- tech normalisation: one key per technology, regardless of how it was typed ---- */
-const ALIASES = { 'ruby on rails': 'rails', 'polymer (js)': 'polymer', js: 'javascript', postgres: 'postgresql', 'react native': 'react-native', 'aws s3': 'aws' }
-const NAMES = { javascript: 'JavaScript', typescript: 'TypeScript', rails: 'Ruby on Rails', polymer: 'Polymer', postgresql: 'PostgreSQL', activerecord: 'ActiveRecord', rspec: 'RSpec', jquery: 'jQuery', html: 'HTML', css: 'CSS', 'react-native': 'React Native' }
+const ALIASES = { 'ruby on rails': 'rails', 'polymer (js)': 'polymer', js: 'javascript', postgres: 'postgresql', 'react native': 'react-native', 'aws s3': 'aws', 'next.js': 'nextjs', node: 'nodejs', 'node.js': 'nodejs', 'c++': 'cpp', wasm: 'webassembly', tailwind: 'tailwindcss' }
+const NAMES = { javascript: 'JavaScript', typescript: 'TypeScript', rails: 'Ruby on Rails', polymer: 'Polymer', postgresql: 'PostgreSQL', activerecord: 'ActiveRecord', rspec: 'RSpec', jquery: 'jQuery', html: 'HTML', css: 'CSS', 'react-native': 'React Native', nextjs: 'Next.js', nodejs: 'Node.js', cpp: 'C++', webassembly: 'WebAssembly', tailwindcss: 'TailwindCSS', graphql: 'GraphQL', pytorch: 'PyTorch', fastapi: 'FastAPI', sqlite: 'SQLite', htmx: 'HTMX', opengl: 'OpenGL', cmake: 'CMake', swiftui: 'SwiftUI', liveview: 'LiveView', pocketbase: 'PocketBase', grpc: 'gRPC', mysql: 'MySQL', php: 'PHP', 'google gemini': 'Google Gemini' }
 export const techKey = (n) => { const k = String(n).trim().toLowerCase(); return ALIASES[k] || k }
 export const techName = (n) => NAMES[techKey(n)] || String(n).trim()
 
@@ -73,7 +73,28 @@ if (isSeeded) { ({ rawG, rawE } = seed(rawG, rawE)); rawP = seedProjects(rawP) }
 export const isLive = live
 
 const palettes = [['#ff8c2b', '#1b2a33', '#5ad1e6'], ['#c0502a', '#101820', '#ff8c2b'], ['#5ad1e6', '#2a1608', '#ff8c2b'], ['#ff8c2b', '#0e1a1f', '#c0502a'], ['#d98a4a', '#1a1208', '#5ad1e6']]
-export const projects = rawP.map((p) => ({ ...p, pal: palettes[[...p.name].reduce((a, c) => a + c.charCodeAt(0), 0) % palettes.length] })).sort((a, b) => D(b.start_date) - D(a.start_date))
+/**
+ * Project object: { id, name, start:Date, end:Date, current, stack:string[], headline, highlights:string[], role, kind, metric:{value,label}|null,
+ *                   status:'active'|'shipped', code_url, demo_url, pal }. Sorted newest first.
+ * Suggested PocketBase fields beyond today's (all optional, mockup falls back when missing): headline, role, kind, metric_value, metric_label,
+ * summary (long text), cover (file), screenshots (files), challenges (text), status (select), featured (bool).
+ */
+const MOBILE = /react native|swift|kotlin|expo|flutter/i
+export const projects = rawP.map((p) => {
+  const hl0 = Array.isArray(p.highlights) ? p.highlights : list(p.highlights)
+  const same = !p.headline && hl0.length > 1 && firstSentence(hl0[0]) === hl0[0].trim()
+  const hl = same ? hl0.slice(1) : hl0
+  const head = p.headline || firstSentence(hl0[0] || '')
+  const stack = [...new Map(list(p.stack).map((s) => [techKey(s), techName(s)])).values()]
+  const kind = p.kind || (MOBILE.test(stack.join()) ? 'Mobile app' : p.demo_url ? 'Web app' : 'Project')
+  return {
+    id: p.id, name: p.name, start: D(p.start_date), end: p.end_date ? D(p.end_date) : null, current: !!p.current, stack,
+    headline: head, highlights: hl, role: p.role || 'Solo developer', kind,
+    metric: p.metric_value ? { value: p.metric_value, label: p.metric_label || '' } : null, summary: p.summary || '', challenges: p.challenges || '',
+    status: p.current ? 'active' : 'shipped', code_url: p.code_url || '', demo_url: p.demo_url || '',
+    pal: palettes[[...p.name].reduce((a, c) => a + c.charCodeAt(0), 0) % palettes.length],
+  }
+}).sort((a, b) => b.start - a.start)
 
 export const contracts = rawE.map((e) => {
   const start = D(e.start_date)

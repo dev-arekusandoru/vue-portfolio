@@ -105,6 +105,7 @@ button{font:inherit;color:inherit}
 .plates .spec-head .yr{display:none}
 .plates .spec h3{font-size:1.25rem}
 .plates .spec p{font-size:.84rem;color:var(--muted)}
+.plate-ic{display:flex;gap:14px;align-items:center;--ti-size:20px;opacity:.8}
 .plates .spec .links{padding-top:6px}
 .specs.index{border-top:1px solid var(--rule)}
 .index .spec{border-bottom:1px solid var(--rule);transition:background .5s var(--ease)}
@@ -227,7 +228,7 @@ html[data-route=experience] .foot{display:none}
 
     <div class="view" data-route="projects">
       <div class="page-top"><h1>Projects</h1><p>Everything I have built, newest first.</p></div>
-      <section class="sec tight" aria-label="All projects"><div class="specs index" data-list="projects"></div></section>
+      <section class="sec tight" aria-label="All projects"><div id="pj-mount"></div></section>
     </div>
 
     <div class="view" data-route="experience">
@@ -241,30 +242,60 @@ html[data-route=experience] .foot{display:none}
 
 <script type="module">
 import { esc, reduce, projects, employers, currentEmployers, isLive, isSeeded } from './lib/data.js'
+import { icon } from './lib/icons.js'
 import * as experience from './experience.js'
 import * as emanator from './rails/emanator.js'
+import * as projectsPage from './projects.js'
 
 document.documentElement.classList.add('js')
 const srcText = `${isLive ? 'Data: local PocketBase' : 'Data: sample (PocketBase offline)'}${isSeeded ? ' + invented future contracts (?seed=0 to hide)' : ''}`
 document.getElementById('src').textContent = srcText
 
-/* projects */
-const D = (s) => new Date(String(s).replace(' ', 'T'))
-const list = (v) => (Array.isArray(v) ? v : String(v || '').split(/[,\n]/).map((x) => x.trim()).filter(Boolean))
+/* home plates (recent projects) */
 const projectHTML = (p) => `
   <article class="spec">
     <div class="spec-art" style="--a1:${p.pal[0]};--a2:${p.pal[1]};--a3:${p.pal[2]}"><span aria-hidden="true">${esc(p.name[0])}</span></div>
     <div class="spec-body">
-      <header class="spec-head"><span class="yr">${D(p.start_date).getUTCFullYear()}</span><h3>${esc(p.name)}</h3><span class="st ${p.current ? 'live' : 'off'}">${p.current ? 'Active' : 'Shipped'}</span></header>
-      <div class="more-in"><div>
-        <p>${esc(list(p.highlights)[0] || '')}</p>
-        <ul class="stack">${list(p.stack).map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
-        ${(p.code_url || p.demo_url) ? `<div class="links">${p.code_url ? `<a href="${esc(p.code_url)}" target="_blank" rel="noopener noreferrer">Code</a>` : ''}${p.demo_url ? `<a href="${esc(p.demo_url)}" target="_blank" rel="noopener noreferrer">Demo</a>` : ''}</div>` : ''}
-      </div></div>
+      <header class="spec-head"><span class="yr">${p.start.getUTCFullYear()}</span><h3>${esc(p.name)}</h3><span class="st ${p.current ? 'live' : 'off'}">${p.current ? 'Active' : 'Shipped'}</span></header>
+      <p>${esc(p.headline)}</p>
+      <div class="plate-ic">${p.stack.slice(0, 6).map(icon).join('')}</div>
+      ${(p.code_url || p.demo_url) ? `<div class="links">${p.code_url ? `<a href="${esc(p.code_url)}" target="_blank" rel="noopener noreferrer">Code</a>` : ''}${p.demo_url ? `<a href="${esc(/^https?:/.test(p.demo_url) ? p.demo_url : 'https://' + p.demo_url)}" target="_blank" rel="noopener noreferrer">Demo</a>` : ''}</div>` : ''}
     </div>
   </article>`
 document.querySelectorAll('[data-list=projects]').forEach((el) => { el.innerHTML = projects.slice(0, +el.dataset.limit || projects.length).map(projectHTML).join('') })
 document.getElementById('all-projects').textContent = `All projects (${projects.length})`
+
+/* projects page. TEST HARNESS: the filter variant picker (keys 5-8, ?f=) is removed once a filter is locked. */
+const FILTERS = { none: () => import('./filters/none.js'), rail: () => import('./filters/rail.js'), chips: () => import('./filters/chips.js'), graph: () => import('./filters/graph.js') }
+const pjStyle = document.createElement('style')
+document.head.append(pjStyle)
+let fKey = Object.keys(FILTERS).includes(new URLSearchParams(location.search).get('f')) ? new URLSearchParams(location.search).get('f') : 'none'
+let pjUnmount
+async function renderProjects() {
+  pjUnmount?.()
+  const filter = await FILTERS[fKey]()
+  pjStyle.textContent = projectsPage.css + (filter.css || '')
+  pjUnmount = projectsPage.mount(document.getElementById('pj-mount'), { projects, filter })
+  document.querySelectorAll('#f-pick button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.f === fKey)))
+}
+{
+  const bx = document.createElement('div')
+  bx.id = 'f-pick'
+  bx.style.cssText = 'position:fixed;right:10px;bottom:10px;z-index:99;display:flex;gap:4px;font:300 11px/1 var(--mono)'
+  bx.innerHTML = Object.keys(FILTERS).map((f, k) => `<button type="button" data-f="${f}" style="padding:6px 8px;border:1px solid var(--rule);background:rgb(8 10 12/.9);color:var(--fg);cursor:pointer">${k + 5} ${f}</button>`).join('')
+  bx.addEventListener('click', (ev) => { const b = ev.target.closest('button'); if (b) setFilter(b.dataset.f) })
+  document.getElementById('site').append(bx)
+  const st = document.createElement('style')
+  st.textContent = '#f-pick button[aria-pressed=true]{border-color:var(--accent)!important;color:var(--accent)!important}html:not([data-route=projects]) #f-pick{display:none!important}'
+  document.head.append(st)
+  addEventListener('keydown', (ev) => { if (!ev.metaKey && !ev.ctrlKey && !ev.altKey && /^[5-8]$/.test(ev.key) && !/INPUT|TEXTAREA/.test(ev.target.tagName) && !document.querySelector('dialog[open]')) setFilter(Object.keys(FILTERS)[+ev.key - 5]) })
+}
+function setFilter(f) {
+  if (f === fKey) return
+  fKey = f
+  const u = new URL(location.href); u.searchParams.set('f', f); history.replaceState(null, '', u)
+  renderProjects()
+}
 
 /* experience section: experience.js exports css + mount(); rails/emanator.js draws the timeline */
 const xvStyle = document.getElementById('xv-style')
@@ -329,6 +360,7 @@ async function runBoot() {
 const qs = new URLSearchParams(location.search)
 go()
 renderExperience()
+renderProjects()
 if (qs.get('boot') !== '0') runBoot()
 </script>
 </body>

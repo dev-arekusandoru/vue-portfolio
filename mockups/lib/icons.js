@@ -13,6 +13,13 @@ const MAP = {
   react: I('simple-icons', 'react'), 'react-native': I('simple-icons', 'react'), vue: I('simple-icons', 'vuedotjs'), tailwindcss: I('simple-icons', 'tailwindcss'),
   expo: I('simple-icons', 'expo'), supabase: I('simple-icons', 'supabase'), nextjs: I('simple-icons', 'nextdotjs'), github: I('simple-icons', 'github'),
   gitlab: I('simple-icons', 'gitlab'), linux: I('simple-icons', 'linux'), aws: I('simple-icons', 'amazonaws'), python: I('simple-icons', 'python'),
+  rust: I('simple-icons', 'rust'), go: I('simple-icons', 'go'), swift: I('simple-icons', 'swift'), swiftui: I('simple-icons', 'swift'), kotlin: I('simple-icons', 'kotlin'),
+  'jetpack compose': I('simple-icons', 'jetpackcompose'), cpp: I('simple-icons', 'cplusplus'), elixir: I('simple-icons', 'elixir'), phoenix: I('simple-icons', 'phoenixframework'), liveview: I('simple-icons', 'phoenixframework'),
+  pytorch: I('simple-icons', 'pytorch'), fastapi: I('simple-icons', 'fastapi'), django: I('simple-icons', 'django'), sqlite: I('simple-icons', 'sqlite'), kafka: I('simple-icons', 'apachekafka'),
+  kubernetes: I('simple-icons', 'kubernetes'), terraform: I('simple-icons', 'terraform'), redis: I('simple-icons', 'redis'), nodejs: I('simple-icons', 'nodedotjs'), webassembly: I('simple-icons', 'webassembly'),
+  vite: I('simple-icons', 'vite'), htmx: I('simple-icons', 'htmx'), prisma: I('simple-icons', 'prisma'), spring: I('simple-icons', 'spring'), jupyter: I('simple-icons', 'jupyter'), opengl: I('simple-icons', 'opengl'),
+  cmake: I('simple-icons', 'cmake'), celery: I('simple-icons', 'celery'), graphql: I('simple-icons', 'graphql'), 'google gemini': I('simple-icons', 'googlegemini'), figma: I('simple-icons', 'figma'),
+  bootstrap: I('simple-icons', 'bootstrap'), mysql: I('simple-icons', 'mysql'), php: I('simple-icons', 'php'), pocketbase: I('simple-icons', 'pocketbase'), grpc: I('simple-icons', 'grpcio'),
 }
 
 export const hasIcon = (name) => techKey(name) in MAP
