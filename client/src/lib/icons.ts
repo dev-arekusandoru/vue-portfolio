@@ -20,17 +20,18 @@ const urlFor = (key: string) => MAP.get(key.replace(/[^a-z0-9-]/g, '_'))
 
 export const hasIcon = (name: string) => !!urlFor(techKey(name))
 
-/**
- * Icon HTML for a technology. Size with `--ti-size` (default 22px), colour with `color`.
- * Always carries data-tech="<techKey>" so views can link/highlight the same tech across cards.
- * Has role="img" + aria-label, and title for a native tooltip.
- */
-export function icon(name: string): string {
+/** What a tech icon needs: the key (for linking/highlighting), the label, the bundled SVG url (if any) and the 2-letter fallback glyph. */
+export function iconInfo(name: string) {
   const key = techKey(name)
   const label = techName(name)
   const url = urlFor(key)
+  return { key, label, url, glyph: label.replace(/[^a-z0-9]/gi, '').slice(0, 2) }
+}
+
+/** Icon HTML for the imperative graph (components use <TechIcon>). Same markup as TechIcon. */
+export function icon(name: string): string {
+  const { key, label, url, glyph } = iconInfo(name)
   if (url)
     return `<span class="ti" data-tech="${esc(key)}" role="img" aria-label="${esc(label)}" title="${esc(label)}" style="--ti:url(&quot;${esc(url)}&quot;)"></span>`
-  const glyph = label.replace(/[^a-z0-9]/gi, '').slice(0, 2)
   return `<span class="ti ti-txt" data-tech="${esc(key)}" role="img" aria-label="${esc(label)}" title="${esc(label)}">${esc(glyph)}</span>`
 }
