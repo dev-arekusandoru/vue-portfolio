@@ -1,0 +1,615 @@
+.xv-monolith.rail-emanator {
+  --g: 128px;
+}
+.xv-monolith.rail-emanator.em-far {
+  --g: 0px;
+}
+.xv-monolith.rail-emanator .mo-bar {
+  background: rgb(8 10 12/0.97);
+}
+
+.xv-monolith.rail-emanator .em-nav {
+  --em-a: 255 140 43;
+  --em-b: 90 209 230;
+  position: relative;
+  font: 300 0.7rem/1.35 var(--mono);
+  color: var(--muted);
+}
+.xv-monolith.rail-emanator .em-rail {
+  position: relative;
+}
+.xv-monolith.rail-emanator .em-lines {
+  position: absolute;
+}
+.xv-monolith.rail-emanator .em-ln,
+.xv-monolith.rail-emanator .em-ha,
+.xv-monolith.rail-emanator .em-fl,
+.xv-monolith.rail-emanator .em-fa,
+.xv-monolith.rail-emanator .em-fb {
+  position: absolute;
+  inset: 0;
+}
+.xv-monolith.rail-emanator .em-ln {
+  background: rgb(var(--em-a) / 0.34);
+}
+.xv-monolith.rail-emanator .em-ha {
+  background: rgb(var(--em-a) / 0.16);
+  filter: blur(4px);
+}
+.xv-monolith.rail-emanator .em-fl {
+  transform-origin: 0 0;
+}
+.xv-monolith.rail-emanator .em-fa {
+  --c: rgb(var(--em-a));
+}
+.xv-monolith.rail-emanator .em-fb {
+  --c: rgb(var(--em-b));
+  opacity: 0;
+}
+.xv-monolith.rail-emanator .em-fa::before,
+.xv-monolith.rail-emanator .em-fb::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--c);
+}
+.xv-monolith.rail-emanator .em-fa::after,
+.xv-monolith.rail-emanator .em-fb::after {
+  content: '';
+  position: absolute;
+  background: var(--c);
+  opacity: 0.5;
+  filter: blur(4px);
+}
+.xv-monolith.rail-emanator .em-fa,
+.xv-monolith.rail-emanator .em-fb {
+  transition: opacity 0.9s var(--ease);
+}
+.xv-monolith.rail-emanator .em-nav[data-live='1'] .em-fa {
+  opacity: 0;
+}
+.xv-monolith.rail-emanator .em-nav[data-live='1'] .em-fb {
+  opacity: 1;
+}
+
+/* the orb: bloom, core and a streak that stretches behind it while it moves. It sits on the stop of the contract being read and only moves when the contract changes. */
+.xv-monolith.rail-emanator .em-orb {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+.xv-monolith.rail-emanator .em-ly {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: opacity 0.9s var(--ease);
+}
+.xv-monolith.rail-emanator .em-ly.a {
+  --c: rgb(255 176 100);
+  --k: #fff2e0;
+  --gl: 255 140 43;
+}
+.xv-monolith.rail-emanator .em-ly.b {
+  --c: rgb(150 232 247);
+  --k: #eafcff;
+  --gl: 90 209 230;
+  opacity: 0;
+}
+.xv-monolith.rail-emanator .em-nav[data-live='1'] .em-ly.a {
+  opacity: 0;
+}
+.xv-monolith.rail-emanator .em-nav[data-live='1'] .em-ly.b {
+  opacity: 1;
+}
+.xv-monolith.rail-emanator .em-bloom {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 92px;
+  height: 92px;
+  margin: -46px 0 0 -46px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgb(var(--gl) / 0.55),
+    rgb(var(--gl) / 0.14) 42%,
+    transparent 70%
+  );
+  animation: em-breathe 4.2s ease-in-out infinite alternate;
+}
+.xv-monolith.rail-emanator .em-core {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  border-radius: 50%;
+  background: var(--k);
+  box-shadow:
+    0 0 7px 1px var(--c),
+    0 0 22px 6px rgb(var(--gl) / 0.5);
+}
+.xv-monolith.rail-emanator .em-streak {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/* stops */
+.xv-monolith.rail-emanator .em-stop {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.xv-monolith.rail-emanator .em-ring {
+  position: relative;
+  display: block;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid rgb(var(--em-a) / 0.6);
+  background: var(--bg);
+  transition:
+    transform 0.5s var(--ease),
+    border-color 0.5s var(--ease),
+    box-shadow 0.5s var(--ease);
+}
+.xv-monolith.rail-emanator .em-ring::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 3px;
+  height: 3px;
+  margin: -1.5px 0 0 -1.5px;
+  border-radius: 50%;
+  background: rgb(var(--em-a));
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+}
+.xv-monolith.rail-emanator .em-stop.past .em-ring {
+  border-color: rgb(var(--em-a));
+  box-shadow: 0 0 8px rgb(var(--em-a) / 0.4);
+}
+.xv-monolith.rail-emanator .em-stop.past .em-ring::before {
+  opacity: 1;
+}
+.xv-monolith.rail-emanator .em-stop.is-live .em-ring {
+  border-color: rgb(var(--em-b) / 0.75);
+}
+.xv-monolith.rail-emanator .em-stop.is-live .em-ring::before {
+  background: rgb(var(--em-b));
+}
+.xv-monolith.rail-emanator .em-stop.is-live.past .em-ring {
+  border-color: rgb(var(--em-b));
+  box-shadow: 0 0 9px rgb(var(--em-b) / 0.5);
+}
+.xv-monolith.rail-emanator .em-stop.is-live .em-ring::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  border: 1px solid rgb(var(--em-b));
+  animation: em-ping 3.6s var(--ease) infinite;
+}
+.xv-monolith.rail-emanator .em-stop:hover .em-ring,
+.xv-monolith.rail-emanator .em-stop:focus-visible .em-ring {
+  transform: scale(1.3);
+}
+.xv-monolith.rail-emanator .em-stop:focus-visible {
+  outline: none;
+}
+.xv-monolith.rail-emanator .em-stop:focus-visible .em-ring {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* employers with several contracts: a thick line behind their stops (metro). .em-br is the line, .em-gn the employer name. */
+.xv-monolith.rail-emanator .em-br {
+  position: absolute;
+  border-radius: 3px;
+  background: currentColor;
+  color: rgb(var(--em-a) / 0.38);
+  transition:
+    color 0.6s var(--ease),
+    filter 0.6s var(--ease);
+}
+.xv-monolith.rail-emanator .em-br.on {
+  color: rgb(var(--em-a) / 0.9);
+  filter: drop-shadow(0 0 4px rgb(var(--em-a) / 0.45));
+}
+.xv-monolith.rail-emanator .em-gn {
+  position: absolute;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--muted);
+  transition: color 0.6s var(--ease);
+  pointer-events: none;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.xv-monolith.rail-emanator .em-gn.on {
+  color: var(--fg);
+}
+
+/* ===== wide: a vertical line at the far left ===== */
+.xv-monolith.rail-emanator .em-v {
+  --h: clamp(260px, calc(var(--n) * 150px), min(calc(100svh - 230px), 760px));
+  position: sticky;
+  top: max(112px, calc((100svh - var(--h)) / 2));
+  height: var(--h);
+  width: 150px;
+  margin-left: var(--fx, 0px);
+}
+.xv-monolith.rail-emanator .em-v .em-rail {
+  height: 100%;
+}
+.xv-monolith.rail-emanator .em-v .em-lines {
+  left: 28px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  transform: translateX(-0.5px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 92%, transparent);
+}
+.xv-monolith.rail-emanator .em-v .em-ha {
+  inset: 0 -4px;
+}
+.xv-monolith.rail-emanator .em-v .em-fl {
+  transform: scaleY(0);
+}
+.xv-monolith.rail-emanator .em-v .em-fa::after,
+.xv-monolith.rail-emanator .em-v .em-fb::after {
+  inset: 0 -4px;
+}
+.xv-monolith.rail-emanator .em-v .em-orb {
+  left: 28px;
+  top: 0;
+}
+.xv-monolith.rail-emanator .em-v .em-streak {
+  width: 2px;
+  height: 100px;
+  margin: -50px 0 0 -1px;
+  background: linear-gradient(to bottom, transparent, var(--c) 50%, transparent);
+  transform: translateY(var(--sh, 0px)) scaleY(var(--ss, 0.34));
+}
+.xv-monolith.rail-emanator .em-v .em-stop {
+  left: 28px;
+  top: var(--at);
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border-radius: 50%;
+}
+.xv-monolith.rail-emanator .em-v .em-gn {
+  left: 0;
+  top: calc(var(--ta) - 8px);
+  height: calc(var(--sp) + 16px);
+  width: 12px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  line-height: 12px;
+  text-align: center;
+}
+.xv-monolith.rail-emanator .em-v .em-br {
+  left: 25.5px;
+  width: 5px;
+  top: calc(var(--ta) - 3px);
+  height: calc(var(--sp) + 6px);
+}
+.xv-monolith.rail-emanator .em-v .em-lab {
+  position: absolute;
+  left: calc(100% + 4px);
+  top: 50%;
+  width: max-content;
+  max-width: var(--lw, calc(var(--g) - 52px + clamp(10px, 2vw, 28px)));
+  text-align: left;
+  opacity: 0;
+  transform: translate(-8px, -50%);
+  transition:
+    opacity 0.55s var(--ease),
+    transform 0.7s var(--ease);
+  pointer-events: none;
+}
+.xv-monolith.rail-emanator .em-v .em-nm {
+  position: relative;
+  display: block;
+  color: var(--fg);
+  overflow-wrap: anywhere;
+}
+.xv-monolith.rail-emanator .em-v .em-yr {
+  display: block;
+  color: var(--muted);
+}
+.xv-monolith.rail-emanator .em-v .em-eg {
+  display: block;
+  color: rgb(var(--em-a));
+  overflow-wrap: anywhere;
+}
+.xv-monolith.rail-emanator .em-v .em-stop:hover .em-lab,
+.xv-monolith.rail-emanator .em-v .em-stop:focus-visible .em-lab,
+.xv-monolith.rail-emanator .em-v .em-stop.on .em-lab {
+  opacity: 1;
+  transform: translate(0, -50%);
+}
+.xv-monolith.rail-emanator .em-v .em-stop.is-live .em-nm {
+  color: var(--blue);
+}
+
+/* hologram: the live contract's label flickers and carries a chromatic edge */
+.xv-monolith.rail-emanator .em-v .em-stop.is-live.on .em-lab {
+  animation: em-dim 7s linear infinite;
+}
+.xv-monolith.rail-emanator .em-v .em-stop.is-live.on .em-nm::before,
+.xv-monolith.rail-emanator .em-v .em-stop.is-live.on .em-nm::after {
+  content: attr(data-t);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  opacity: 0.5;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+.xv-monolith.rail-emanator .em-v .em-stop.is-live.on .em-nm::before {
+  color: #ff5a78;
+  transform: translateX(-1px);
+  animation: em-fl-a 7s linear infinite;
+}
+.xv-monolith.rail-emanator .em-v .em-stop.is-live.on .em-nm::after {
+  color: #5ad1e6;
+  transform: translateX(1px);
+  animation: em-fl-b 7s linear infinite;
+}
+
+/* ===== narrow: the same line laid on its side ===== */
+.xv-monolith.rail-emanator .em-h {
+  box-sizing: border-box;
+  height: 60px;
+  margin-inline: -20px;
+  padding: 4px 20px 0;
+  background: rgb(8 10 12/0.97);
+  border-top: 1px solid var(--rule);
+}
+.xv-monolith.rail-emanator .em-h .em-now {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  height: 18px;
+  margin: 0 0 -6px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+.xv-monolith.rail-emanator .em-h .em-nn {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--fg);
+}
+.xv-monolith.rail-emanator .em-h .em-ee {
+  color: var(--muted);
+}
+.xv-monolith.rail-emanator .em-h .em-sep {
+  margin: 0 0.55em;
+  color: rgb(var(--em-a));
+}
+.xv-monolith.rail-emanator .em-h .em-ct {
+  flex: none;
+  color: var(--muted);
+}
+.xv-monolith.rail-emanator .em-h .em-lv {
+  flex: none;
+  color: var(--blue);
+}
+.xv-monolith.rail-emanator .em-h .em-lv::before {
+  content: '';
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 5px;
+  vertical-align: 1px;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 6px var(--blue);
+}
+.xv-monolith.rail-emanator .em-h .em-lv[hidden],
+.xv-monolith.rail-emanator .em-h .em-sep[hidden],
+.xv-monolith.rail-emanator .em-h .em-ee[hidden] {
+  display: none;
+}
+.xv-monolith.rail-emanator .em-h .em-now.live .em-nn {
+  color: var(--blue);
+  text-shadow:
+    -1px 0 rgb(255 90 120/0.45),
+    1px 0 rgb(90 209 230/0.5);
+  animation: em-dim 7s linear infinite;
+}
+.xv-monolith.rail-emanator .em-h .em-now.live .em-ee {
+  color: var(--blue);
+}
+.xv-monolith.rail-emanator .em-h .em-rail {
+  height: 44px;
+}
+.xv-monolith.rail-emanator .em-h .em-lines {
+  left: 0;
+  right: 0;
+  top: 22px;
+  height: 1px;
+  transform: translateY(-0.5px);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+.xv-monolith.rail-emanator .em-h .em-ha {
+  inset: -4px 0;
+}
+.xv-monolith.rail-emanator .em-h .em-fl {
+  transform: scaleX(0);
+}
+.xv-monolith.rail-emanator .em-h .em-fa::after,
+.xv-monolith.rail-emanator .em-h .em-fb::after {
+  inset: -4px 0;
+}
+.xv-monolith.rail-emanator .em-h .em-orb {
+  left: 0;
+  top: 22px;
+}
+.xv-monolith.rail-emanator .em-h .em-bloom {
+  width: 64px;
+  height: 64px;
+  margin: -32px 0 0 -32px;
+}
+.xv-monolith.rail-emanator .em-h .em-streak {
+  width: 100px;
+  height: 2px;
+  margin: -1px 0 0 -50px;
+  background: linear-gradient(to right, transparent, var(--c) 50%, transparent);
+  transform: translateX(var(--sh, 0px)) scaleX(var(--ss, 0.34));
+}
+.xv-monolith.rail-emanator .em-h .em-stop {
+  left: var(--at);
+  top: 22px;
+  width: max(28px, calc(100% / var(--n)));
+  height: 44px;
+  transform: translate(-50%, -50%);
+}
+.xv-monolith.rail-emanator .em-h .em-br {
+  left: calc(var(--ta) - 11px);
+  width: calc(var(--sp) + 22px);
+  top: 19.5px;
+  height: 5px;
+}
+.xv-monolith.rail-emanator .em-h .em-gn,
+.xv-monolith.rail-emanator .em-h .em-lab {
+  display: none;
+}
+
+@keyframes em-breathe {
+  from {
+    transform: scale(0.88);
+    opacity: 0.75;
+  }
+  to {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+@keyframes em-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.75;
+  }
+  70%,
+  100% {
+    transform: scale(2.7);
+    opacity: 0;
+  }
+}
+@keyframes em-dim {
+  0%,
+  90%,
+  100% {
+    opacity: 1;
+  }
+  91% {
+    opacity: 0.5;
+  }
+  92% {
+    opacity: 1;
+  }
+  94.5% {
+    opacity: 0.62;
+  }
+  95.5% {
+    opacity: 1;
+  }
+}
+@keyframes em-fl-a {
+  0%,
+  90%,
+  100% {
+    transform: translateX(-1px);
+    opacity: 0.5;
+  }
+  91% {
+    transform: translateX(-3px);
+    opacity: 0.9;
+  }
+  92% {
+    transform: translateX(-1px);
+    opacity: 0.35;
+  }
+  94.5% {
+    transform: translateX(-2.5px);
+    opacity: 0.85;
+  }
+  95.5% {
+    transform: translateX(-1px);
+    opacity: 0.5;
+  }
+}
+@keyframes em-fl-b {
+  0%,
+  90%,
+  100% {
+    transform: translateX(1px);
+    opacity: 0.5;
+  }
+  91% {
+    transform: translateX(3px);
+    opacity: 0.9;
+  }
+  92% {
+    transform: translateX(1px);
+    opacity: 0.35;
+  }
+  94.5% {
+    transform: translateX(2.5px);
+    opacity: 0.85;
+  }
+  95.5% {
+    transform: translateX(1px);
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xv-monolith.rail-emanator .em-bloom,
+  .xv-monolith.rail-emanator .em-lab,
+  .xv-monolith.rail-emanator .em-nn,
+  .xv-monolith.rail-emanator .em-nm::before,
+  .xv-monolith.rail-emanator .em-nm::after {
+    animation: none !important;
+  }
+  .xv-monolith.rail-emanator .em-stop.is-live .em-ring::after {
+    animation: none;
+    transform: scale(1.9);
+    opacity: 0.35;
+  }
+  .xv-monolith.rail-emanator .em-ly,
+  .xv-monolith.rail-emanator .em-fa,
+  .xv-monolith.rail-emanator .em-fb,
+  .xv-monolith.rail-emanator .em-ring,
+  .xv-monolith.rail-emanator .em-ring::before,
+  .xv-monolith.rail-emanator .em-br,
+  .xv-monolith.rail-emanator .em-el,
+  .xv-monolith.rail-emanator .em-gn,
+  .xv-monolith.rail-emanator .em-lab {
+    transition: none !important;
+  }
+}

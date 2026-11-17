@@ -1,0 +1,664 @@
+.xv-monolith {
+  --g: 96px;
+  --ti-size: 52px;
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--g) minmax(0, 1fr);
+  color: var(--fg);
+}
+.xv-monolith ol,
+.xv-monolith ul {
+  list-style: none;
+}
+.xv-monolith.xv-compact {
+  display: block;
+  --ti-size: 36px;
+}
+
+/* ---------- rail mount points: a rail module fills .mo-gut (wide screens) and .mo-bar (narrow screens) ---------- */
+.xv-monolith .mo-gut {
+  position: relative;
+}
+.xv-monolith .mo-bar {
+  display: none;
+}
+
+/* ---------- frames ---------- */
+.xv-monolith .mo-frames {
+  min-width: 0;
+}
+.xv-monolith .mo-frame {
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: clamp(560px, 100svh, 960px);
+  padding: clamp(72px, 15svh, 150px) 0 clamp(64px, 11svh, 128px) clamp(10px, 2vw, 28px);
+  scroll-snap-align: start;
+}
+.xv-monolith:not(.xv-compact) .mo-frame:first-child {
+  padding-top: clamp(112px, 16svh, 170px);
+}
+.xv-monolith .mo-frame::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  right: -8%;
+  top: 50%;
+  width: min(80vw, 860px);
+  aspect-ratio: 1;
+  transform: translateY(-50%);
+  pointer-events: none;
+  background: radial-gradient(
+    closest-side,
+    rgb(255 140 43/0.08),
+    rgb(255 140 43/0.026) 55%,
+    transparent
+  );
+}
+.xv-monolith .mo-frame.mo-live::before {
+  background: radial-gradient(
+    closest-side,
+    rgb(90 209 230/0.12),
+    rgb(90 209 230/0.04) 55%,
+    transparent
+  );
+}
+/* the footer lives inside the last frame, so the page ends where the last contract ends */
+.xv-monolith:not(.xv-compact) .mo-frame:last-child {
+  padding-bottom: 0;
+  scroll-snap-align: start end;
+}
+.xv-monolith .mo-foot {
+  margin-top: auto;
+  padding: clamp(64px, 10svh, 120px) 0 36px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px 16px;
+  flex-wrap: wrap;
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+.xv-monolith .mo-body {
+  position: relative;
+  max-width: 60rem;
+}
+
+.xv-monolith .mo-emp-meta {
+  max-width: 58ch;
+  margin-top: 16px;
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+.xv-monolith .mo-emp-desc {
+  max-width: 58ch;
+  margin-top: 8px;
+  font-size: 0.88rem;
+  line-height: 1.8;
+  color: var(--fg);
+  opacity: 0.9;
+}
+
+/* lineage: which contract of the employer this is, drawn in the same style as the rail */
+.xv-monolith .mo-lin {
+  --la: 255 140 43;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  max-width: 40rem;
+  font-size: 0.86rem;
+}
+.xv-monolith .mo-live .mo-lin {
+  --lb: 90 209 230;
+}
+.xv-monolith .mo-lk {
+  font-size: 0.74rem;
+  color: var(--accent);
+}
+.xv-monolith .mo-lv {
+  font: 300 0.95rem/1.3 var(--display);
+  letter-spacing: 0.05em;
+  color: var(--fg);
+}
+.xv-monolith .mo-ln {
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+.xv-monolith .mo-lg {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+}
+/* metro: a thick line behind the employer's contracts */
+.xv-monolith .mo-dts {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  height: 22px;
+  padding: 0 8px;
+}
+.xv-monolith .mo-dts::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 5px;
+  margin-top: -2.5px;
+  border-radius: 3px;
+  background: rgb(var(--la) / 0.4);
+}
+.xv-monolith .mo-ld {
+  position: relative;
+  box-sizing: border-box;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2px solid rgb(var(--la));
+  background: var(--bg);
+}
+.xv-monolith .mo-ld:not(.past) {
+  border-color: rgb(var(--la) / 0.6);
+  border-width: 1px;
+}
+.xv-monolith .mo-ld.on {
+  background: rgb(var(--la));
+  box-shadow: 0 0 8px rgb(var(--la) / 0.7);
+}
+.xv-monolith .mo-live .mo-ld.on {
+  background: rgb(var(--lb));
+  border-color: rgb(var(--lb));
+  box-shadow: 0 0 9px rgb(var(--lb) / 0.8);
+}
+.xv-monolith .mo-strap {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 16px;
+  max-width: 34rem;
+  padding: 2px 0 12px 16px;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.86rem;
+}
+.xv-monolith .mo-strap::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.25em;
+  width: 2px;
+  height: 1.35em;
+  background: var(--accent);
+}
+.xv-monolith .mo-sk {
+  font-size: 0.74rem;
+  color: var(--accent);
+}
+.xv-monolith .mo-sv {
+  font: 300 0.95rem/1.3 var(--display);
+  letter-spacing: 0.05em;
+  color: var(--fg);
+}
+.xv-monolith .mo-sn {
+  margin-left: auto;
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
+.xv-monolith .mo-name {
+  position: relative;
+  margin: clamp(22px, 4svh, 44px) 0 clamp(18px, 3svh, 30px);
+  font: 200 clamp(1.45rem, 7.2vw, 5.6rem) / 1.06 var(--display);
+  letter-spacing: 0.035em;
+  overflow-wrap: anywhere;
+}
+.xv-monolith .mo-name:focus-visible {
+  outline-offset: 8px;
+}
+.xv-monolith .mo-live .mo-name::before,
+.xv-monolith .mo-live .mo-name::after {
+  content: attr(data-t);
+  content: attr(data-t) / '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.5;
+  animation: mo-split 9s linear infinite;
+}
+.xv-monolith .mo-live .mo-name::before {
+  color: var(--accent);
+  --s: -1;
+}
+.xv-monolith .mo-live .mo-name::after {
+  color: var(--blue);
+  --s: 1;
+  animation-delay: -0.4s;
+}
+@keyframes mo-split {
+  0%,
+  86% {
+    transform: translateX(calc(var(--s) * 0.022em));
+    opacity: 0.45;
+  }
+  90% {
+    transform: translateX(calc(var(--s) * 0.05em));
+    opacity: 0.8;
+  }
+  91.5% {
+    transform: translateX(calc(var(--s) * 0.008em));
+    opacity: 0.25;
+  }
+  93% {
+    transform: translateX(calc(var(--s) * 0.04em));
+    opacity: 0.7;
+  }
+  96%,
+  100% {
+    transform: translateX(calc(var(--s) * 0.022em));
+    opacity: 0.45;
+  }
+}
+.xv-monolith .mo-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 26px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.xv-monolith .mo-title {
+  color: var(--fg);
+}
+.xv-monolith .mo-lede {
+  margin-top: clamp(18px, 3svh, 30px);
+  max-width: 44ch;
+  font-size: clamp(1rem, 1.5vw, 1.18rem);
+  line-height: 1.75;
+  color: var(--fg);
+}
+
+.xv-monolith .mo-stack {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 6.4rem);
+  gap: 24px 10px;
+  margin-top: clamp(28px, 5svh, 52px);
+}
+.xv-monolith .mo-stack li {
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: 10px;
+  color: var(--muted);
+  transition: color 0.4s var(--ease);
+}
+.xv-monolith .mo-stack .ti {
+  transition:
+    color 0.4s var(--ease),
+    filter 0.5s var(--ease),
+    opacity 0.4s var(--ease);
+}
+.xv-monolith .mo-stack li:hover {
+  color: var(--fg);
+}
+.xv-monolith .mo-stack li:hover .ti {
+  color: var(--accent);
+}
+.xv-monolith .mo-live .mo-stack .ti {
+  color: var(--blue);
+  opacity: 0.85;
+}
+.xv-monolith .mo-live .mo-stack li:hover .ti {
+  color: var(--fg);
+  opacity: 1;
+  filter: drop-shadow(0 0 8px rgb(90 209 230/0.7));
+}
+.xv-monolith .mo-cap {
+  font-size: 0.66rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.xv-monolith .mo-dtl {
+  margin-top: clamp(22px, 4svh, 40px);
+}
+.xv-monolith .mo-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 44px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.78rem;
+  color: var(--fg);
+}
+.xv-monolith .mo-more:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+.xv-monolith .mo-pm {
+  position: relative;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border: 1px solid rgb(255 140 43/0.55);
+  transition:
+    border-color 0.4s var(--ease),
+    transform 0.6s var(--ease);
+}
+.xv-monolith .mo-pm::before,
+.xv-monolith .mo-pm::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: var(--accent);
+  transition: transform 0.6s var(--ease);
+}
+.xv-monolith .mo-pm::before {
+  width: 8px;
+  height: 1px;
+  margin: -0.5px 0 0 -4px;
+}
+.xv-monolith .mo-pm::after {
+  width: 1px;
+  height: 8px;
+  margin: -4px 0 0 -0.5px;
+}
+.xv-monolith .mo-more:hover .mo-pm {
+  border-color: var(--accent);
+}
+.xv-monolith .mo-more[aria-expanded='true'] .mo-pm::after {
+  transform: scaleY(0);
+}
+.xv-monolith .mo-panel {
+  position: relative;
+  max-width: 62ch;
+  margin-top: 8px;
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows 0.75s var(--ease),
+    visibility 0s linear 0.75s;
+}
+.xv-monolith .mo-panel.mo-open {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition:
+    grid-template-rows 0.75s var(--ease),
+    visibility 0s;
+}
+.xv-monolith .mo-pin {
+  min-height: 0;
+  overflow: hidden;
+}
+.xv-monolith .mo-pts {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition:
+    opacity 0.4s var(--ease),
+    transform 0.6s var(--ease);
+}
+.xv-monolith .mo-panel.mo-open .mo-pts {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.1s;
+}
+.xv-monolith .mo-pts li {
+  position: relative;
+  padding: 14px 0 14px 28px;
+  border-top: 1px solid var(--rule);
+  font-size: 0.86rem;
+  line-height: 1.75;
+}
+.xv-monolith .mo-pts li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: calc(14px + 0.875em);
+  width: 14px;
+  height: 1px;
+  background: var(--accent);
+}
+.xv-monolith .mo-live .mo-pts li::before {
+  background: var(--blue);
+}
+.xv-monolith .mo-panel.mo-open::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(
+    transparent calc(100% - 40px),
+    rgb(255 140 43/0.14) calc(100% - 1px),
+    var(--accent) calc(100% - 1px)
+  );
+  animation: mo-sweep 1s var(--ease) both;
+}
+@keyframes mo-sweep {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  15%,
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+}
+
+/* wide screens: bullets are always shown, so the toggle is hidden */
+@media (min-width: 900px) {
+  .xv-monolith .mo-more {
+    display: none;
+  }
+  .xv-monolith .mo-panel {
+    grid-template-rows: 1fr;
+    visibility: visible;
+    transition: none;
+  }
+  .xv-monolith .mo-pts {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ---------- entrance: blur to sharp, light blooms in; the live frame is scanned ---------- */
+.xv-monolith .mo-x {
+  --tx: calc(var(--d, 0) * var(--dm, 1) * 1ms);
+  transition:
+    opacity 0.9s var(--ease) var(--tx),
+    transform 0.9s var(--ease) var(--tx);
+}
+.xv-monolith .mo-name.mo-x {
+  transition:
+    opacity 1s var(--ease) var(--tx),
+    transform 1s var(--ease) var(--tx),
+    filter 1.1s var(--ease) var(--tx);
+}
+.xv-monolith.mo-armed .mo-frame:not(.mo-in) .mo-x {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.xv-monolith.mo-armed .mo-frame:not(.mo-in) .mo-name.mo-x {
+  filter: blur(14px);
+  transform: translateY(6px) scale(1.012);
+}
+.xv-monolith.mo-armed .mo-frame::before {
+  transition:
+    opacity 2s var(--ease),
+    transform 2.4s var(--ease);
+}
+.xv-monolith.mo-armed .mo-frame:not(.mo-in)::before {
+  opacity: 0;
+  transform: translateY(-50%) scale(0.8);
+}
+.xv-monolith .mo-live {
+  --dm: 1.25;
+}
+.xv-monolith .mo-live.mo-in::before {
+  animation: mo-breathe 8s ease-in-out 3s infinite;
+}
+@keyframes mo-breathe {
+  50% {
+    opacity: 0.72;
+  }
+}
+.xv-monolith .mo-scan {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    transparent calc(100% - 90px),
+    rgb(90 209 230/0.1) calc(100% - 1px),
+    rgb(90 209 230/0.9) calc(100% - 1px)
+  );
+}
+.xv-monolith.mo-armed .mo-live.mo-in .mo-scan {
+  animation: mo-scan 2.2s cubic-bezier(0.45, 0, 0.35, 1) both;
+}
+@keyframes mo-scan {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  8%,
+  88% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+}
+
+/* ---------- compact (home) ---------- */
+.xv-monolith.xv-compact .mo-frame {
+  min-height: 0;
+  max-width: 880px;
+  overflow: visible;
+  padding: clamp(28px, 4.5vw, 52px);
+  --dm: 1.3;
+  background:
+    linear-gradient(var(--accent), var(--accent)) 0 0/18px 1px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) 0 0/1px 18px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) 100% 100%/18px 1px no-repeat,
+    linear-gradient(var(--accent), var(--accent)) 100% 100%/1px 18px no-repeat;
+}
+.xv-monolith.xv-compact .mo-frame::before {
+  right: -14%;
+  width: min(120%, 760px);
+}
+.xv-monolith.xv-compact .mo-name {
+  margin: clamp(18px, 3vw, 28px) 0 14px;
+  font-size: clamp(1.5rem, 4.4vw, 2.9rem);
+}
+.xv-monolith.xv-compact .mo-lede {
+  margin-top: 16px;
+  font-size: 1rem;
+}
+.xv-monolith.xv-compact .mo-stack {
+  grid-template-columns: repeat(auto-fill, 5.6rem);
+  margin-top: 26px;
+  gap: 18px 8px;
+}
+.xv-monolith.xv-compact .mo-dtl {
+  margin-top: 18px;
+}
+
+/* ---------- narrow: the rail moves to a bar pinned to the bottom of the screen ---------- */
+@media (max-width: 899px) {
+  .xv-monolith {
+    grid-template-columns: minmax(0, 1fr);
+    --ti-size: 26px;
+  }
+  .xv-monolith .mo-gut {
+    display: none;
+  }
+  /* the bar takes no height of its own: at the page end it sits over the last frame, whose footer clears it */
+  .xv-monolith .mo-bar {
+    display: block;
+    grid-column: 1/-1;
+    position: sticky;
+    bottom: 0;
+    z-index: 30;
+    margin-top: calc(-60px - env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .xv-monolith .mo-foot {
+    padding-bottom: calc(36px + 60px + env(safe-area-inset-bottom));
+  }
+  .xv-monolith .mo-frame {
+    min-height: min(100svh, 860px);
+    padding: clamp(44px, 8svh, 72px) 0 clamp(44px, 8svh, 72px) 0;
+  }
+  .xv-monolith .mo-name {
+    font-size: clamp(1.7rem, 9vw, 3rem);
+  }
+  .xv-monolith .mo-stack {
+    grid-template-columns: repeat(auto-fill, minmax(4.4rem, 1fr));
+    gap: 16px 6px;
+  }
+  .xv-monolith .mo-cap {
+    font-size: 0.62rem;
+  }
+  .xv-monolith .mo-cw {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .xv-monolith .mo-lede {
+    max-width: 34ch;
+  }
+  .xv-monolith.xv-compact {
+    --ti-size: 26px;
+  }
+  .xv-monolith.xv-compact .mo-frame {
+    padding: 28px 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xv-monolith .mo-x,
+  .xv-monolith .mo-frame::before {
+    opacity: 1 !important;
+    filter: none !important;
+    transition: none !important;
+  }
+  .xv-monolith .mo-x {
+    transform: none !important;
+  }
+  .xv-monolith .mo-frame::before {
+    transform: translateY(-50%) !important;
+  }
+  .xv-monolith .mo-scan {
+    display: none;
+  }
+  .xv-monolith .mo-panel.mo-open::after {
+    animation: none !important;
+  }
+  .xv-monolith .mo-pts {
+    opacity: 1;
+    transform: none;
+  }
+}

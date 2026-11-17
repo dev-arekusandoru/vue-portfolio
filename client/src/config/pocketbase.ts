@@ -1,9 +1,8 @@
 import PocketBase from 'pocketbase'
 
-// Dev: Vite serves the app on another port, so talk to PocketBase directly.
-// Prod: PocketBase and the static build share one origin behind the tunnel.
-export const PB_URL =
-  import.meta.env.VITE_PB_URL || (import.meta.env.DEV ? 'http://127.0.0.1:8091' : '/')
+// Same origin in dev (the Vite proxy forwards /api to PocketBase) and in prod (PocketBase serves the build).
+// VITE_PB_URL overrides.
+export const PB_URL = import.meta.env.VITE_PB_URL || '/'
 
 const pb = new PocketBase(PB_URL)
 

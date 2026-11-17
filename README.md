@@ -16,8 +16,8 @@ deploy/          deploy script + systemd user units
 Everything visible is a PocketBase record — no rebuild needed.
 
 - Admin: <http://127.0.0.1:8091/_/> (in production: `https://alexmuresan.dev/_/`, behind Cloudflare Access)
-- `home` — single record: bio, now, interests, goals, skill lists (one skill per line)
-- `projects` — `stack` and `highlights` are JSON arrays (one entry per row in the UI)
+- `projects` — `stack` and `highlights` are JSON arrays (one entry per row in the UI). Optional: `headline`, `summary`, `role`, `kind`, `metric_value` + `metric_label`, `challenges`, `cover`, `screenshots`, `accent`; each falls back to something derived from the rest
+- `interests` — the "Off the clock" cards: `title`, `line`, `phrase`, `art` (small CSS illustration), `order`, and an optional stat (`stat_value`, `stat_label`, `stat_live`)
 - `experience_groups` — company/org wrappers
 - `experiences` — `group` relation is optional; ungrouped ones render standalone
 
@@ -27,11 +27,15 @@ Public read, superuser-only writes. Edits are live immediately.
 
 ```sh
 cd server && ./pocketbase serve --http=127.0.0.1:8091   # API + admin on :8091
-cd client && npm install && npm run dev                # app on :5173, talks to :8091
+cd client && npm install && npm run dev                # app on :5173, /api proxied to :8091
 ```
 
-The frontend picks its API origin automatically: `http://127.0.0.1:8091` in dev, same-origin in production.
+The frontend always talks to its own origin: the Vite dev server proxies `/api` to `:8091`, and in production PocketBase serves both.
 Override with `VITE_PB_URL`.
+
+Tech icons are bundled SVGs in `client/src/assets/tech`. To add one, list it in `client/scripts/tech-icons.json` and run `npm run icons` in `client/`.
+
+`mockups/` holds the HTML design prototypes the Vue app was ported from (`python3 mockups/serve.py`, then <http://127.0.0.1:5180>).
 
 ## Schema changes
 

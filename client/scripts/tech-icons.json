@@ -1,0 +1,250 @@
+{
+ "ruby": [
+  "simple-icons",
+  "ruby"
+ ],
+ "rails": [
+  "simple-icons",
+  "rubyonrails"
+ ],
+ "postgresql": [
+  "simple-icons",
+  "postgresql"
+ ],
+ "docker": [
+  "simple-icons",
+  "docker"
+ ],
+ "git": [
+  "simple-icons",
+  "git"
+ ],
+ "java": [
+  "devicon-plain",
+  "java"
+ ],
+ "jquery": [
+  "simple-icons",
+  "jquery"
+ ],
+ "html": [
+  "simple-icons",
+  "html5"
+ ],
+ "css": [
+  "simple-icons",
+  "css3"
+ ],
+ "javascript": [
+  "simple-icons",
+  "javascript"
+ ],
+ "typescript": [
+  "simple-icons",
+  "typescript"
+ ],
+ "firebase": [
+  "simple-icons",
+  "firebase"
+ ],
+ "maven": [
+  "simple-icons",
+  "apachemaven"
+ ],
+ "polymer": [
+  "logos",
+  "polymer"
+ ],
+ "rspec": [
+  "devicon-plain",
+  "rspec"
+ ],
+ "react": [
+  "simple-icons",
+  "react"
+ ],
+ "react-native": [
+  "simple-icons",
+  "react"
+ ],
+ "vue": [
+  "simple-icons",
+  "vuedotjs"
+ ],
+ "tailwindcss": [
+  "simple-icons",
+  "tailwindcss"
+ ],
+ "expo": [
+  "simple-icons",
+  "expo"
+ ],
+ "supabase": [
+  "simple-icons",
+  "supabase"
+ ],
+ "nextjs": [
+  "simple-icons",
+  "nextdotjs"
+ ],
+ "github": [
+  "simple-icons",
+  "github"
+ ],
+ "gitlab": [
+  "simple-icons",
+  "gitlab"
+ ],
+ "linux": [
+  "simple-icons",
+  "linux"
+ ],
+ "aws": [
+  "simple-icons",
+  "amazonaws"
+ ],
+ "python": [
+  "simple-icons",
+  "python"
+ ],
+ "rust": [
+  "simple-icons",
+  "rust"
+ ],
+ "go": [
+  "simple-icons",
+  "go"
+ ],
+ "swift": [
+  "simple-icons",
+  "swift"
+ ],
+ "swiftui": [
+  "simple-icons",
+  "swift"
+ ],
+ "kotlin": [
+  "simple-icons",
+  "kotlin"
+ ],
+ "jetpack compose": [
+  "simple-icons",
+  "jetpackcompose"
+ ],
+ "cpp": [
+  "simple-icons",
+  "cplusplus"
+ ],
+ "elixir": [
+  "simple-icons",
+  "elixir"
+ ],
+ "phoenix": [
+  "simple-icons",
+  "phoenixframework"
+ ],
+ "liveview": [
+  "simple-icons",
+  "phoenixframework"
+ ],
+ "pytorch": [
+  "simple-icons",
+  "pytorch"
+ ],
+ "fastapi": [
+  "simple-icons",
+  "fastapi"
+ ],
+ "django": [
+  "simple-icons",
+  "django"
+ ],
+ "sqlite": [
+  "simple-icons",
+  "sqlite"
+ ],
+ "kafka": [
+  "simple-icons",
+  "apachekafka"
+ ],
+ "kubernetes": [
+  "simple-icons",
+  "kubernetes"
+ ],
+ "terraform": [
+  "simple-icons",
+  "terraform"
+ ],
+ "redis": [
+  "simple-icons",
+  "redis"
+ ],
+ "nodejs": [
+  "simple-icons",
+  "nodedotjs"
+ ],
+ "webassembly": [
+  "simple-icons",
+  "webassembly"
+ ],
+ "vite": [
+  "simple-icons",
+  "vite"
+ ],
+ "htmx": [
+  "simple-icons",
+  "htmx"
+ ],
+ "prisma": [
+  "simple-icons",
+  "prisma"
+ ],
+ "spring": [
+  "simple-icons",
+  "spring"
+ ],
+ "jupyter": [
+  "simple-icons",
+  "jupyter"
+ ],
+ "opengl": [
+  "simple-icons",
+  "opengl"
+ ],
+ "cmake": [
+  "simple-icons",
+  "cmake"
+ ],
+ "celery": [
+  "simple-icons",
+  "celery"
+ ],
+ "graphql": [
+  "simple-icons",
+  "graphql"
+ ],
+ "google gemini": [
+  "simple-icons",
+  "googlegemini"
+ ],
+ "figma": [
+  "simple-icons",
+  "figma"
+ ],
+ "bootstrap": [
+  "simple-icons",
+  "bootstrap"
+ ],
+ "mysql": [
+  "simple-icons",
+  "mysql"
+ ],
+ "php": [
+  "simple-icons",
+  "php"
+ ],
+ "pocketbase": [
+  "simple-icons",
+  "pocketbase"
+ ]
+}

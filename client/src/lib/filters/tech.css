@@ -1,0 +1,11 @@
+.pj-filter > .tf-c {
+  display: none;
+}
+@media (max-width: 899px) {
+  .pj-filter > .tf-g {
+    display: none;
+  }
+  .pj-filter > .tf-c {
+    display: block;
+  }
+}
