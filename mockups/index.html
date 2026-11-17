@@ -103,6 +103,13 @@ button{font:inherit;color:inherit}
 .plates .spec h3{font-size:1.25rem}
 .plates .spec p{font-size:.84rem;color:var(--muted)}
 .plate-ic{display:flex;gap:14px;align-items:center;--ti-size:20px;opacity:.8}
+.spec{color:inherit;text-decoration:none}
+.spec-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .9s var(--ease)}
+.spec:hover .spec-art img,.spec:focus-visible .spec-art img{transform:scale(1.05)}
+.plates .spec h3{transition:color .4s var(--ease),transform .6s var(--ease)}
+.plates .spec:hover h3,.plates .spec:focus-visible h3{color:var(--pa,var(--accent));transform:translateX(5px)}
+.plates .spec-art{transition:box-shadow .6s var(--ease)}
+.plates .spec:hover .spec-art,.plates .spec:focus-visible .spec-art{box-shadow:inset 0 0 0 1px var(--pa,var(--accent)),0 0 26px -8px var(--pa,var(--accent))}
 .plates .spec .links{padding-top:6px}
 .specs.index{border-top:1px solid var(--rule)}
 .index .spec{border-bottom:1px solid var(--rule);transition:background .5s var(--ease)}
@@ -117,22 +124,6 @@ button{font:inherit;color:inherit}
 .index .more-in>div>:last-child{margin-bottom:26px}
 .index .spec p{max-width:58ch}
 
-/* off the clock (parked) */
-.shelf{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:clamp(16px,2.5vw,32px)}
-.shelf li{display:grid;gap:14px;align-content:start}
-.shelf h3{font-weight:300;font-size:1.1rem}
-.shelf p{color:var(--muted);font-size:.84rem;max-width:34ch}
-.obj{aspect-ratio:1;display:grid;place-items:center;position:relative;overflow:hidden;border:1px solid var(--rule);background:rgb(255 140 43/.04)}
-.vinyl .obj::before{content:"";width:78%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,var(--accent) 0 9%,#0a0a0a 10% 24%,transparent 25%),repeating-radial-gradient(circle,#0c0c0c 0 2px,#1c1c1c 3px 4px);box-shadow:0 0 0 1px rgb(255 255 255/.08),0 18px 40px rgb(0 0 0/.5);animation:spin 14s linear infinite;animation-play-state:paused}
-.vinyl:hover .obj::before,.vinyl:focus-within .obj::before{animation-play-state:running}
-@keyframes spin{to{transform:rotate(360deg)}}
-.f1 .obj{align-content:center;padding:16%;gap:14px;font-size:.74rem}
-.f1 .bar{width:100%;display:grid;grid-template-columns:2.2rem 1fr;gap:8px;align-items:center}
-.f1 .bar b{display:block;height:6px;background:var(--rule);position:relative;overflow:hidden}
-.f1 .bar b::after{content:"";position:absolute;inset:0;background:var(--accent);transform-origin:left;transform:scaleX(var(--w));animation:lap 5s var(--ease) infinite alternate}
-@keyframes lap{from{transform:scaleX(calc(var(--w) - .3))}to{transform:scaleX(var(--w))}}
-.golf .obj::before{content:"";width:46%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 34% 30%,rgb(255 255 255/.9),rgb(255 255 255/.15) 55%,transparent 62%),radial-gradient(circle,rgb(255 255 255/.14) 1.5px,transparent 2px) 0 0/9px 9px,#b9b5a8;box-shadow:0 14px 30px rgb(0 0 0/.45)}
-.ro .obj{font:200 clamp(1.6rem,3.6vw,2.4rem)/1.05 var(--display);text-align:center;padding:12px}
 
 .foot{position:relative;z-index:2;padding:clamp(80px,12vw,140px) 0 40px;font-size:.76rem;color:var(--muted);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 
@@ -214,12 +205,7 @@ html[data-route=experience] .foot{display:none}
       </section>
       <section class="sec" aria-labelledby="h-off">
         <div class="sec-head"><h2 id="h-off">Off the clock</h2></div>
-        <ul class="shelf">
-          <li class="vinyl"><div class="obj" role="img" aria-label="Vinyl record"></div><h3>Vinyl</h3><p>Limited pressings only. The shelf is never finished.</p></li>
-          <li class="f1"><div class="obj" role="img" aria-label="Lap timing bars"><div class="bar"><span>S1</span><b style="--w:.9"></b></div><div class="bar"><span>S2</span><b style="--w:.7"></b></div><div class="bar"><span>S3</span><b style="--w:.8"></b></div></div><h3>Formula 1</h3><p>Every race weekend, sectors and all.</p></li>
-          <li class="golf"><div class="obj" role="img" aria-label="Golf ball"></div><h3>Golf</h3><p>Out on the course whenever the weather allows.</p></li>
-          <li class="ro"><div class="obj"><span lang="ro">Bună ziua.</span></div><h3>Romanian</h3><p>Currently learning. Corrections welcome.</p></li>
-        </ul>
+        <div id="oc-mount" class="oc oc-shards"></div>
       </section>
     </div>
 
@@ -238,28 +224,29 @@ html[data-route=experience] .foot{display:none}
 </div>
 
 <script type="module">
-import { esc, reduce, projects, employers, currentEmployers, isLive, isSeeded } from './lib/data.js'
+import { esc, reduce, projects, employers, interests, currentEmployers, isLive, isSeeded } from './lib/data.js'
 import { icon } from './lib/icons.js'
 import * as experience from './experience.js'
 import * as emanator from './rails/emanator.js'
 import * as projectsPage from './projects.js'
+const { slugOf } = projectsPage
 import * as techFilter from './filters/tech.js'
+import * as offClock from './offclock.js'
 
 document.documentElement.classList.add('js')
 const srcText = `${isLive ? 'Data: local PocketBase' : 'Data: sample (PocketBase offline)'}${isSeeded ? ' + invented future contracts (?seed=0 to hide)' : ''}`
 document.getElementById('src').textContent = srcText
 
-/* home plates (recent projects) */
+/* home plates (recent projects): the cover (or the generated gradient), clear; a click opens the project dialog */
 const projectHTML = (p) => `
-  <article class="spec">
-    <div class="spec-art" style="--a1:${p.pal[0]};--a2:${p.pal[1]};--a3:${p.pal[2]}"><span aria-hidden="true">${esc(p.name[0])}</span></div>
+  <a class="spec" href="#/projects/${esc(slugOf(p))}" style="--a1:${p.pal[0]};--a2:${p.pal[1]};--a3:${p.pal[2]};--pa:${p.accent}">
+    <div class="spec-art">${p.cover ? `<img src="${esc(p.cover)}" alt="" loading="lazy" decoding="async">` : `<span aria-hidden="true">${esc(p.name[0])}</span>`}</div>
     <div class="spec-body">
       <header class="spec-head"><span class="yr">${p.start.getUTCFullYear()}</span><h3>${esc(p.name)}</h3><span class="st ${p.current ? 'live' : 'off'}">${p.current ? 'Active' : 'Shipped'}</span></header>
       <p>${esc(p.headline)}</p>
       <div class="plate-ic">${p.stack.slice(0, 6).map(icon).join('')}</div>
-      ${(p.code_url || p.demo_url) ? `<div class="links">${p.code_url ? `<a href="${esc(p.code_url)}" target="_blank" rel="noopener noreferrer">Code</a>` : ''}${p.demo_url ? `<a href="${esc(/^https?:/.test(p.demo_url) ? p.demo_url : 'https://' + p.demo_url)}" target="_blank" rel="noopener noreferrer">Demo</a>` : ''}</div>` : ''}
     </div>
-  </article>`
+  </a>`
 document.querySelectorAll('[data-list=projects]').forEach((el) => { el.innerHTML = projects.slice(0, +el.dataset.limit || projects.length).map(projectHTML).join('') })
 document.getElementById('all-projects').textContent = `All projects (${projects.length})`
 
@@ -269,6 +256,11 @@ document.head.append(pjStyle)
 pjStyle.textContent = projectsPage.css + techFilter.css
 const renderProjects = () => projectsPage.mount(document.getElementById('pj-mount'), { projects, filter: techFilter })
 
+/* off the clock: staggered glass cards (offclock.js), fed by the `interests` collection */
+const ocStyle = document.createElement('style')
+ocStyle.textContent = offClock.css
+document.head.append(ocStyle)
+const renderOffClock = () => offClock.mount(document.getElementById('oc-mount'), { items: interests })
 /* experience section: experience.js exports css + mount(); rails/emanator.js draws the timeline */
 const xvStyle = document.getElementById('xv-style')
 const mounts = []
@@ -288,8 +280,10 @@ function renderExperience() {
 const titles = { home: 'Alexandru Muresan', projects: 'Projects — Alexandru Muresan', experience: 'Experience — Alexandru Muresan' }
 let route
 function go() {
-  const r = location.hash.replace(/^#\/?/, '').split('/')[0] || 'home'
-  const next = ['projects', 'experience'].includes(r) ? r : 'home'
+  const parts = location.hash.replace(/^#\/?/, '').split('/')
+  const r = parts[0] || 'home'
+  /* a project dialog opened from home (#/projects/<slug>) stays on home; a direct load of that URL shows the projects page */
+  const next = r === 'projects' && parts[1] && route === 'home' ? 'home' : ['projects', 'experience'].includes(r) ? r : 'home'
   document.querySelectorAll('.view').forEach((v) => v.classList.toggle('on', v.dataset.route === next))
   document.querySelectorAll('[data-home-only]').forEach((v) => (v.style.display = next === 'home' ? '' : 'none'))
   document.querySelectorAll('[data-nav]').forEach((a) => (next === a.dataset.nav ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current')))
@@ -333,6 +327,7 @@ const qs = new URLSearchParams(location.search)
 go()
 renderExperience()
 renderProjects()
+renderOffClock()
 if (qs.get('boot') !== '0') runBoot()
 </script>
 </body>

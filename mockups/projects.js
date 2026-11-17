@@ -24,7 +24,7 @@ import { dialog, status, css as detailCss } from './detail.js'
 const MAX_ICONS = 6
 const year = (d) => d.getUTCFullYear()
 const art = (p) => `style="--a1:${p.pal[0]};--a2:${p.pal[1]};--a3:${p.pal[2]};--pa:${p.accent}"`
-const slugOf = (p) => p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+export const slugOf = (p) => p.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 const subOf = () => { const m = location.hash.match(/^#\/projects\/([^/?]+)/); return m ? decodeURIComponent(m[1]) : null }
 const PINK = '#ff4fa3', CYAN = '#5ad1e6'
 
@@ -42,7 +42,7 @@ const rowsCss = `
 /* rows: the whole row is one button that opens the detail dialog */
 .pj-list{border-top:1px solid var(--rule)}
 .pj{display:grid;grid-template-rows:1fr;border-bottom:1px solid var(--rule);transition:grid-template-rows .6s var(--ease),opacity .45s var(--ease),border-color .45s var(--ease)}
-.pj>.pj-in{min-height:0;overflow:hidden}
+.pj>.pj-in{min-height:0;}
 .pj[data-hide]{grid-template-rows:0fr;opacity:0;border-bottom-color:transparent;pointer-events:none}
 .pj-row{position:relative;isolation:isolate;display:grid;grid-template-columns:96px minmax(0,1fr) auto 5.4rem 1.4rem;gap:6px 24px;align-items:center;width:100%;padding:20px 0;text-align:left;background:none;border:0;cursor:pointer}
 .pj-row::before{content:"";position:absolute;left:-14px;top:0;bottom:0;width:2px;background:var(--pa);box-shadow:0 0 10px var(--pa);transform:scaleY(0);transition:transform .5s var(--ease);z-index:2}
@@ -143,7 +143,7 @@ export function mount(el, { projects, filter }) {
 
   /* the dialog is a route: #/projects/<slug>. Opening pushes a history entry, so Back closes it. */
   let pushed = false, closingFromHash = false, dead = false
-  const modal = dialog(el, {
+  const modal = dialog(el.closest('.site') || document.body, {
     getVisible: visible,
     onNav: (p) => history.replaceState(null, '', `#/projects/${slugOf(p)}`),
     onClose: () => {
@@ -152,9 +152,9 @@ export function mount(el, { projects, filter }) {
       if (pushed) { pushed = false; history.back() } else history.replaceState(null, '', '#/projects')
     },
   })
-  const sync = () => {
+  const sync = (ev) => {
     const s = subOf(), p = s && projects.find((x) => slugOf(x) === s)
-    if (p) { if (!modal.isOpen()) modal.open(p) }
+    if (p) { if (!modal.isOpen()) { if (ev?.oldURL) pushed = true; modal.open(p) } }
     else if (modal.isOpen()) { closingFromHash = true; modal.close() }
   }
   addEventListener('hashchange', sync)

@@ -6,7 +6,8 @@
 // `employers` is sorted newest first.
 
 export const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
-const PB = new URLSearchParams(location.search).get('pb') || 'http://127.0.0.1:8091'
+// Same origin by default: serve.py proxies /api to PocketBase. ?pb=<url> overrides.
+const PB = new URLSearchParams(location.search).get('pb') || ''
 
 export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c])
 export const list = (v) => (Array.isArray(v) ? v : String(v || '').split(/[,\n]/).map((x) => x.trim()).filter(Boolean))
@@ -53,9 +54,9 @@ const firstSentence = (s) => {
   return t.length > 90 ? t.slice(0, 88).replace(/\s+\S*$/, '') + '…' : t
 }
 
-let live = true, rawP, rawE, rawG
+let live = true, rawP, rawE, rawG, rawI
 try {
-  ;[rawP, rawE, rawG] = await Promise.all([pbList('projects', '-start_date,created'), pbList('experiences', '-start_date,created'), pbList('experience_groups', 'created')])
+  ;[rawP, rawE, rawG, rawI] = await Promise.all([pbList('projects', '-start_date,created'), pbList('experiences', '-start_date,created'), pbList('experience_groups', 'created'), pbList('interests', 'order,created')])
 } catch (e) {
   live = false
   console.warn('PocketBase unreachable, using sample data', e)
@@ -65,14 +66,25 @@ try {
     { id: 'e2', company: 'Peraton', title: 'Software Engineer', start_date: '2024-09-04', end_date: '2025-01-07', current: false, group: 'g1', skills: ['Javascript', 'jQuery', 'Java', 'HTML', 'CSS', 'Git', 'Docker', 'Maven'], headline: 'Prototyped a Cyber Threat Intelligence exchange web app for a government agency.', description: ['Worked closely with a team to design and prototype a Cyber Threat Intelligence exchange web application.', 'Designed, developed, and implemented new features.'] },
     { id: 'e3', company: 'Katapult Engineering', title: 'Software Development Intern', start_date: '2023-06-01', end_date: '2023-11-30', current: false, group: '', skills: ['Polymer (JS)', 'Firebase', 'CSS', 'Git'], headline: 'Fixed bugs and built custom features for client products as an engineering intern.', description: ['Enhanced user experience and product quality by resolving software bugs.', 'Designed and implemented custom software features.'] },
   ]
+  rawI = []
   rawP = [{ id: 'p1', name: 'Sample project', start_date: '2025-01-01', current: true, stack: ['Vue'], highlights: ['Sample highlight.'] }]
 }
 /* Local-only test data: lib/seed.js is git-ignored. Without it (or with ?seed=0) only real data is shown. */
-let NOW, seed, seedProjects
-if (new URLSearchParams(location.search).get('seed') !== '0') { try { ({ NOW, seed, seedProjects } = await import('./seed.js')) } catch { /* no local seed file */ } }
+let NOW, seed, seedProjects, seedInterests
+if (new URLSearchParams(location.search).get('seed') !== '0') { try { ({ NOW, seed, seedProjects, seedInterests } = await import('./seed.js')) } catch { /* no local seed file */ } }
 export const isSeeded = !!seed
-if (isSeeded) { ({ rawG, rawE } = seed(rawG, rawE)); rawP = seedProjects(rawP) }
+if (isSeeded) { ({ rawG, rawE } = seed(rawG, rawE)); rawP = seedProjects(rawP); rawI = seedInterests(rawI) }
 export const isLive = live
+
+/** Off the clock card: { id, title, line, phrase, art, stat: {value,label,live}|null }. Order comes from the `order` field. */
+export const interests = rawI.map((r) => ({
+  id: r.id,
+  title: r.title,
+  line: r.line || '',
+  phrase: r.phrase || '',
+  art: r.art || 'none',
+  stat: r.stat_value ? { value: String(r.stat_value), label: r.stat_label || '', live: !!r.stat_live } : null,
+}))
 
 const palettes = [['#ff8c2b', '#1b2a33', '#5ad1e6'], ['#c0502a', '#101820', '#ff8c2b'], ['#5ad1e6', '#2a1608', '#ff8c2b'], ['#ff8c2b', '#0e1a1f', '#c0502a'], ['#d98a4a', '#1a1208', '#5ad1e6']]
 /* per-project accent (blue stays reserved for live things). Overridable with an `accent` field. */
