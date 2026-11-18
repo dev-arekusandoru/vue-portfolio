@@ -15,7 +15,7 @@
   --ti-size: 36px;
 }
 
-/* ---------- rail mount points: a rail module fills .mo-gut (wide screens) and .mo-bar (narrow screens) ---------- */
+/* ---------- rail mount points: the emanator fills .mo-gut (wide screens) and .mo-bar (narrow screens) ---------- */
 .xv-monolith .mo-gut {
   position: relative;
 }

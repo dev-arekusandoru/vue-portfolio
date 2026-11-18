@@ -1,64 +1,39 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, shallowRef } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import ProjectDialog from '@/components/ProjectDialog.vue'
 import { loadPortfolio, type Project } from '@/lib/data'
 import { slugOf } from '@/lib/slug'
 import { visibleProjects } from '@/lib/projectNav'
-import { dialog, type ProjectDialog } from '@/lib/detail'
 
 // The one project dialog. Driven only by the route param `slug` (/projects/:slug); opening is a pushed history entry
 // (made by the link that was clicked), so Back closes it. Closing the dialog itself returns to where it was opened from.
 const route = useRoute()
 const router = useRouter()
-const host = ref<HTMLElement>()
 
-let all: Project[] = []
-let modal: ProjectDialog | undefined
-let closingFromRoute = false
-let dead = false
+const all = shallowRef<Project[]>([])
+onMounted(async () => (all.value = (await loadPortfolio()).projects))
 
-const visible = () => (visibleProjects.value.length ? visibleProjects.value : all)
-
-const sync = () => {
-  if (!modal) return
+const project = computed(() => {
   const s = route.params.slug
-  const slug = typeof s === 'string' ? s : null
-  const p = slug ? all.find((x) => slugOf(x) === slug) : undefined
-  if (p) {
-    if (modal.current() !== p || !modal.isOpen()) modal.open(p)
-  } else if (modal.isOpen()) {
-    closingFromRoute = true
-    modal.close()
-  }
-}
+  return typeof s === 'string' ? (all.value.find((x) => slugOf(x) === s) ?? null) : null
+})
+const list = computed(() => (visibleProjects.value.length ? visibleProjects.value : all.value))
 
-onMounted(async () => {
-  all = (await loadPortfolio()).projects
-  if (dead) return
-  modal = dialog(host.value!, {
-    getVisible: visible,
-    onNav: (p) => void router.replace(`/projects/${slugOf(p)}`),
-    onClose: () => {
-      if (dead || closingFromRoute) {
-        closingFromRoute = false
-        return
-      }
-      if (!route.params.slug) return
-      // opened from inside the app: the previous history entry is the page it came from
-      if (history.state?.back) router.back()
-      else void router.replace('/projects')
-    },
-  })
-  sync()
-})
-watch(() => route.params.slug, sync)
-onBeforeUnmount(() => {
-  dead = true
-  modal?.destroy()
-  modal = undefined
-})
+const onClosed = () => {
+  // closed by the route (Back, or a link elsewhere): nothing to do
+  if (!route.params.slug) return
+  // closed by the user: opened from inside the app, the previous history entry is the page it came from
+  if (history.state?.back) router.back()
+  else void router.replace('/projects')
+}
 </script>
 
 <template>
-  <div ref="host"></div>
+  <ProjectDialog
+    :project="project"
+    :list="list"
+    @nav="(p) => router.replace(`/projects/${slugOf(p)}`)"
+    @closed="onClosed"
+  />
 </template>

@@ -7,8 +7,6 @@ import { esc, techKey, type Project } from '../data'
 import './graph.css'
 import type { FilterCtx } from './types'
 
-export const id = 'graph'
-
 const LBL_H = 15
 const FG = '230,224,212'
 const OR = [255, 140, 43]

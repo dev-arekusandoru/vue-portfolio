@@ -8,7 +8,7 @@ export interface Tech {
   projects: Project[]
 }
 
-/** What a filter module gets: the shared selection state (AND semantics) and the host element to draw into. */
+/** The shared selection state (AND semantics) and the host element the graph draws into. */
 export interface FilterCtx {
   host: HTMLElement
   projects: Project[]
@@ -24,5 +24,3 @@ export interface FilterCtx {
   /** `fn` is called now and after every change; returns unsubscribe */
   subscribe(fn: (selected: Set<string>, visible: Project[]) => void): () => void
 }
-
-export type FilterMount = (ctx: FilterCtx) => () => void

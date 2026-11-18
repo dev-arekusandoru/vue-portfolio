@@ -37,6 +37,17 @@ Tech icons are bundled SVGs in `client/src/assets/tech`. To add one, list it in 
 
 `mockups/` holds the HTML design prototypes the Vue app was ported from (`python3 mockups/serve.py`, then <http://127.0.0.1:5180>).
 
+## Frontend architecture
+
+Idiomatic Vue 3 (`client/src`):
+
+- `views/`, `components/` — pages and UI as SFCs; `ProjectDialog.vue` + `ProjectModalHost.vue` are the project detail modal
+- `composables/useTechFilter.ts` — shared tech-filter selection state
+- `lib/data.ts` — PocketBase loading and normalisation; `lib/icons.ts` + `TechIcon.vue` render the bundled tech icons
+- `lib/*.css` — feature stylesheets imported by the components that use them
+
+Two modules are deliberately imperative (rAF/canvas loops that own their DOM): `lib/filters/graph.ts` (tech graph, mounted by `TechGraph.vue`) and `lib/emanator.ts` (experience rail orb, mounted by `ExperienceTimeline.vue`, which also owns the scroll geometry).
+
 ## Schema changes
 
 Add a file to `server/pb_migrations/`:

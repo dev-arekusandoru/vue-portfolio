@@ -18,8 +18,6 @@ for (const [path, url] of Object.entries(files)) {
 }
 const urlFor = (key: string) => MAP.get(key.replace(/[^a-z0-9-]/g, '_'))
 
-export const hasIcon = (name: string) => !!urlFor(techKey(name))
-
 /** What a tech icon needs: the key (for linking/highlighting), the label, the bundled SVG url (if any) and the 2-letter fallback glyph. */
 export function iconInfo(name: string) {
   const key = techKey(name)

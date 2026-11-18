@@ -21,9 +21,9 @@ export const list = (v: unknown): string[] =>
         .map((x) => x.trim())
         .filter(Boolean)
 const D = (s: unknown) => new Date(String(s).replace(' ', 'T'))
-export const fmt = (d: Date) =>
+const fmt = (d: Date) =>
   d.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })
-export const months = (a: Date, b: Date) => Math.max(1, Math.round((+b - +a) / 2.63e9))
+const months = (a: Date, b: Date) => Math.max(1, Math.round((+b - +a) / 2.63e9))
 export const dur = (a: Date, b: Date) => {
   const m = months(a, b)
   const y = Math.floor(m / 12)
@@ -138,32 +138,6 @@ export interface Interest {
   phrase: string
   art: string
   stat: { value: string; label: string; live: boolean } | null
-}
-export interface TechEntry {
-  key: string
-  name: string
-  contracts: Contract[]
-  months: number
-}
-
-/** Map of techKey -> { key, name, contracts, months } across the given contracts, most-used first. */
-export function techIndex(contracts: Contract[]): TechEntry[] {
-  const m = new Map<string, TechEntry>()
-  for (const c of contracts) {
-    for (const s of c.skills) {
-      const key = techKey(s)
-      const t = m.get(key) || { key, name: techName(s), contracts: [], months: 0 }
-      t.contracts.push(c)
-      t.months += months(c.start, c.end)
-      m.set(key, t)
-    }
-  }
-  return [...m.values()].sort(
-    (a, b) =>
-      b.contracts.length - a.contracts.length ||
-      b.months - a.months ||
-      a.name.localeCompare(b.name),
-  )
 }
 
 const firstSentence = (s: string) => {
