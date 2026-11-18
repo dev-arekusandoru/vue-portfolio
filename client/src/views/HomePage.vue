@@ -1,20 +1,12 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
 import ExperienceTimeline from '@/components/ExperienceTimeline.vue'
+import OffClock from '@/components/OffClock.vue'
 import ProjectPlate from '@/components/ProjectPlate.vue'
 import { loadPortfolio } from '@/lib/data'
-import { mount } from '@/lib/offclock'
 
 const data = await loadPortfolio()
 const recent = data.projects.slice(0, 3)
 const current = data.currentEmployers()
-const oc = ref<HTMLElement | null>(null)
-let unmount: (() => void) | void
-
-onMounted(() => {
-  if (oc.value) unmount = mount(oc.value, { items: data.interests })
-})
-onBeforeUnmount(() => unmount?.())
 </script>
 
 <template>
@@ -39,7 +31,7 @@ onBeforeUnmount(() => unmount?.())
     </section>
     <section class="sec" aria-labelledby="h-off">
       <div class="sec-head"><h2 id="h-off">Off the clock</h2></div>
-      <div ref="oc" class="oc oc-shards"></div>
+      <OffClock :items="data.interests" />
     </section>
   </div>
 </template>

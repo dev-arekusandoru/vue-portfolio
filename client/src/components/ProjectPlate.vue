@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { icon } from '@/lib/icons'
+import TechIcon from '@/components/TechIcon.vue'
 import { slugOf } from '@/lib/slug'
 import type { Project } from '@/lib/data'
 import '@/assets/plates.css'
@@ -10,7 +10,7 @@ const style = computed(() => {
   const p = props.project
   return { '--a1': p.pal[0], '--a2': p.pal[1], '--a3': p.pal[2], '--pa': p.accent }
 })
-const icons = computed(() => props.project.stack.slice(0, 6).map(icon).join(''))
+const stack = computed(() => props.project.stack.slice(0, 6))
 </script>
 
 <template>
@@ -28,7 +28,7 @@ const icons = computed(() => props.project.stack.slice(0, 6).map(icon).join(''))
         }}</span>
       </header>
       <p>{{ project.headline }}</p>
-      <div class="plate-ic" v-html="icons"></div>
+      <div class="plate-ic"><TechIcon v-for="t in stack" :key="t" :name="t" /></div>
     </div>
   </RouterLink>
 </template>
