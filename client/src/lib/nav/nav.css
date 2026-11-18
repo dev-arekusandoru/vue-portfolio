@@ -1,0 +1,136 @@
+/* site header: a fixed bar plus an in-flow slot that reserves its row */
+.top-slot {
+  --top-h: 76px;
+  height: var(--top-h);
+}
+html[data-route='experience'] .top-slot {
+  height: 0;
+}
+
+.top-bar {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 40;
+  font-size: 0.8rem;
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color 0.25s var(--ease),
+    border-color 0.25s var(--ease);
+}
+.top-bar[data-compact] {
+  background: rgb(8 10 12/0.88);
+  border-bottom-color: var(--rule);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.top-bar a {
+  text-decoration: none;
+}
+
+/* fake telemetry */
+.nv-readout {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.nv-readout .live-dot {
+  width: 6px;
+  height: 6px;
+  margin-right: 8px;
+}
+.nv-readout time {
+  color: var(--fg);
+}
+
+/* one ruled strip: home mark, indexed cells, readout at the end */
+.nv {
+  width: min(1120px, 100% - 40px);
+  margin-inline: auto;
+  padding: 14px 0;
+  transition: padding 0.25s var(--ease);
+}
+.top-bar[data-compact] .nv {
+  padding: 7px 0;
+}
+.nv-box {
+  position: relative;
+  display: grid;
+  grid-template-columns: 48px auto 1fr;
+  align-items: stretch;
+  height: 46px;
+  border: 1px solid rgb(230 224 212/0.24);
+  background: rgb(8 10 12/0.55);
+}
+.nv-box::before,
+.nv-box::after {
+  content: '';
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  background: var(--accent);
+}
+.nv-box::before {
+  top: -1px;
+  left: -1px;
+}
+.nv-box::after {
+  right: -1px;
+  bottom: -1px;
+}
+.nv-box > nav {
+  display: flex;
+}
+.nv-cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px;
+  border-right: 1px solid rgb(230 224 212/0.24);
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition:
+    background-color 0.2s var(--ease),
+    color 0.2s var(--ease);
+}
+.nv-cell i {
+  font-style: normal;
+  color: var(--accent);
+}
+.nv-cell:hover,
+.nv-cell:focus-visible {
+  background: rgb(230 224 212/0.07);
+  color: var(--fg);
+}
+.nv-cell:focus-visible {
+  outline-offset: -4px;
+}
+.nv-cell.nv-brand {
+  justify-content: center;
+  padding: 0;
+  color: var(--fg);
+}
+.nv-cell[aria-current='page'] {
+  background: rgb(255 140 43/0.12);
+  color: var(--accent);
+  font-weight: 400;
+}
+.nv-cell[aria-current='page']::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+}
+.nv .nv-readout {
+  justify-self: end;
+  align-self: center;
+  padding: 0 18px;
+}

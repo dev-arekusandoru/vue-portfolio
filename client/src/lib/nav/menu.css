@@ -1,0 +1,310 @@
+/* mobile: the tab row collapses to "current page + toggle"; the toggle opens a full-screen index */
+.nv-toggle {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .top-slot {
+    --top-h: 70px;
+  }
+  .nv {
+    padding: 12px 0;
+  }
+  .nv-box {
+    height: 44px;
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+  .nv-box > nav,
+  .nv-box > .nv-readout {
+    display: none;
+  }
+
+  .nv-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 0;
+    padding: 0 14px;
+    border: 0;
+    background: none;
+    font: inherit;
+    text-align: left;
+    color: var(--fg);
+    cursor: pointer;
+    transition: background-color 0.2s var(--ease);
+  }
+  .nv-toggle:hover {
+    background: rgb(230 224 212/0.07);
+  }
+  .nv-toggle:focus-visible {
+    outline-offset: -4px;
+  }
+  .nv-toggle svg {
+    flex: none;
+  }
+  .nv-here {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 400;
+    color: var(--accent);
+  }
+  .nv-here i {
+    font-style: normal;
+    opacity: 0.7;
+  }
+  .nv-index .nv-here {
+    color: var(--muted);
+    font-weight: 300;
+  }
+}
+
+/* the index itself; the closed dialog stays display:none from the UA sheet */
+.nv-index[open] {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0 0 max(18px, env(safe-area-inset-bottom));
+  border: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: var(--fg);
+  font: 300 0.92rem/1.7 var(--mono);
+  --band: 68px;
+  --nv-out: 700; /* ms: how long the exit runs before the dialog closes; NavMenu reads it */
+  --nv-in: cubic-bezier(0.2, 0, 0, 1);
+  --nv-exit: cubic-bezier(0.4, 0, 0.2, 1);
+  background: transparent;
+  animation: nv-unfold 0.95s var(--nv-in) backwards;
+}
+.nv-index[open][data-closing] {
+  animation: nv-fold 0.7s var(--nv-exit) both;
+}
+.top-bar[data-compact] .nv-index {
+  --band: 58px;
+}
+/* background layer: separate from the content so it can fade on its own timing */
+.nv-index[open]::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 100% 55% at 50% 112%, rgb(255 140 43/0.4), transparent 70%),
+    rgb(8 10 12/0.98);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.nv-index[open]::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, transparent 0 2px, rgb(255 255 255/0.03) 2px 3px);
+}
+.nv-index::backdrop {
+  background: none;
+}
+.nv-index .nv {
+  flex: none;
+  width: min(1120px, 100% - 40px);
+}
+.nv-list,
+.nv-foot {
+  width: min(1120px, 100% - 40px);
+  margin-inline: auto;
+}
+.nv-list {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+.nv-list ol {
+  width: 100%;
+  border-top: 1px solid rgb(230 224 212/0.16);
+}
+.nv-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 6px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgb(230 224 212/0.16);
+  text-decoration: none;
+  color: var(--fg);
+  animation: nv-rise 1s var(--nv-in) backwards;
+  animation-delay: calc(0.25s + var(--n) * 0.09s);
+}
+.nv-row i {
+  font-style: normal;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+}
+.nv-row span {
+  font: 200 clamp(1.15rem, 6.4vw, 2rem) / 1.1 var(--display);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.nv-row span.sr {
+  font: inherit;
+}
+.nv-row em {
+  font-style: normal;
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.nv-row[aria-current='page'] span {
+  color: #ffe6c8;
+  text-shadow:
+    0 0 3px rgb(255 214 170/0.8),
+    0 0 14px rgb(255 140 43/0.75);
+}
+.nv-row[aria-current='page'] em {
+  color: var(--accent);
+}
+.nv-row:focus-visible {
+  outline-offset: -2px;
+}
+.nv-foot {
+  flex: none;
+  padding-top: 14px;
+  animation: nv-rise 1s var(--nv-in) 0.7s backwards;
+}
+
+/* shared-frame morph: the header never moves. The panel unfolds out of it, and the label and icon hand over in place. */
+@keyframes nv-unfold {
+  from {
+    clip-path: inset(0 0 calc(100% - var(--band)) 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes nv-fold {
+  from {
+    clip-path: inset(0 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 calc(100% - var(--band)) 0);
+  }
+}
+
+/* the header band must not flash dark: the background fades in under the unfold and out over the fold's tail */
+.nv-index[open]::after {
+  animation: nv-bg-in 0.45s ease-out backwards;
+}
+.nv-index[open][data-closing]::after {
+  animation: nv-fade-out 0.4s ease-in 0.3s both;
+}
+@keyframes nv-bg-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes nv-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.nv-index[open] .nv-here {
+  animation: nv-label 0.8s var(--nv-in) 0.14s backwards;
+}
+@keyframes nv-label {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+    filter: blur(3px);
+  }
+}
+.nv-index[open] .nv-toggle svg {
+  animation: nv-icon 0.9s var(--nv-in) 0.1s backwards;
+}
+@keyframes nv-icon {
+  from {
+    transform: rotate(-90deg) scale(0.6);
+  }
+}
+.nv-index .nv-toggle svg path {
+  stroke-dasharray: 1;
+  animation: nv-draw 0.7s var(--nv-in) 0.18s backwards;
+}
+.nv-index .nv-toggle svg path + path {
+  animation-delay: 0.3s;
+}
+@keyframes nv-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+@keyframes nv-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(6px);
+  }
+}
+
+/* exit: content leaves first (the bar's label and icon return as it does), then the panel folds back into the header */
+.nv-index[open][data-closing] .nv-row,
+.nv-index[open][data-closing] .nv-foot {
+  animation: nv-leave 0.32s ease-in both;
+}
+.nv-index[open][data-closing] .nv-here {
+  animation: nv-leave 0.25s ease-in both;
+}
+.nv-index[open][data-closing] .nv-toggle svg {
+  animation: nv-fade-out 0.3s ease-in both;
+}
+@keyframes nv-leave {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@media (max-width: 960px) {
+  /* the bar's label and icon hand over to the overlay header: quick out, slower back in */
+  .nv-toggle .nv-here,
+  .nv-toggle svg {
+    transition:
+      opacity 0.5s var(--ease) 0.12s,
+      transform 0.6s var(--ease) 0.12s;
+  }
+  .nv-box:has(> .nv-index[open]:not([data-closing])) > .nv-toggle .nv-here {
+    opacity: 0;
+    transition-duration: 0.18s;
+    transition-delay: 0s;
+  }
+  .nv-box:has(> .nv-index[open]:not([data-closing])) > .nv-toggle svg {
+    opacity: 0;
+    transform: rotate(45deg) scale(0.6);
+    transition-duration: 0.25s;
+    transition-delay: 0s;
+  }
+}

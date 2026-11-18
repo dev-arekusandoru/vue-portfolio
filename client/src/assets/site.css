@@ -149,46 +149,6 @@ button {
   }
 }
 
-/* header */
-.top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  padding: 28px 0;
-  font-size: 0.8rem;
-}
-.top a {
-  text-decoration: none;
-}
-.top nav {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-.top nav a {
-  padding: 8px 12px;
-  position: relative;
-}
-.top nav a::after {
-  content: '';
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: 4px;
-  height: 1px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.45s var(--ease);
-}
-.top nav a:hover::after,
-.top nav a:focus-visible::after,
-.top nav a[aria-current='page']::after {
-  transform: scaleX(1);
-}
-
 /* hero: dark + orange */
 .hero-zone {
   position: relative;
