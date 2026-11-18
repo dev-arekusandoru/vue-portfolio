@@ -28,10 +28,6 @@ export interface RailCtx {
   goTo: (i: number) => void
   subscribe: (fn: (s: RailState) => void) => () => void
 }
-export interface Rail {
-  id: string
-  mount: (ctx: RailCtx) => () => void
-}
 
 interface Group {
   e: Employer
