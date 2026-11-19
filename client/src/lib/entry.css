@@ -1,0 +1,10 @@
+/* page fade (lib/entry.ts): quick out, slower in */
+:is(.hero-zone, .wrap) {
+  transition: opacity 0.5s cubic-bezier(0.2, 0, 0, 1);
+}
+html[data-entry='hold'] :is(.hero-zone, .wrap) {
+  opacity: 0;
+  pointer-events: none;
+  transition-duration: 0.22s;
+  transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+}

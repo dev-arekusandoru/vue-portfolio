@@ -22,10 +22,12 @@ const gut = ref<HTMLElement>()
 const bar = ref<HTMLElement>()
 const frameRefs = ref<{ $el: HTMLElement }[]>([])
 
-/* entrance: frames start hidden and play once as they scroll into view. While the boot overlay is up the entrance waits,
-   so it plays as the overlay lifts instead of behind it. */
+/* entrance: frames start hidden and play once as they scroll into view. Frames already in view when the page loads
+   (`still`) just appear: the page entry (lib/entry.ts) is their entrance. While the boot overlay is up the entrance
+   waits, so frames settle as the overlay lifts instead of behind it. */
 const armed = !reduce
 const entered = reactive(flat.map(() => false))
+const still = reactive(flat.map(() => false))
 
 const doc = document.documentElement
 const cleanups: (() => void)[] = []
@@ -39,6 +41,12 @@ onMounted(() => {
     let io: IntersectionObserver | undefined
     const observe = () => {
       io?.disconnect()
+      frames.forEach((f, i) => {
+        if (f.getBoundingClientRect().top < innerHeight * 0.84) {
+          still[i] = true
+          entered[i] = true
+        }
+      })
       const obs = new IntersectionObserver(
         (entries) => {
           entries.forEach((en) => {
@@ -50,7 +58,9 @@ onMounted(() => {
         { rootMargin: '0px 0px -16% 0px', threshold: 0.1 },
       )
       io = obs
-      frames.forEach((f) => obs.observe(f))
+      frames.forEach((f, i) => {
+        if (!entered[i]) obs.observe(f)
+      })
     }
     if (doc.dataset.boot === 'running') addEventListener('boot-done', observe, { once: true })
     else observe()
@@ -190,6 +200,7 @@ onMounted(() => {
         :total="item.e.contracts.length"
         :compact="!!compact"
         :entered="entered[item.i]"
+        :still="still[item.i]"
       >
         <footer v-if="!compact && item.i === n - 1" class="mo-foot">
           <span>© 2025 Alexandru Muresan</span>

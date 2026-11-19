@@ -12,6 +12,8 @@ const props = defineProps<{
   compact: boolean
   /** has entered view (entrance animation) */
   entered: boolean
+  /** was already in view at load: shows without the entrance animation */
+  still?: boolean
 }>()
 
 const uid = useId()
@@ -27,7 +29,7 @@ const open = ref(false)
 <template>
   <article
     class="mo-frame"
-    :class="{ 'mo-live': c.current, 'mo-in': entered }"
+    :class="{ 'mo-live': c.current, 'mo-in': entered, 'mo-still': still }"
     :data-i="item.i"
     :aria-labelledby="hid"
   >

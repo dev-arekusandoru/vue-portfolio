@@ -508,6 +508,14 @@
   opacity: 0;
   transform: translateY(-50%) scale(0.8);
 }
+/* in view at page load: no entrance of its own */
+.xv-monolith.mo-armed .mo-frame.mo-still::before,
+.xv-monolith.mo-armed .mo-still .mo-x {
+  transition: none;
+}
+.xv-monolith .mo-still .mo-scan {
+  display: none;
+}
 .xv-monolith .mo-live {
   --dm: 1.25;
 }
