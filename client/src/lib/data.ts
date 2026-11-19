@@ -299,3 +299,8 @@ export function loadPortfolio(): Promise<Portfolio> {
   )
   return cached
 }
+
+/** Drops the cache so the next `loadPortfolio()` re-reads PocketBase (the admin pages call this after every write). */
+export function invalidatePortfolio() {
+  cached = undefined
+}

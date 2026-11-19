@@ -15,7 +15,8 @@ deploy/          deploy script + systemd user units
 
 Everything visible is a PocketBase record — no rebuild needed.
 
-- Admin: <http://127.0.0.1:8091/_/> (in production: `https://alexmuresan.dev/_/`, behind Cloudflare Access)
+- Admin pages: `/#/admin` — Projects (incl. cover/screenshot upload), Experience (+ groups), Interests (reorder with arrows). Sign in with a PocketBase superuser; the session is kept in localStorage. Pages are public routes but every write is rejected by the server without a superuser token
+- PocketBase dashboard (schema, users, backups): <http://127.0.0.1:8091/_/> (in production: `https://alexmuresan.dev/_/`, behind Cloudflare Access)
 - `projects` — `stack` and `highlights` are JSON arrays (one entry per row in the UI). Optional: `headline`, `summary`, `role`, `kind`, `metric_value` + `metric_label`, `challenges`, `cover`, `screenshots`, `accent`; each falls back to something derived from the rest
 - `interests` — the "Off the clock" cards: `title`, `line`, `phrase`, `art` (small CSS illustration), `order`, and an optional stat (`stat_value`, `stat_label`, `stat_live`)
 - `experience_groups` — company/org wrappers

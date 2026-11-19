@@ -1,0 +1,294 @@
+/* Admin pages: plain, self-contained, unrelated to the site theme. Everything is under `.adm`. */
+.adm {
+  --bg: #111315;
+  --panel: #181b1e;
+  --fg: #e6e6e6;
+  --muted: #8d949b;
+  --line: #2b3035;
+  --accent: #ff8c2b;
+  --danger: #ff6b6b;
+  --ok: #7fe0b0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--fg);
+  font:
+    14px/1.45 system-ui,
+    sans-serif;
+}
+.adm a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.adm h1 {
+  font-size: 18px;
+}
+.adm h2 {
+  font-size: 15px;
+}
+
+.adm-bar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+.adm-bar nav {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+.adm-bar nav a {
+  padding: 4px 12px;
+  border-radius: 4px;
+  color: var(--fg);
+}
+.adm-bar nav a.router-link-active {
+  background: var(--accent);
+  color: #111;
+  font-weight: 600;
+}
+
+.adm-split {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 24px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: start;
+}
+@media (max-width: 800px) {
+  .adm-split {
+    grid-template-columns: 1fr;
+  }
+}
+.adm-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: sticky;
+  top: 64px;
+  max-height: calc(100vh - 84px);
+  overflow-y: auto;
+}
+.adm-list h2 {
+  margin: 12px 0 4px;
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.adm-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel);
+  text-align: left;
+  cursor: pointer;
+}
+.adm-item[aria-current='true'] {
+  border-color: var(--accent);
+}
+.adm-item span {
+  flex: 1;
+  min-width: 0;
+}
+.adm-item small {
+  display: block;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.adm-item b {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.adm-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel);
+}
+.adm-form > header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.adm-form > header h1 {
+  flex: 1;
+}
+.adm-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+.adm-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.adm-field > span,
+.adm-field > legend {
+  color: var(--muted);
+  font-size: 12px;
+}
+fieldset.adm-field {
+  border: 0;
+  min-inline-size: 0;
+}
+.adm-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.adm .adm-hint {
+  color: var(--muted);
+  font-size: 12px;
+}
+.adm-pick {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.adm input[type='text'],
+.adm input[type='email'],
+.adm input[type='password'],
+.adm input[type='url'],
+.adm input[type='number'],
+.adm input[type='date'],
+.adm select,
+.adm textarea {
+  width: 100%;
+  padding: 7px 9px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--fg);
+  font: inherit;
+  color-scheme: dark;
+}
+.adm textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+.adm input:focus,
+.adm select:focus,
+.adm textarea:focus {
+  outline: 1px solid var(--accent);
+  border-color: var(--accent);
+}
+
+.adm-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel);
+  color: var(--fg);
+  font: inherit;
+  cursor: pointer;
+}
+.adm-btn:hover:not(:disabled) {
+  border-color: var(--muted);
+}
+.adm-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.adm-btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #111;
+  font-weight: 600;
+}
+.adm-btn.danger {
+  color: var(--danger);
+}
+.adm-btn.small {
+  padding: 2px 8px;
+}
+
+.adm-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding-top: 6px;
+  border-top: 1px solid var(--line);
+}
+.adm-actions .grow {
+  flex: 1;
+}
+.adm-msg {
+  color: var(--ok);
+}
+.adm-err {
+  color: var(--danger);
+  overflow-wrap: anywhere;
+}
+
+.adm-listfield {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.adm-listfield > div {
+  display: flex;
+  gap: 4px;
+  align-items: flex-start;
+}
+.adm-listfield textarea {
+  min-height: 56px;
+}
+
+.adm-files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.adm-files figure {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 140px;
+  font-size: 12px;
+}
+.adm-files img {
+  width: 140px;
+  height: 90px;
+  object-fit: cover;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.adm-login {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+}
+.adm-login .adm-form {
+  width: min(360px, 92vw);
+}
