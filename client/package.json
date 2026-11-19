@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "vite",
     "icons": "node scripts/fetch-tech-icons.mjs",
+    "add-icon": "node scripts/add-icon.mjs",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",

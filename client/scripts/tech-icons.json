@@ -246,5 +246,45 @@
  "pocketbase": [
   "simple-icons",
   "pocketbase"
+ ],
+ "hono": [
+  "simple-icons",
+  "hono"
+ ],
+ "spring boot": [
+  "simple-icons",
+  "spring"
+ ],
+ "langgraph": [
+  "simple-icons",
+  "langgraph"
+ ],
+ "apache nifi": [
+  "simple-icons",
+  "apachenifi"
+ ],
+ "elasticsearch": [
+  "simple-icons",
+  "elasticsearch"
+ ],
+ "vue 3": [
+  "simple-icons",
+  "vuedotjs"
+ ],
+ "drizzle": [
+  "simple-icons",
+  "drizzle"
+ ],
+ "playwright": [
+  "simple-icons",
+  "playwright"
+ ],
+ "gmail api": [
+  "simple-icons",
+  "gmail"
+ ],
+ "llama.rn": [
+  "simple-icons",
+  "ollama"
  ]
 }
